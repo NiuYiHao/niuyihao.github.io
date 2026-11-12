@@ -1,2 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0"><channel><title>我的博客</title><link>https://niuyihao.github.io</link><description>我的博客</description></channel></rss>
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>我的博客</title>
+    <link>https://niuyihao.github.io/</link>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 12 Nov 2026 13:37:47 GMT</lastBuildDate>
+    <generator>Hexo</generator>
+    <atom:link href="https://niuyihao.github.io/rss2.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>人的需求金字塔</title>
+      <link>https://niuyihao.github.io/2026/11/12/human-needs-pyramid/</link>
+      <description>
+        <![CDATA[<p>根据需求金字塔理论，人的需求分为：</p>
+<ol>
+<li>生理需求：水、食物、空气、睡眠、衣物、栖身之所</li>
+<li>安全需求：人身安全、工作稳定、健康保障、财物与住处安全</li>
+<li>爱与归属需求：友谊、爱情、家庭关系、社群或团队的归属感</li>
+<li]]>
+      </description>
+      <pubDate>Thu, 12 Nov 2026 13:30:00 GMT</pubDate>
+      <content:encoded>
+        <![CDATA[<p>根据需求金字塔理论，人的需求分为：</p><ol><li>生理需求：水、食物、空气、睡眠、衣物、栖身之所</li><li>安全需求：人身安全、工作稳定、健康保障、财物与住处安全</li><li>爱与归属需求：友谊、爱情、家庭关系、社群或团队的归属感</li><li>尊重需求：成就感、名誉、地位、自信、被他人看见与器重</li><li>自我实现需求：自我创造、美学追求、追求真善美、完成个人使命</li></ol>]]>
+      </content:encoded>
+    </item>
+  </channel>
+</rss>
