@@ -187,6 +187,46 @@ a:hover {
 .dark::view-transition-new(root) {
   z-index: 1;
 }
+.post-content .text-task-block {
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 18px 20px;
+  margin: 18px 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.post-content .text-task-block > .text-task-label {
+  margin: 0 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e2e8f0;
+  font-weight: 700;
+  line-height: 1.5;
+  color: inherit;
+}
+.post-content .text-task-block > :last-child {
+  margin-bottom: 0;
+}
+.post-content .text-task-block table {
+  width: 100%;
+  table-layout: fixed;
+}
+.post-content .text-task-block th,
+.post-content .text-task-block td {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  vertical-align: middle;
+}
+html.dark .post-content .text-task-block {
+  border-color: #64748b;
+}
+html.dark .post-content .text-task-block > .text-task-label {
+  border-bottom-color: #475569;
+}
+@media (max-width: 640px) {
+  .post-content .text-task-block {
+    padding: 14px;
+  }
+}
 @-moz-keyframes fall {
   0% {
     transform: translate(0px, 0px);
