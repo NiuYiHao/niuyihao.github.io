@@ -4,9 +4,20 @@
     <title>我的博客</title>
     <link>https://niuyihao.github.io/</link>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 16 Nov 2026 05:45:03 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 16 Nov 2026 15:34:00 GMT</lastBuildDate>
     <generator>Hexo</generator>
     <atom:link href="https://niuyihao.github.io/rss2.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>目前的Cas9 Case——p1</title>
+      <link>https://niuyihao.github.io/2026/11/16/current-cas9-case-p1/</link>
+      <description>
+        <![CDATA[<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>CryoDyna 重建的 1817 个构象，其特征距离集中于]]>
+      </description>
+      <pubDate>Mon, 16 Nov 2026 15:33:34 GMT</pubDate>
+      <content:encoded>
+        <![CDATA[<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>CryoDyna 重建的 1817 个构象，其特征距离集中于参考态（A）附近。我们需要知道，目前的方法究竟能够从实验图像中独立获得多少结构信息？有多少信息实际上来自 reference？因此，我们讲竭尽全力地去拟合出一个漂亮的结果，然后逐步消融，分析影响结果的因素。</p><h2 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h2><p>首先，我们做了一个模拟dataset。400个Cas9的粗粒化结构，N&#x3D;1360，计算D435-E945距离为17.54–77.09 Å。随后，每个构像表示为残基级高斯密度模型，σ&#x3D;2 Å，使用参考结构对应的残基电子权重。每个构像独立采样4个随机均匀三维朝向，生成二维投影，再施加实验star文件抽取的CTF参数。最终得到1600张大小为150x150像素，像素尺寸为1.36埃的无shift、无噪声模拟图像。</p><p>随后，使用 CryoDyna 和 CryoSTAR 对同一模拟数据集进行已知 pose 条件下的重建。参考池共包含 22 个构象：apo 参考 4CMQ、结合态参考 4ZT0，以及 20 个已有中间构象模板。</p><p>两方法 × 22 refs，共 44 次训练；每次 24,000 steps（480 epochs），batch size &#x3D; 32，lr &#x3D; 1×10⁻⁴，seed &#x3D; 1。</p><p>逐步增加 ref 数量（2、4、8、16、22），评估扩大参考覆盖的收益。根据结构真值分别进行 RMSD-oracle 和距离误差 oracle 择优，并与相同参考池的 reference-only 对照比较，以量化训练相对于直接选择固定参考结构的额外改善。</p>]]>
+      </content:encoded>
+    </item>
     <item>
       <title>你卷你妈呢</title>
       <link>https://niuyihao.github.io/2026/11/16/stop-competing-love-yourself/</link>
