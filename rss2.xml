@@ -4,9 +4,20 @@
     <title>我的博客</title>
     <link>https://niuyihao.github.io/</link>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 16 Nov 2026 15:34:00 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 17 Nov 2026 03:02:47 GMT</lastBuildDate>
     <generator>Hexo</generator>
     <atom:link href="https://niuyihao.github.io/rss2.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>目前的Cas9 Case——p2</title>
+      <link>https://niuyihao.github.io/2026/11/17/current-cas9-case-p2/</link>
+      <description>
+        <![CDATA[<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>CryoDyna 重建的 1817 个构象，其特征距离集中于]]>
+      </description>
+      <pubDate>Tue, 17 Nov 2026 03:02:47 GMT</pubDate>
+      <content:encoded>
+        <![CDATA[<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>CryoDyna 重建的 1817 个构象，其特征距离集中于参考态（A）附近。我们需要知道，目前的方法究竟能够从实验图像中独立获得多少结构信息？有多少信息实际上来自 reference？因此，我们讲竭尽全力地去拟合出一个漂亮的结果，然后逐步消融，分析影响结果的因素。</p><h2 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h2><p>采用400个 Cas9 粗粒化构象构建模拟数据集，每个构象包含1360个粗粒化位点，D435–E945 距离范围为17.54–77.09 Å。将各构象表示为残基级高斯密度模型，高斯宽度参数设为 σ &#x3D; 2 Å，振幅由参考结构中对应残基的总电子数确定。对每个构象独立采样4个均匀分布的三维朝向，计算二维投影，并施加由实验 STAR 文件提取的对比度传递函数（CTF）参数。最终生成1600张模拟投影图像，图像尺寸为150 × 150像素，像素尺寸为1.36 Å；面内平移和噪声项均设为零。</p><p>在已知粒子位姿（pose）的条件下，分别使用 CryoDyna 和 CryoSTAR 对同一模拟数据集进行重建。参考结构池包含22个构象，包括 apo 态结构4CMQ、结合态结构4ZT0，以及20个已有中间构象模板。两种方法分别使用各参考结构进行训练，共完成44次训练。每次训练包含24,000个优化步骤，对应480个训练轮次；批量大小为32，学习率为1 × 10⁻⁴，随机种子设为1。</p><p>为评估参考结构数量对重建结果的影响，分别在包含2、4、8、16和22个构象的参考池下进行比较。以模拟结构真值为基准，采用两种独立的筛选准则：分别选取均方根偏差（RMSD）最小和 D435–E945 距离误差最小的候选重建构象。比较筛选后的重建构象与同一参考池中最优参考结构的误差，评估训练对结构准确性的改善。</p><h2 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h2><p><img src="/images/current-cas9-case-p2/image-20261117110007938.png" alt="image-20261117110007938"></p><p><img src="/images/current-cas9-case-p2/image-20261117110011840.png" alt="image-20261117110011840"></p>]]>
+      </content:encoded>
+    </item>
     <item>
       <title>目前的Cas9 Case——p1</title>
       <link>https://niuyihao.github.io/2026/11/16/current-cas9-case-p1/</link>
