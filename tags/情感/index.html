@@ -248,7 +248,8 @@
   <main class="pt-14">
     
 
-  <section class="px-6 max-w-prose mx-auto gap-12 grid grid-cols-1">
+  
+<section id="article-timeline" class="px-6 max-w-prose mx-auto gap-12 grid grid-cols-1">
   <div class="flex flex-col h-48 items-center justify-center">
     
       <h1 class="site-title text-4xl leading-relaxed">
@@ -257,14 +258,25 @@
     
   </div>
   
+    <div class="timeline-controls" hidden>
+      <div class="timeline-filters" role="group" aria-label="文章筛选">
+        <button type="button" data-filter="all" aria-pressed="true">全部</button>
+        <button type="button" data-filter="marked" aria-pressed="false">已标记</button>
+        <button type="button" data-filter="unmarked" aria-pressed="false">未标记</button>
+      </div>
+      <p class="timeline-status" role="status" aria-live="polite"></p>
+    </div>
+  
+  
   
     
     
-      <div class="relative pointer-events-none">
+      <div class="relative pointer-events-none" data-timeline-year="2026">
         <span class="text-9xl opacity-10 absolute -left-11 -top-6 font-bold">2026</span>
       </div>
     
-    <a style="--stagger:0" href="/2026/11/16/stop-competing-love-yourself/" data-animate>
+    <div class="timeline-entry" data-article-path="/2026/11/16/stop-competing-love-yourself/" data-year="2026">
+    <a class="timeline-article-link" style="--stagger:0" href="/2026/11/16/stop-competing-love-yourself/" data-animate>
       <header>
         <h2 class="font-bold text-xl">
           你卷你妈呢
@@ -278,10 +290,15 @@
         </p>
       </section>
     </a>
+    
+      <button type="button" class="article-mark" aria-pressed="false" aria-label="标记：你卷你妈呢" data-title="你卷你妈呢" hidden>☆ 标记</button>
+    
+    </div>
   
     
     
-    <a style="--stagger:1" href="/2026/11/16/hand-hygiene-and-touching-faces/" data-animate>
+    <div class="timeline-entry" data-article-path="/2026/11/16/hand-hygiene-and-touching-faces/" data-year="2026">
+    <a class="timeline-article-link" style="--stagger:1" href="/2026/11/16/hand-hygiene-and-touching-faces/" data-animate>
       <header>
         <h2 class="font-bold text-xl">
           手摸了这些东西，别乱摸别人
@@ -295,10 +312,15 @@
         </p>
       </section>
     </a>
+    
+      <button type="button" class="article-mark" aria-pressed="false" aria-label="标记：手摸了这些东西，别乱摸别人" data-title="手摸了这些东西，别乱摸别人" hidden>☆ 标记</button>
+    
+    </div>
   
     
     
-    <a style="--stagger:2" href="/2026/11/15/invitation-communication-process/" data-animate>
+    <div class="timeline-entry" data-article-path="/2026/11/15/invitation-communication-process/" data-year="2026">
+    <a class="timeline-article-link" style="--stagger:2" href="/2026/11/15/invitation-communication-process/" data-animate>
       <header>
         <h2 class="font-bold text-xl">
           邀约沟通的过程
@@ -312,10 +334,15 @@
         </p>
       </section>
     </a>
+    
+      <button type="button" class="article-mark" aria-pressed="false" aria-label="标记：邀约沟通的过程" data-title="邀约沟通的过程" hidden>☆ 标记</button>
+    
+    </div>
   
     
     
-    <a style="--stagger:3" href="/2026/11/14/responding-to-persistent-pressure/" data-animate>
+    <div class="timeline-entry" data-article-path="/2026/11/14/responding-to-persistent-pressure/" data-year="2026">
+    <a class="timeline-article-link" style="--stagger:3" href="/2026/11/14/responding-to-persistent-pressure/" data-animate>
       <header>
         <h2 class="font-bold text-xl">
           亲密关系中持续施压的应对
@@ -329,10 +356,15 @@
         </p>
       </section>
     </a>
+    
+      <button type="button" class="article-mark" aria-pressed="false" aria-label="标记：亲密关系中持续施压的应对" data-title="亲密关系中持续施压的应对" hidden>☆ 标记</button>
+    
+    </div>
   
     
     
-    <a style="--stagger:4" href="/2026/11/13/personal-safety-relationship-risk-criteria/" data-animate>
+    <div class="timeline-entry" data-article-path="/2026/11/13/personal-safety-relationship-risk-criteria/" data-year="2026">
+    <a class="timeline-article-link" style="--stagger:4" href="/2026/11/13/personal-safety-relationship-risk-criteria/" data-animate>
       <header>
         <h2 class="font-bold text-xl">
           个人安全与关系风险评估标准
@@ -346,11 +378,23 @@
         </p>
       </section>
     </a>
+    
+      <button type="button" class="article-mark" aria-pressed="false" aria-label="标记：个人安全与关系风险评估标准" data-title="个人安全与关系风险评估标准" hidden>☆ 标记</button>
+    
+    </div>
   
+  <p class="timeline-empty" hidden>当前视图暂无文章。</p>
 </section>
 
 <div class="px-6 max-w-prose mx-auto my-8">
 </div>
+
+
+  
+<link rel="stylesheet" href="/css/timeline.css">
+
+  <script defer src="/js/timeline.js"></script>
+
 
 
 
