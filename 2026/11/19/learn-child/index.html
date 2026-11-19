@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+
+
+<title>学吧，孩子 | 我的博客</title>
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/nprogress/nprogress.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/rss2.xml" title="我的博客" type="application/rss+xml">
+</head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="我的博客" />
+          我的博客
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        学吧，孩子
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/archives/">文章</a>
+        
+          <a class="hidden sm:flex" href="/category/">分类</a>
+        
+          <a class="hidden sm:flex" href="/tag/">标签</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="RSS 订阅" href="/rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <button type="button" class="w-5 h-5" title="切换明暗主题" aria-label="切换明暗主题" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </button>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <button type="button" class="w-5 h-5" aria-label="打开菜单" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </button>
+        <button type="button" class="w-5 h-5 hidden" aria-label="关闭菜单" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/95 dark:bg-zinc-900/95 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/archives/" class="flex h-12 sm:h-auto items-center">文章</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/category/" class="flex h-12 sm:h-auto items-center">分类</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/tag/" class="flex h-12 sm:h-auto items-center">标签</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        学吧，孩子
+      </h1>
+      <div>
+        <section class="flex flex-wrap items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2026-11-19</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>11 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>3.4k words</span>
+          </span>
+          
+            <span class="inline-flex items-center gap-3 whitespace-nowrap">
+              <span class="text-gray-400" aria-hidden="true">·</span>
+              <span class="inline-flex items-center gap-1" aria-live="polite">
+                <iconify-icon width="18" icon="mdi:eye-outline" aria-hidden="true"></iconify-icon>
+                <span>阅读量：<span id="page-views-status">加载中…</span><span id="busuanzi_container_page_pv" style="display:none"><span id="busuanzi_value_page_pv"></span> 次</span></span>
+              </span>
+            </span>
+          
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <p>读到这段对话，我觉得很舒服。它让我想逐句停下来看看：一个人怎样表达喜欢，怎样认真道歉，怎样说出自己也有的委屈，又怎样把关心落实到明天的一顿饭里。</p>
+<p>“学吧，孩子”，是我对自己说的话。</p>
+<p>我想借助《非暴力沟通》和亲密关系研究中的几个概念，把这段话逐帧拆开：每句话完成了什么动作？下次遇到相似的场景，我可以怎样开口？</p>
+<h2 id="一、理论：怎样表达心意，并回应彼此"><a href="#一、理论：怎样表达心意，并回应彼此" class="headerlink" title="一、理论：怎样表达心意，并回应彼此"></a>一、理论：怎样表达心意，并回应彼此</h2><p>这里的《亲密关系》按罗兰·米勒的版本理解，可以结合书中关于沟通、冲突、关系维护和修复的章节阅读。下面的具体概念，也参考相应的原始研究。</p>
+<h3 id="1-非暴力沟通：把发生的事和希望的事说清楚"><a href="#1-非暴力沟通：把发生的事和希望的事说清楚" class="headerlink" title="1. 非暴力沟通：把发生的事和希望的事说清楚"></a>1. 非暴力沟通：把发生的事和希望的事说清楚</h3><p>《非暴力沟通》提供了四个表达要素：**观察、感受、需要、请求。**它们可以帮助我梳理一句含混的“不高兴”。</p>
+<table>
+<thead>
+<tr>
+<th>要素</th>
+<th>要说清的问题</th>
+<th>以等待伴侣为例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>观察</td>
+<td>具体发生了什么</td>
+<td>“到了约好的时间，我还没收到你是否会晚到的消息。”</td>
+</tr>
+<tr>
+<td>感受</td>
+<td>我有什么情绪</td>
+<td>“我有点着急，也有点失落。”</td>
+</tr>
+<tr>
+<td>需要</td>
+<td>我在意什么</td>
+<td>“我想对安排有把握，也希望被惦记。”</td>
+</tr>
+<tr>
+<td>请求</td>
+<td>我希望对方具体做什么</td>
+<td>“下次知道自己要晚到时，提前告诉我一声，好吗？”</td>
+</tr>
+</tbody></table>
+<p>这里，“你不在乎我”包含对对方心意的判断；“我很失落”是在表达自己的情绪。希望被惦记，可以通过提前告知、约好见面等不同办法得到回应。</p>
+<p>理解对方时，也可以提出猜测，再请对方确认：“你是不是等得有点委屈？”提出请求后，则要给对方表达不同意愿的空间。这分别对应书中对共情核实、请求与要求的区分。</p>
+<h3 id="2-伴侣回应性：让对方感到被理解、被重视、被关心"><a href="#2-伴侣回应性：让对方感到被理解、被重视、被关心" class="headerlink" title="2. 伴侣回应性：让对方感到被理解、被重视、被关心"></a>2. 伴侣回应性：让对方感到被理解、被重视、被关心</h3><p>“感知伴侣回应性”（perceived partner responsiveness）关注三种体验：</p>
+<ul>
+<li>**你理解我：**你看到了我的处境，听懂了我的感受。</li>
+<li>**你重视我：**你把我和我在意的事情放在心上。</li>
+<li>**你关心我：**你愿意回应我的需要。</li>
+</ul>
+<p>这里的关键，是对方怎样感受到这份回应。</p>
+<p>借这个框架看原话：</p>
+<p>“让你一个人等那么久”，注意到了对方的处境；“你在乎我，我也在乎你”，明确表达彼此的重要；“明天给你做饭吧”，把关心接到了生活中的具体事情上。</p>
+<p>这三层结合起来，是我理解这段话为何温暖的一个角度。</p>
+<h3 id="3-情感自我表露：让自己的心意也被听见"><a href="#3-情感自我表露：让自己的心意也被听见" class="headerlink" title="3. 情感自我表露：让自己的心意也被听见"></a>3. 情感自我表露：让自己的心意也被听见</h3><p>自我表露（self-disclosure）包括向对方表达自己的想法和感受。亲密互动研究发现，情感自我表露与亲密感有关，伴侣的回应也是其中的重要部分。</p>
+<p>原话中的“我今天也很想你”“抱着你好舒服”，就在做这件事：主动把自己的内心告诉对方，让对方知道，他的存在和靠近给自己带来了什么感受。</p>
+<h2 id="二、逐帧学习：每句话完成了什么动作"><a href="#二、逐帧学习：每句话完成了什么动作" class="headerlink" title="二、逐帧学习：每句话完成了什么动作"></a>二、逐帧学习：每句话完成了什么动作</h2><p>以下按沟通动作分段。引号内是原句，其余是我的理解与应用示例。</p>
+<h3 id="01-把亲近变成邀请"><a href="#01-把亲近变成邀请" class="headerlink" title="01 把亲近变成邀请"></a>01 把亲近变成邀请</h3><blockquote>
+<p>要躺着睡啊，那牵着手好不好。</p>
+</blockquote>
+<p>他顺着“躺着休息”的安排，提出自己还想要的一点亲密：牵手。愿望具体，也给对方留了回应的位置。</p>
+<p>可以学：想靠近时，直接说出自己希望发生的动作。</p>
+<p>“我想和你牵着手躺一会儿，好吗？”</p>
+<h3 id="02-坦然承认自己喜欢亲近"><a href="#02-坦然承认自己喜欢亲近" class="headerlink" title="02 坦然承认自己喜欢亲近"></a>02 坦然承认自己喜欢亲近</h3><blockquote>
+<p>刚结婚。我老婆牵着手睡觉怎么啦。</p>
+</blockquote>
+<p>这句话带着亲昵的理直气壮：我珍视我们之间的关系，也享受和你亲近。在这段语境里，它给“想牵手”加了一层明确的喜欢。</p>
+<p>可以学：把自己的喜欢说得坦然。</p>
+<p>可以用自己自然的说法：“我就是喜欢和你待在一起。”</p>
+<h3 id="03-在情绪出现时继续表达喜欢"><a href="#03-在情绪出现时继续表达喜欢" class="headerlink" title="03 在情绪出现时继续表达喜欢"></a>03 在情绪出现时继续表达喜欢</h3><blockquote>
+<p>我的宝宝怎么吃醋都这么可爱啊。</p>
+</blockquote>
+<p>在这段亲昵语境里，我把它理解为：“看到你有情绪，我仍然想亲近你。”这让表达喜欢与谈论不愉快同时存在。</p>
+<p>“可爱”能否被听成疼爱，要看对方的反应。对方还在认真难过时，就需要继续认真听。</p>
+<p>可以学：让对方知道自己仍被珍视，同时关心他正在难过什么。</p>
+<h3 id="04-明确告诉对方，我要认真回应了"><a href="#04-明确告诉对方，我要认真回应了" class="headerlink" title="04 明确告诉对方，我要认真回应了"></a>04 明确告诉对方，我要认真回应了</h3><blockquote>
+<p>哎呀，不给你开玩笑啦。</p>
+</blockquote>
+<p>这句话是一个转折：刚才可以亲昵地逗一逗，接下来认真处理让对方不高兴的事情。</p>
+<p>可以学：主动切换谈话方式。</p>
+<p>“我认真说，刚才那件事我想跟你好好聊聊。”</p>
+<h3 id="05-把道歉落到具体事情上"><a href="#05-把道歉落到具体事情上" class="headerlink" title="05 把道歉落到具体事情上"></a>05 把道歉落到具体事情上</h3><blockquote>
+<p>我今天确实不好，没及时回你消息，回来的又晚，让你一个人等那么久，是我做错了。对不起嘛。</p>
+</blockquote>
+<p>这段道歉说出了自己的行为，也说出了对方实际经历的等待。它让我听见：你知道自己为什么需要道歉。</p>
+<p>可以学：说清自己做了什么、产生了什么影响，并承担相应责任。</p>
+<p>“今天我没及时告诉你会晚回来，让你一直等着，对不起。以后知道安排有变化，我会先告诉你。”</p>
+<h3 id="06-表达想和好的愿望"><a href="#06-表达想和好的愿望" class="headerlink" title="06 表达想和好的愿望"></a>06 表达想和好的愿望</h3><blockquote>
+<p>不生气了，好不好。原谅我嘛，原谅我嘛。</p>
+</blockquote>
+<p>这里表达了很强的亲近愿望：我想和你恢复亲密。</p>
+<p>请求还需要容纳对方此刻的真实回应；NVC 也强调愿意听见不同意愿，并继续了解彼此的需要。</p>
+<p>可以学：主动求和，同时给对方继续说感受的空间。</p>
+<p>“我想跟你好好说说。你还有什么委屈，我想听。”</p>
+<h3 id="07-也让自己的感受进入谈话"><a href="#07-也让自己的感受进入谈话" class="headerlink" title="07 也让自己的感受进入谈话"></a>07 也让自己的感受进入谈话</h3><blockquote>
+<p>那，那我也原谅你对我乱发脾气，好吗？</p>
+</blockquote>
+<p>这句话把谈话带向另一面：双方在刚才的冲突里，都可能有需要表达的感受。</p>
+<p>现实里，“我也原谅你”容易听起来像在互相抵账，可以把自己的经历说得更具体。</p>
+<p>可以学：为自己的行为负责，也表达自己受到的影响。</p>
+<p>“刚才你说‘……’时，我也有点难过。我想听清楚你希望我怎么做，我们能具体说说吗？”</p>
+<p>这里的省略号，应当填入实际发生的原话。</p>
+<h3 id="08-给不高兴一个容易表达的办法"><a href="#08-给不高兴一个容易表达的办法" class="headerlink" title="08 给不高兴一个容易表达的办法"></a>08 给不高兴一个容易表达的办法</h3><blockquote>
+<p>你以后不高兴了，能不能，直接咬我一口……</p>
+<p>别自己躲在窗后面吹冷风。也不要动不动就……跟我冷战……好吗？</p>
+</blockquote>
+<p>“咬一口”属于原场景中的亲昵玩笑。更值得迁移的是它背后的动作：为不高兴时的沟通提出一个替代办法。</p>
+<p>“别冷战”之后，还可以继续说清楚：下次希望怎样联系，怎样表达需要。</p>
+<p>可以学：一起约定下次怎样开口。</p>
+<p>“下次想让我陪你，可以直接说‘我现在想让你陪陪我’。如果想自己静一会儿，也告诉我，我们约个时间再聊。”</p>
+<h3 id="09-把在乎和表达在乎的方式分开"><a href="#09-把在乎和表达在乎的方式分开" class="headerlink" title="09 把在乎和表达在乎的方式分开"></a>09 把在乎和表达在乎的方式分开</h3><blockquote>
+<p>其实你今天给我闹我挺开心的。</p>
+<p>不是，不是说你闹脾气应该。是……你在乎我，我也在乎你。</p>
+</blockquote>
+<p>这里有一个值得学的自我修正。他发现“你闹我很开心”容易产生误解，于是补充自己真正想肯定的东西：彼此在乎。</p>
+<p>可以学：心意值得回应，表达方式可以一起商量。</p>
+<p>确认对方确实想念自己之后，可以说：</p>
+<p>“知道你也想我，我很开心。下次想见面就告诉我，我也想见你。”</p>
+<p>如果还不确定，就先问：“你刚才是不是也很想我？”</p>
+<h3 id="10-主动说出自己的想念"><a href="#10-主动说出自己的想念" class="headerlink" title="10 主动说出自己的想念"></a>10 主动说出自己的想念</h3><blockquote>
+<p>就像，我今天也很想你，虽然你好像都没有问我，不过我现在知道，你也很想我。</p>
+</blockquote>
+<p>这一句里，我最想保留“我今天也很想你”。</p>
+<p>自己的心意可以主动表达；对方的心意，可以通过询问听到。</p>
+<p>可以学：想念发生了，就把它说出来。</p>
+<p>“我今天很想你，刚才一直期待早点见到你。你呢？”</p>
+<h3 id="11-给谈话留一点安静的亲近"><a href="#11-给谈话留一点安静的亲近" class="headerlink" title="11 给谈话留一点安静的亲近"></a>11 给谈话留一点安静的亲近</h3><blockquote>
+<p>嗯，再抱抱。</p>
+</blockquote>
+<p>话说到这里，表达可以暂时变成双方都愿意的拥抱和陪伴。沟通也可以有安静的部分。</p>
+<p>可以学：说出想亲近的愿望，并听对方的意愿。</p>
+<p>“我想抱抱你，可以吗？”</p>
+<h3 id="12-从情绪走到具体生活"><a href="#12-从情绪走到具体生活" class="headerlink" title="12 从情绪走到具体生活"></a>12 从情绪走到具体生活</h3><blockquote>
+<p>对了，对了你今天加班吃什么啊，又是外卖。</p>
+<p>明天给你做饭吧。我来做就行，不要你做。</p>
+</blockquote>
+<p>注意力从刚才的冲突，转到了对方今天怎样度过、明天是否能轻松一点。关心开始有了具体落点。</p>
+<p>可以学：留意对方的实际处境，提出自己愿意且能做到的帮助。</p>
+<p>“明天我有空，想做顿饭给你。你下班回来就可以吃。”</p>
+<h3 id="13-邀请对方说出自己的偏好"><a href="#13-邀请对方说出自己的偏好" class="headerlink" title="13 邀请对方说出自己的偏好"></a>13 邀请对方说出自己的偏好</h3><blockquote>
+<p>可以啊，你点菜。</p>
+<p>想吃什么就点什么，我给你做。</p>
+</blockquote>
+<p>这份照顾里还有对方的位置：想吃什么，可以由对方表达。帮助也因此更贴近他的需要。</p>
+<p>可以学：提供关心时，问一句对方喜欢怎样。</p>
+<p>如果对方累得不想选择，也可以接着说：</p>
+<p>“想不出来的话，我来安排，你告诉我有没有不想吃的。”</p>
+<h3 id="14-留意当下状态，把照顾落到时间里"><a href="#14-留意当下状态，把照顾落到时间里" class="headerlink" title="14 留意当下状态，把照顾落到时间里"></a>14 留意当下状态，把照顾落到时间里</h3><blockquote>
+<p>宝宝……你困了？我也有点。</p>
+<p>抱着你好舒服。</p>
+<p>明天还要加班吗？那明天多睡一会儿。</p>
+<p>明天早上你先醒的话就记得把我叫起来，我给你煎鸡蛋。</p>
+</blockquote>
+<p>这一段既留意对方困不困，也表达自己此刻的舒服；随后，把照顾落到“明天早上”和“煎鸡蛋”。</p>
+<p>我读到这里，会感到两个人已经开始一起想象下一天的生活。</p>
+<p>可以学：察觉当下的状态，说出共同相处带来的感受，并把愿意做的事安排具体。</p>
+<h3 id="15-用双方熟悉的玩笑收尾"><a href="#15-用双方熟悉的玩笑收尾" class="headerlink" title="15 用双方熟悉的玩笑收尾"></a>15 用双方熟悉的玩笑收尾</h3><blockquote>
+<p>你要是再装睡我就把鸡蛋全吃了……一个也不给你留。</p>
+<p>……坏蛋，骗你的，都给你。</p>
+</blockquote>
+<p>玩笑刚刚拉开一点距离，又很快用偏爱拉回来。放在这段文字里，它让谈话回到了轻松亲昵的日常。</p>
+<p>可以学：给和好的谈话一个自然的收束。</p>
+<p>具体怎么开玩笑，要沿用双方都喜欢的方式；一句温柔的晚安，也可以完成这个动作。</p>
+<h2 id="三、Method：下次面对什么场景，我可以出什么牌"><a href="#三、Method：下次面对什么场景，我可以出什么牌" class="headerlink" title="三、Method：下次面对什么场景，我可以出什么牌"></a>三、Method：下次面对什么场景，我可以出什么牌</h2><h3 id="把一句台词学成自己能做的事"><a href="#把一句台词学成自己能做的事" class="headerlink" title="把一句台词学成自己能做的事"></a>把一句台词学成自己能做的事</h3><p>以后再逐帧学习，我可以给每一段记四项：</p>
+<ol>
+<li>**原话：**具体说了什么。</li>
+<li>**动作：**它在表达愿望、核实理解、承担责任、提出请求，还是提供照顾。</li>
+<li>**条件：**对方此刻愿不愿意聊、愿不愿意亲近，哪些感受已经确认，哪些还需要问。</li>
+<li>**自己的表达：**换成我说得自然、愿意承担、能够兑现的一句话。</li>
+</ol>
+<p>说完之后，再看对方怎样回应。理解有偏差，就请对方补充；请求有困难，就一起调整做法。</p>
+<h3 id="根据眼前的需要选择一张牌"><a href="#根据眼前的需要选择一张牌" class="headerlink" title="根据眼前的需要选择一张牌"></a>根据眼前的需要选择一张牌</h3><table>
+<thead>
+<tr>
+<th>下次面对的场景</th>
+<th>可以出的牌</th>
+<th>可以怎样开口</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>我想亲近，却不知道怎么开口</td>
+<td>表达愿望，提出邀请</td>
+<td>“我想和你待一会儿，牵着手躺一会儿好吗？”</td>
+</tr>
+<tr>
+<td>对方在生气，我还不清楚原因</td>
+<td>核实感受，邀请说明</td>
+<td>“你是不是等得有点委屈？我想听你说，刚才最难受的是什么？”</td>
+</tr>
+<tr>
+<td>我确实没做好，让对方久等了</td>
+<td>承认行为和影响，提出改进</td>
+<td>“我没及时告诉你会晚到，让你一直等着，对不起。下次安排有变化，我先告诉你。”</td>
+</tr>
+<tr>
+<td>我自己也因为等待而难过</td>
+<td>说出感受、需要和请求</td>
+<td>“刚才一直等不到消息，我有点失落。我想知道我们的安排，下次要晚到时，提前告诉我好吗？”</td>
+</tr>
+<tr>
+<td>我很想对方，也想确认彼此心意</td>
+<td>主动自我表露</td>
+<td>“我今天很想你，想早点见到你。你今天有没有也想见我？”</td>
+</tr>
+<tr>
+<td>争执里我也受到了委屈</td>
+<td>具体表达受到的影响</td>
+<td>“刚才你说‘……’时，我有点难过。你希望我做什么，我们具体说说，好吗？”</td>
+</tr>
+<tr>
+<td>我暂时说不清，想安静一会儿</td>
+<td>说明状态，商量何时再谈</td>
+<td>“我现在有点乱，想先静一会儿。我们半小时后再聊，好吗？”</td>
+</tr>
+<tr>
+<td>对方很累，我想照顾他</td>
+<td>提出可落实的帮助，询问偏好</td>
+<td>“明天我有空，想给你做晚饭。有什么想吃的吗？”</td>
+</tr>
+</tbody></table>
+<p>这些是可调整的开口方式。每一次先挑出自己最想表达的一件事，听完对方的回应，再往下说。</p>
+<p>学吧，孩子。先从下一次想念时，认真说一句“我想你了”开始。</p>
+
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/%E6%83%85%E6%84%9F/">情感</a>
+        </span>
+      
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/11/19/ai-usage-reflections-verbatim-examples/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          AI使用心得
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script defer src="/js/page-views.js" data-site-url="https://niuyihao.github.io"></script>
+
+
+  <!-- copyright -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">主题许可 CC BY-NC-SA 4.0</a>
+    <span>© 2026 我的博客</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">主题作者 xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>
