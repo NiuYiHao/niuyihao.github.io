@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+
+
+<title>深入阅读 | 我的博客</title>
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/nprogress/nprogress.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/rss2.xml" title="我的博客" type="application/rss+xml">
+</head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="我的博客" />
+          我的博客
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        深入阅读
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/archives/">文章</a>
+        
+          <a class="hidden sm:flex" href="/category/">分类</a>
+        
+          <a class="hidden sm:flex" href="/tag/">标签</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="RSS 订阅" href="/rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <button type="button" class="w-5 h-5" title="切换明暗主题" aria-label="切换明暗主题" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </button>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <button type="button" class="w-5 h-5" aria-label="打开菜单" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </button>
+        <button type="button" class="w-5 h-5 hidden" aria-label="关闭菜单" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/95 dark:bg-zinc-900/95 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/archives/" class="flex h-12 sm:h-auto items-center">文章</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/category/" class="flex h-12 sm:h-auto items-center">分类</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/tag/" class="flex h-12 sm:h-auto items-center">标签</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        深入阅读
+      </h1>
+      <div>
+        <section class="flex flex-wrap items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2026-11-21</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>10 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>3k words</span>
+          </span>
+          
+            <span class="inline-flex items-center gap-3 whitespace-nowrap">
+              <span class="text-gray-400" aria-hidden="true">·</span>
+              <span class="inline-flex items-center gap-1" aria-live="polite">
+                <iconify-icon width="18" icon="mdi:eye-outline" aria-hidden="true"></iconify-icon>
+                <span>阅读量：<span id="page-views-status">加载中…</span><span id="busuanzi_container_page_pv" style="display:none"><span id="busuanzi_value_page_pv"></span> 次</span></span>
+              </span>
+            </span>
+          
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <h2 id="第一题：交付的Base资料"><a href="#第一题：交付的Base资料" class="headerlink" title="第一题：交付的Base资料"></a>第一题：交付的Base资料</h2><p>资料范围采用《确定阅读清单》的七个分组、154个条目。每篇精读以正文和相关补充材料为依据，保留关键原文、页码、图表编号和文献链接。</p>
+<h3 id="1-研究对象与核心问题"><a href="#1-研究对象与核心问题" class="headerlink" title="1. 研究对象与核心问题"></a>1. 研究对象与核心问题</h3><ul>
+<li>文献信息：题名、作者、年份、期刊、DOI、Zotero条目。</li>
+<li>研究体系：对象、构建体、配体、实验条件。</li>
+<li>科学问题：作者希望解释的现象、已有认识、研究切入点。</li>
+</ul>
+<h3 id="2-方法与主要发现"><a href="#2-方法与主要发现" class="headerlink" title="2. 方法与主要发现"></a>2. 方法与主要发现</h3><ul>
+<li>方法：实验设计、模拟或计算流程、关键参数、对照和评价指标。</li>
+<li>发现：每项核心结论对应的结果、数值、图表和适用条件。</li>
+<li>解释：作者如何由结果得到结论，以及其他解释和证据局限。</li>
+</ul>
+<h3 id="3-原文与图表证据"><a href="#3-原文与图表证据" class="headerlink" title="3. 原文与图表证据"></a>3. 原文与图表证据</h3><ul>
+<li>原文摘录：连续原句、原文页码、章节位置；译文单列。</li>
+<li>图表记录：图号与子图、测量对象、横纵轴、组别、数值和支持的论点。</li>
+<li>来源定位：正文、补充材料、数据与代码入口。</li>
+</ul>
+<h3 id="4-跨文献比较与课题联系"><a href="#4-跨文献比较与课题联系" class="headerlink" title="4. 跨文献比较与课题联系"></a>4. 跨文献比较与课题联系</h3><ul>
+<li>相同问题下的共同发现、不同结果和实验条件差异。</li>
+<li>观点分歧、已有解释及仍需证据回答的问题。</li>
+<li>对当前课题可借鉴的概念、分析方法和结构指标。</li>
+<li>阅读中发现的关键引用及其发现来源。</li>
+</ul>
+<h2 id="第二题：个性化资料"><a href="#第二题：个性化资料" class="headerlink" title="第二题：个性化资料"></a>第二题：个性化资料</h2><h3 id="1-我希望通过精读回答什么"><a href="#1-我希望通过精读回答什么" class="headerlink" title="1. 我希望通过精读回答什么"></a>1. 我希望通过精读回答什么</h3><p><strong>哪些分子、结构域和残基发生互作，互作伴随怎样的构象变化，这些变化怎样联系到功能或病理，以及每一步解释有哪些实验、模拟和结构证据。</strong></p>
+<p>同时，我希望据此判断：本项目重建得到的构象与已有认识有什么关系，哪些结构特征值得分析，当前方法从图像中提取了多少结构信息。</p>
+<p>需求依据见<a href="#%E9%A1%B9%E7%9B%AE%E5%AF%B9%E8%AF%9D%E6%91%98%E5%BD%95">《项目对话摘录》</a>。下列资料形式是依据这些需求制定的交付规格。</p>
+<h3 id="2-三个重点体系分别提取什么"><a href="#2-三个重点体系分别提取什么" class="headerlink" title="2. 三个重点体系分别提取什么"></a>2. 三个重点体系分别提取什么</h3><h4 id="2-1-Cas9：构象变化、功能联系与重建结果解释"><a href="#2-1-Cas9：构象变化、功能联系与重建结果解释" class="headerlink" title="2.1 Cas9：构象变化、功能联系与重建结果解释"></a>2.1 Cas9：构象变化、功能联系与重建结果解释</h4><ul>
+<li><strong>结构地图</strong>：各文献采用的结构域划分、残基编号、构建体、结合对象和参考结构；记录跨文献编号对应关系。</li>
+<li><strong>状态变化</strong>：apo、结合及中间构象的定义；相关结构域的位置、相对朝向、域间距离和接触变化。</li>
+<li><strong>功能联系</strong>：作者如何联系构象变化与识别、激活或切割；逐项提取结构观察、功能实验和模拟证据。</li>
+<li><strong>可比较指标</strong>：文献使用的域间距离、运动幅度、相关运动及状态分布，说明其测量定义与适用体系。</li>
+<li><strong>现有认识对照</strong>：MD、FRET、静态结构和电镜研究分别提供了哪些信息，本项目需要与哪些证据比较。<a href="#S1">S1</a></li>
+</ul>
+<p><strong>交付形式</strong>：状态—结构域变化—功能—证据表，配结构定位图、关键原文和来源；另列可用于比较重建结果的指标表。</p>
+<h4 id="2-2-Calcineurin：结合前后结构域变化与调控机制"><a href="#2-2-Calcineurin：结合前后结构域变化与调控机制" class="headerlink" title="2.2 Calcineurin：结合前后结构域变化与调控机制"></a>2.2 Calcineurin：结合前后结构域变化与调控机制</h4><ul>
+<li><strong>比较对象</strong>：配体、构建体、结合状态和实验条件。</li>
+<li><strong>变化部位</strong>：结合前后的结构域位置、局部折叠、有序程度、接触和动态变化。</li>
+<li><strong>机制链条</strong>：结合、结构变化、调控状态与酶活性之间的关系；分别记录作者解释和支持它的观测。</li>
+<li><strong>验证方式</strong>：结构测定、动力学测量、活性实验、突变和模拟分别支持哪一个环节。<a href="#S2">S2</a></li>
+</ul>
+<p><strong>交付形式</strong>：结合前后结构对照图、构象动力学比较表、结构变化—活性证据表。</p>
+<h4 id="2-3-TDP-43–RNA：接触位点、功能表面与病理联系"><a href="#2-3-TDP-43–RNA：接触位点、功能表面与病理联系" class="headerlink" title="2.3 TDP-43–RNA：接触位点、功能表面与病理联系"></a>2.3 TDP-43–RNA：接触位点、功能表面与病理联系</h4><ul>
+<li><strong>位点与伙伴</strong>：分子内、分子间及蛋白—RNA互作涉及哪些结构域和具体残基，各位点的功能依据是什么。</li>
+<li><strong>接触与构象</strong>：哪些区域相互接近、形成接触或改变暴露程度；记录接触判据、占据率和构象条件。</li>
+<li><strong>功能表面</strong>：RNA识别残基和病理相关区域的定义与来源；分析其暴露程度时，明确计算的是蛋白表面还是RNA本身。</li>
+<li><strong>机制联系</strong>：位点及结构变化怎样联系到正常功能、聚集和病理过程，分别列出对应的实验或模拟依据。<a href="#S3">S3</a></li>
+<li><strong>指标解释</strong>：溶剂可及表面积（SASA）、接触、整体尺寸和局部柔性的定义、选区与统计方法；说明指标之间的关系由什么分析支持。<a href="#S4">S4</a></li>
+</ul>
+<p><strong>交付形式</strong>：位点—互作伙伴—构象变化—功能／病理—证据表，配残基定位图和接触—表面暴露关系图的资料依据。</p>
+<h3 id="3-方法类文献要为项目解决什么"><a href="#3-方法类文献要为项目解决什么" class="headerlink" title="3. 方法类文献要为项目解决什么"></a>3. 方法类文献要为项目解决什么</h3><p>LPTEM与异质重建文献承担方法解释和评价依据的整理：</p>
+<table>
+<thead>
+<tr>
+<th>项目问题</th>
+<th>从文献提取的资料</th>
+<th>交付形式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>图像信息与参考先验各自贡献多少</td>
+<td>输入数据、参考结构用法、正则约束、消融设计和基线定义</td>
+<td>输入—先验—输出—验证对照表</td>
+</tr>
+<tr>
+<td>参考数量与构象覆盖度如何区分</td>
+<td>参考池构建、数量和覆盖度的定义、控制变量与对照</td>
+<td>参考设置与实验设计比较表</td>
+</tr>
+<tr>
+<td>如何评价整体结构和局部运动</td>
+<td>RMSD、局部距离误差及其他相关指标的定义、对齐方式、统计对象与单位</td>
+<td>指标释义及适用条件表</td>
+</tr>
+<tr>
+<td>有真值和实际数据条件下如何选择构象</td>
+<td>基于真值的选择、图像评分及独立验证的具体做法</td>
+<td>候选选择—评价依据对照表</td>
+</tr>
+<tr>
+<td>怎样判断拟合、收敛与结构恢复</td>
+<td>pose来源、成像参数、学习曲线、验证数据和结构准确性评价</td>
+<td>方法证据及验证范围表</td>
+</tr>
+</tbody></table>
+<p>这些资料服务于项目已提出的目标：“核心目标是明确模型能否从图像中恢复超出参考结构先验的信息，以及这种能力对参考结构覆盖度的依赖。”<a href="#S5">S5</a></p>
+<h3 id="4-每项解释交付到什么程度"><a href="#4-每项解释交付到什么程度" class="headerlink" title="4. 每项解释交付到什么程度"></a>4. 每项解释交付到什么程度</h3><ol>
+<li><strong>能够定位</strong>：给出分子、结构域、残基范围、构建体和结构编号。</li>
+<li><strong>能够比较</strong>：说明状态、条件、测量指标、单位、样本或轨迹统计对象。</li>
+<li><strong>能够追溯</strong>：结论附关键原文、页码、图号与子图、正文或补充材料位置、题名超链接。</li>
+<li><strong>能够区分证据</strong>：分别呈现作者的直接观测、机制解释、模拟结果和我的项目推断；因果解释对应干预、突变或其他适用证据。</li>
+<li><strong>能够用于论证</strong>：回答这项发现支持哪个问题，与本项目的哪个结构特征或分析指标有关；图题、结果与解释相互对应。<a href="#S4">S4</a></li>
+</ol>
+<h3 id="5-当前阶段与后续交付的分工"><a href="#5-当前阶段与后续交付的分工" class="headerlink" title="5. 当前阶段与后续交付的分工"></a>5. 当前阶段与后续交付的分工</h3><table>
+<thead>
+<tr>
+<th>资料</th>
+<th>深入阅读阶段交付</th>
+<th>后续承接</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>生物机制与构效关系</td>
+<td>三个重点体系的主题综合、原文摘录和证据图表索引</td>
+<td>《深入阅读》博客正文</td>
+</tr>
+<tr>
+<td>文献网络</td>
+<td>记录关键引用、被引用的观点、发现来源和已读文献间的分歧</td>
+<td>引用追踪阶段扩展作者、研究与观点网络</td>
+</tr>
+<tr>
+<td>已跑实验结果</td>
+<td>提取可比较的文献指标、条件及解释依据</td>
+<td>独立结果汇总中整理本项目数据、图件与数值</td>
+</tr>
+<tr>
+<td>Tau与α-synuclein</td>
+<td>随具体问题提取与构象、互作和分析方法相关的比较资料</td>
+<td>按问题需要扩展专题</td>
+</tr>
+</tbody></table>
+<h2 id="第三题：合并后的结构Plan"><a href="#第三题：合并后的结构Plan" class="headerlink" title="第三题：合并后的结构Plan"></a>第三题：合并后的结构Plan</h2><p>下列层级作为《深入阅读》博客的目录；各专题通过文献题名链接到相应精读记录。</p>
+<h3 id="一、阅读范围与问题"><a href="#一、阅读范围与问题" class="headerlink" title="一、阅读范围与问题"></a>一、阅读范围与问题</h3><h4 id="1-资料分组与本次精读范围"><a href="#1-资料分组与本次精读范围" class="headerlink" title="1. 资料分组与本次精读范围"></a>1. 资料分组与本次精读范围</h4><h4 id="2-生物学问题：互作、构象与功能"><a href="#2-生物学问题：互作、构象与功能" class="headerlink" title="2. 生物学问题：互作、构象与功能"></a>2. 生物学问题：互作、构象与功能</h4><h4 id="3-方法问题：图像信息、参考先验与结构评价"><a href="#3-方法问题：图像信息、参考先验与结构评价" class="headerlink" title="3. 方法问题：图像信息、参考先验与结构评价"></a>3. 方法问题：图像信息、参考先验与结构评价</h4><h3 id="二、Cas9：构象状态与功能联系"><a href="#二、Cas9：构象状态与功能联系" class="headerlink" title="二、Cas9：构象状态与功能联系"></a>二、Cas9：构象状态与功能联系</h3><h4 id="1-研究体系、结构域与参考状态"><a href="#1-研究体系、结构域与参考状态" class="headerlink" title="1. 研究体系、结构域与参考状态"></a>1. 研究体系、结构域与参考状态</h4><h4 id="2-关键结构域运动与残基接触"><a href="#2-关键结构域运动与残基接触" class="headerlink" title="2. 关键结构域运动与残基接触"></a>2. 关键结构域运动与残基接触</h4><h4 id="3-构象变化与识别、激活及切割"><a href="#3-构象变化与识别、激活及切割" class="headerlink" title="3. 构象变化与识别、激活及切割"></a>3. 构象变化与识别、激活及切割</h4><h4 id="4-实验、结构与模拟证据对照"><a href="#4-实验、结构与模拟证据对照" class="headerlink" title="4. 实验、结构与模拟证据对照"></a>4. 实验、结构与模拟证据对照</h4><h4 id="5-与本项目重建结果比较的指标和条件"><a href="#5-与本项目重建结果比较的指标和条件" class="headerlink" title="5. 与本项目重建结果比较的指标和条件"></a>5. 与本项目重建结果比较的指标和条件</h4><h3 id="三、Calcineurin：结合诱导的结构与动态变化"><a href="#三、Calcineurin：结合诱导的结构与动态变化" class="headerlink" title="三、Calcineurin：结合诱导的结构与动态变化"></a>三、Calcineurin：结合诱导的结构与动态变化</h3><h4 id="1-研究体系、结合对象与状态定义"><a href="#1-研究体系、结合对象与状态定义" class="headerlink" title="1. 研究体系、结合对象与状态定义"></a>1. 研究体系、结合对象与状态定义</h4><h4 id="2-结合前后的结构域与局部构象"><a href="#2-结合前后的结构域与局部构象" class="headerlink" title="2. 结合前后的结构域与局部构象"></a>2. 结合前后的结构域与局部构象</h4><h4 id="3-接触变化、构象动力学与活性调控"><a href="#3-接触变化、构象动力学与活性调控" class="headerlink" title="3. 接触变化、构象动力学与活性调控"></a>3. 接触变化、构象动力学与活性调控</h4><h4 id="4-各机制环节的实验与模拟依据"><a href="#4-各机制环节的实验与模拟依据" class="headerlink" title="4. 各机制环节的实验与模拟依据"></a>4. 各机制环节的实验与模拟依据</h4><h4 id="5-可迁移的结构观察与分析指标"><a href="#5-可迁移的结构观察与分析指标" class="headerlink" title="5. 可迁移的结构观察与分析指标"></a>5. 可迁移的结构观察与分析指标</h4><h3 id="四、TDP-43–RNA：接触、表面暴露与功能"><a href="#四、TDP-43–RNA：接触、表面暴露与功能" class="headerlink" title="四、TDP-43–RNA：接触、表面暴露与功能"></a>四、TDP-43–RNA：接触、表面暴露与功能</h3><h4 id="1-结构域、RNA识别位点与病理相关区域"><a href="#1-结构域、RNA识别位点与病理相关区域" class="headerlink" title="1. 结构域、RNA识别位点与病理相关区域"></a>1. 结构域、RNA识别位点与病理相关区域</h4><h4 id="2-分子内、分子间及蛋白—RNA互作"><a href="#2-分子内、分子间及蛋白—RNA互作" class="headerlink" title="2. 分子内、分子间及蛋白—RNA互作"></a>2. 分子内、分子间及蛋白—RNA互作</h4><h4 id="3-接触与构象、柔性及表面暴露的关系"><a href="#3-接触与构象、柔性及表面暴露的关系" class="headerlink" title="3. 接触与构象、柔性及表面暴露的关系"></a>3. 接触与构象、柔性及表面暴露的关系</h4><h4 id="4-正常功能、聚集与病理联系的证据"><a href="#4-正常功能、聚集与病理联系的证据" class="headerlink" title="4. 正常功能、聚集与病理联系的证据"></a>4. 正常功能、聚集与病理联系的证据</h4><h4 id="5-位点和分析指标与本项目的对应"><a href="#5-位点和分析指标与本项目的对应" class="headerlink" title="5. 位点和分析指标与本项目的对应"></a>5. 位点和分析指标与本项目的对应</h4><h3 id="五、LPTEM与异质重建：方法及评价依据"><a href="#五、LPTEM与异质重建：方法及评价依据" class="headerlink" title="五、LPTEM与异质重建：方法及评价依据"></a>五、LPTEM与异质重建：方法及评价依据</h3><h4 id="1-图像数据、成像模型与pose来源"><a href="#1-图像数据、成像模型与pose来源" class="headerlink" title="1. 图像数据、成像模型与pose来源"></a>1. 图像数据、成像模型与pose来源</h4><h4 id="2-结构表示、参考先验与约束"><a href="#2-结构表示、参考先验与约束" class="headerlink" title="2. 结构表示、参考先验与约束"></a>2. 结构表示、参考先验与约束</h4><h4 id="3-参考数量、构象覆盖度与训练收益"><a href="#3-参考数量、构象覆盖度与训练收益" class="headerlink" title="3. 参考数量、构象覆盖度与训练收益"></a>3. 参考数量、构象覆盖度与训练收益</h4><h4 id="4-整体结构、局部运动与图像拟合的指标"><a href="#4-整体结构、局部运动与图像拟合的指标" class="headerlink" title="4. 整体结构、局部运动与图像拟合的指标"></a>4. 整体结构、局部运动与图像拟合的指标</h4><h4 id="5-候选选择、对照设计与验证范围"><a href="#5-候选选择、对照设计与验证范围" class="headerlink" title="5. 候选选择、对照设计与验证范围"></a>5. 候选选择、对照设计与验证范围</h4><h3 id="六、跨文献综合"><a href="#六、跨文献综合" class="headerlink" title="六、跨文献综合"></a>六、跨文献综合</h3><h4 id="1-相同问题的共同发现与不同条件"><a href="#1-相同问题的共同发现与不同条件" class="headerlink" title="1. 相同问题的共同发现与不同条件"></a>1. 相同问题的共同发现与不同条件</h4><h4 id="2-相互支持和存在分歧的证据"><a href="#2-相互支持和存在分歧的证据" class="headerlink" title="2. 相互支持和存在分歧的证据"></a>2. 相互支持和存在分歧的证据</h4><h4 id="3-现有解释与仍待回答的问题"><a href="#3-现有解释与仍待回答的问题" class="headerlink" title="3. 现有解释与仍待回答的问题"></a>3. 现有解释与仍待回答的问题</h4><h4 id="4-与本项目问题、指标和后续结果汇总的对应"><a href="#4-与本项目问题、指标和后续结果汇总的对应" class="headerlink" title="4. 与本项目问题、指标和后续结果汇总的对应"></a>4. 与本项目问题、指标和后续结果汇总的对应</h4><h4 id="5-Tau与α-synuclein的相关比较材料"><a href="#5-Tau与α-synuclein的相关比较材料" class="headerlink" title="5. Tau与α-synuclein的相关比较材料"></a>5. Tau与α-synuclein的相关比较材料</h4><h3 id="七、单篇记录与证据索引"><a href="#七、单篇记录与证据索引" class="headerlink" title="七、单篇记录与证据索引"></a>七、单篇记录与证据索引</h3><h4 id="1-文献信息、研究问题与方法"><a href="#1-文献信息、研究问题与方法" class="headerlink" title="1. 文献信息、研究问题与方法"></a>1. 文献信息、研究问题与方法</h4><h4 id="2-主要发现、作者解释与适用条件"><a href="#2-主要发现、作者解释与适用条件" class="headerlink" title="2. 主要发现、作者解释与适用条件"></a>2. 主要发现、作者解释与适用条件</h4><h4 id="3-逐字摘录、页码及图表索引"><a href="#3-逐字摘录、页码及图表索引" class="headerlink" title="3. 逐字摘录、页码及图表索引"></a>3. 逐字摘录、页码及图表索引</h4><h4 id="4-正文、补充材料与数据代码入口"><a href="#4-正文、补充材料与数据代码入口" class="headerlink" title="4. 正文、补充材料与数据代码入口"></a>4. 正文、补充材料与数据代码入口</h4><h4 id="5-课题联系及后续引用追踪记录"><a href="#5-课题联系及后续引用追踪记录" class="headerlink" title="5. 课题联系及后续引用追踪记录"></a>5. 课题联系及后续引用追踪记录</h4><h3 id="八、Reference"><a href="#八、Reference" class="headerlink" title="八、Reference"></a>八、Reference</h3><h4 id="1-正文引用文献"><a href="#1-正文引用文献" class="headerlink" title="1. 正文引用文献"></a>1. 正文引用文献</h4><h4 id="2-补充材料与数据来源"><a href="#2-补充材料与数据来源" class="headerlink" title="2. 补充材料与数据来源"></a>2. 补充材料与数据来源</h4><h2 id="项目对话摘录"><a href="#项目对话摘录" class="headerlink" title="项目对话摘录"></a>项目对话摘录</h2><h3 id="S1"><a href="#S1" class="headerlink" title="S1"></a>S1</h3><p>Cas9重建结果与已有结构、动力学证据的比较。</p>
+<blockquote>
+<p>现在的问题是：这个2D-TO-3D的重构解出了什么新东西？用一句话说明为什么要搞它。</p>
+</blockquote>
+<blockquote>
+<p>那相比已有的MD、FRET等文献和静态结构，我们真正新解出了啥？</p>
+</blockquote>
+<blockquote>
+<p>用图说话</p>
+</blockquote>
+<h3 id="S2"><a href="#S2" class="headerlink" title="S2"></a>S2</h3><p>Calcineurin构象动力学与结合前后结构变化。</p>
+<blockquote>
+<p>找吧，放Zotero里，重点看构象动力学和结合前后的结构域变化。</p>
+</blockquote>
+<h3 id="S3"><a href="#S3" class="headerlink" title="S3"></a>S3</h3><p>TDP-43位点、分子互作和功能／病理机制。</p>
+<blockquote>
+<p>总结TDP43的研究意义，机制，接触位点。分子作用机制，病理机制，病理机制背后的分子作用机制。TDP43聚集过程涉及的分子内、分子间相互作用位点；TDP43和其他分子比如RNA的作用位点。这些位点和上述机制之间有何联系？</p>
+</blockquote>
+<h3 id="S4"><a href="#S4" class="headerlink" title="S4"></a>S4</h3><p>指标定义、残基定位与图件证据链。</p>
+<blockquote>
+<p>问题来了，RNA SASA是如何计算的？</p>
+</blockquote>
+<blockquote>
+<p>首先我不知道RNA识别残基是哪个，其次我不知道哪个残基被占据了，证据是什么。所以我不能相信。</p>
+</blockquote>
+<blockquote>
+<p>标题应该是一个一句自圆其说的话，且每一页的话能连起来，成为一个story</p>
+</blockquote>
+<h3 id="S5"><a href="#S5" class="headerlink" title="S5"></a>S5</h3><p>图像信息、参考覆盖度及实际构象识别。</p>
+<blockquote>
+<p>核心目标是明确模型能否从图像中恢复超出参考结构先验的信息，以及这种能力对参考结构覆盖度的依赖。</p>
+</blockquote>
+<blockquote>
+<p>固定参考数量，改变构象组合，区分参考数量与构象覆盖度的影响。</p>
+</blockquote>
+<blockquote>
+<p>目前采用真实结构的 RMSD 和距离误差进行筛选。应增加不依赖真值的筛选方法，评估模型实际识别正确构象的能力。</p>
+</blockquote>
+
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/11/21/deep-reading-literature-and-notes/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          深入阅读：文献精读与资料整理
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script defer src="/js/page-views.js" data-site-url="https://niuyihao.github.io"></script>
+
+
+  <!-- copyright -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">主题许可 CC BY-NC-SA 4.0</a>
+    <span>© 2026 我的博客</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">主题作者 xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>
