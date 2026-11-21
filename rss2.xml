@@ -4,9 +4,20 @@
     <title>我的博客</title>
     <link>https://niuyihao.github.io/</link>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 21 Nov 2026 06:40:52 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 21 Nov 2026 07:08:16 GMT</lastBuildDate>
     <generator>Hexo</generator>
     <atom:link href="https://niuyihao.github.io/rss2.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>深入阅读：文献精读与资料整理</title>
+      <link>https://niuyihao.github.io/2026/11/21/deep-reading-literature-and-notes/</link>
+      <description>
+        <![CDATA[<h2 id="1-文献信息（Bibliography）"><a href="#1-文献信息（Bibliography）" class="headerlink" title="1. 文献信息（Bibliography）"></a>1. 文献信息（Bibliography）</h2]]>
+      </description>
+      <pubDate>Sat, 21 Nov 2026 07:08:16 GMT</pubDate>
+      <content:encoded>
+        <![CDATA[<h2 id="1-文献信息（Bibliography）"><a href="#1-文献信息（Bibliography）" class="headerlink" title="1. 文献信息（Bibliography）"></a>1. 文献信息（Bibliography）</h2><ul><li><strong>Title</strong>：</li><li><strong>Authors</strong>：</li><li><strong>Journal &#x2F; Year</strong>：</li><li><strong>DOI</strong>：</li><li><strong>研究体系</strong>：</li></ul><h2 id="2-研究问题（Research-Question）"><a href="#2-研究问题（Research-Question）" class="headerlink" title="2. 研究问题（Research Question）"></a>2. 研究问题（Research Question）</h2><ul><li>研究背景：</li><li>核心问题：</li><li>现有研究不足：</li></ul><h2 id="3-研究方法（Methodology）"><a href="#3-研究方法（Methodology）" class="headerlink" title="3. 研究方法（Methodology）"></a>3. 研究方法（Methodology）</h2><ul><li>实验材料与体系：</li><li>实验方法：</li><li>数据处理与分析方法：</li><li>关键参数：</li></ul><h2 id="4-主要发现（Key-Findings）"><a href="#4-主要发现（Key-Findings）" class="headerlink" title="4. 主要发现（Key Findings）"></a>4. 主要发现（Key Findings）</h2><h3 id="发现-1"><a href="#发现-1" class="headerlink" title="发现 1"></a>发现 1</h3><ul><li><strong>结论</strong>：</li><li><strong>实验依据</strong>：</li><li><strong>对应图表</strong>：</li></ul><h3 id="发现-2"><a href="#发现-2" class="headerlink" title="发现 2"></a>发现 2</h3><ul><li><strong>结论</strong>：</li><li><strong>实验依据</strong>：</li><li><strong>对应图表</strong>：</li></ul><h2 id="5-图表证据（Figure-Evidence）"><a href="#5-图表证据（Figure-Evidence）" class="headerlink" title="5. 图表证据（Figure &amp; Evidence）"></a>5. 图表证据（Figure &amp; Evidence）</h2><table><thead><tr><th>图表</th><th>实验内容</th><th>主要结果</th><th>支持的结论</th></tr></thead><tbody><tr><td>Fig. 1</td><td></td><td></td><td></td></tr><tr><td>Fig. 2</td><td></td><td></td><td></td></tr></tbody></table><h2 id="6-讨论（Discussion）"><a href="#6-讨论（Discussion）" class="headerlink" title="6. 讨论（Discussion）"></a>6. 讨论（Discussion）</h2><ul><li>作者如何解释实验结果？</li><li>与已有研究有何联系？</li><li>尚未解决的问题：</li></ul><h2 id="7-研究价值（Research-Relevance）"><a href="#7-研究价值（Research-Relevance）" class="headerlink" title="7. 研究价值（Research Relevance）"></a>7. 研究价值（Research Relevance）</h2><ul><li>对当前研究的启发：</li><li>可借鉴的方法：</li><li>值得进一步验证的问题：</li></ul><h2 id="8-延伸阅读（Further-Reading）"><a href="#8-延伸阅读（Further-Reading）" class="headerlink" title="8. 延伸阅读（Further Reading）"></a>8. 延伸阅读（Further Reading）</h2><ul><li>关键引用文献：</li><li>值得继续阅读的论文：</li><li>相关研究方向：</li></ul>]]>
+      </content:encoded>
+    </item>
     <item>
       <title>确定阅读清单</title>
       <link>https://niuyihao.github.io/2026/11/21/defining-a-reading-list/</link>
@@ -239,17 +250,6 @@
       <pubDate>Tue, 17 Nov 2026 03:02:47 GMT</pubDate>
       <content:encoded>
         <![CDATA[<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>CryoDyna 重建的 1817 个构象，其特征距离集中于参考态（A）附近。我们需要知道，**目前的方法究竟能够从实验图像中独立获得多少结构信息？有多少信息实际上来自 reference？**因此，我们讲竭尽全力地去拟合出一个漂亮的结果，然后逐步消融，分析影响结果的因素。</p><p>为评估参考结构数量对重建结果的影响，分别在包含2、4、8、16和22个构象的参考池下进行比较。以模拟结构真值为基准，采用两种独立的筛选准则：分别选取均方根偏差（RMSD）最小和 三对残基间距离 MAE 的均值最小的候选重建构象。比较筛选后的重建构象与同一参考池中最优参考结构的误差，评估训练对结构准确性的改善。</p><h2 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h2><p>采用400个 Cas9 粗粒化构象构建模拟数据集，每个构象包含1360个粗粒化位点，D435–E945 距离范围为17.54–77.09 Å。将各构象表示为残基级高斯密度模型，高斯宽度参数设为 σ &#x3D; 2 Å，振幅由参考结构中对应残基的总电子数确定。对每个构象独立采样4个均匀分布的三维朝向，计算二维投影，并施加由实验 STAR 文件提取的对比度传递函数（CTF）参数。最终生成1600张模拟投影图像，图像尺寸为150 × 150像素，像素尺寸为1.36 Å；面内平移和噪声项均设为零。</p><p>在已知粒子位姿（pose）的条件下，分别使用 CryoDyna 和 CryoSTAR 对同一模拟数据集进行重建。参考结构池包含22个构象，包括 apo 态结构4CMQ、结合态结构4ZT0，以及20个已有中间构象模板。两种方法分别使用各参考结构进行训练，共完成44次训练。每次训练包含24,000个优化步骤，对应480个训练轮次；批量大小为32，学习率为1 × 10⁻⁴，随机种子设为1。</p><h2 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h2><p style="text-align: center;"><strong>参考结构数量对 Cas9 重建精度的影响</strong></p><p><img src="/images/current-cas9-case-p2/Cas9_multiref_results_abcde.png" alt="参考结构数量对 Cas9 重建精度的影响，面板 a–e"></p><p><a href="/images/current-cas9-case-p2/Cas9_multiref_results_abcde.png">高清 PNG</a> · <a href="/images/current-cas9-case-p2/Cas9_multiref_results_abcde.pdf">矢量 PDF</a></p><p>**a，**不同参考结构数量下，重建结构经相对真值的平均 RMSD。Reference-only表示直接用参考结构与真值比较，计算 RMSD 和残基间距离误差。**b，**三对残基间距离相对真值的平均绝对误差（MAE）的均值。**c–e，**22 个参考结构下，D435–E945（c）、S355–S867（d）和 S867–N1054（e）的距离随构象编号变化。蓝色和橙色分别表示 CryoDyna 和 CryoSTAR。c–e 中黑色虚线表示真值。</p><h2 id="Discussion"><a href="#Discussion" class="headerlink" title="Discussion"></a>Discussion</h2><p>使用全部 22 个 ref 时，CryoDyna 和 CryoSTAR 的平均 RMSD 分别为 5.09 和 4.99 Å，相比固定参考结构对照的 6.67 Å，降低约 24% 和 25%，表明训练进一步改善了候选构象的精度。</p><p>随着 ref 数量增加，两种方法及参考对照的误差均下降，说明增加候选参考结构本身贡献了部分收益。超过 8 个 ref 后，RMSD 的下降趋缓，继续增加参考结构的边际收益减小。当前实验同时改变了参考数量和构象组合，后续可固定数量、比较不同组合，检验参考构象选择对重建精度的影响。</p><p>整体结构与局部距离的评价存在差异。按三对距离误差选择时，两种方法的平均 MAE 均约为 1.5 Å，对应的平均 RMSD 约为 8 Å；按 RMSD 选择时，平均 RMSD 降至约 5 Å。因此，应在同一组候选结果上联合评价 RMSD 和三对距离误差，检验整体结构与局部运动的恢复程度。</p><p>当前结果采用基于真值的候选选择（oracle selection），反映了候选重建构象的可达精度。后续可引入基于图像一致性的筛选，并在模拟数据中比较其与真值筛选的结果，评估实际结构识别能力。核心目标是量化图像驱动的训练收益，以及这种收益对参考构象选择的依赖。</p><p><strong>决定重建精度的可能不是 reference 的数量，而是 reference 对目标构象空间的覆盖程度。</strong></p>]]>
-      </content:encoded>
-    </item>
-    <item>
-      <title>目前的Cas9 Case——p1</title>
-      <link>https://niuyihao.github.io/2026/11/16/current-cas9-case-p1/</link>
-      <description>
-        <![CDATA[<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>CryoDyna 重建的 1817 个构象，其特征距离集中于]]>
-      </description>
-      <pubDate>Mon, 16 Nov 2026 15:33:34 GMT</pubDate>
-      <content:encoded>
-        <![CDATA[<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>CryoDyna 重建的 1817 个构象，其特征距离集中于参考态（A）附近。我们需要知道，目前的方法究竟能够从实验图像中独立获得多少结构信息？有多少信息实际上来自 reference？因此，我们讲竭尽全力地去拟合出一个漂亮的结果，然后逐步消融，分析影响结果的因素。</p><h2 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h2><p>首先，我们做了一个模拟dataset。400个Cas9的粗粒化结构，N&#x3D;1360，计算D435-E945距离为17.54–77.09 Å。随后，每个构像表示为残基级高斯密度模型，σ&#x3D;2 Å，使用参考结构对应的残基电子权重。每个构像独立采样4个随机均匀三维朝向，生成二维投影，再施加实验star文件抽取的CTF参数。最终得到1600张大小为150x150像素，像素尺寸为1.36埃的无shift、无噪声模拟图像。</p><p>随后，使用 CryoDyna 和 CryoSTAR 对同一模拟数据集进行已知 pose 条件下的重建。参考池共包含 22 个构象：apo 参考 4CMQ、结合态参考 4ZT0，以及 20 个已有中间构象模板。</p><p>两方法 × 22 refs，共 44 次训练；每次 24,000 steps（480 epochs），batch size &#x3D; 32，lr &#x3D; 1×10⁻⁴，seed &#x3D; 1。</p><p>逐步增加 ref 数量（2、4、8、16、22），评估扩大参考覆盖的收益。根据结构真值分别进行 RMSD-oracle 和距离误差 oracle 择优，并与相同参考池的 reference-only 对照比较，以量化训练相对于直接选择固定参考结构的额外改善。</p>]]>
       </content:encoded>
     </item>
   </channel>
