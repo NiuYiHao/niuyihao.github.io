@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+
+
+<title>从前一天的资料到当日交付：文献与实验结果汇总方法 | 我的博客</title>
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/nprogress/nprogress.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/rss2.xml" title="我的博客" type="application/rss+xml">
+</head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="我的博客" />
+          我的博客
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        从前一天的资料到当日交付：文献与实验结果汇总方法
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/archives/">文章</a>
+        
+          <a class="hidden sm:flex" href="/category/">分类</a>
+        
+          <a class="hidden sm:flex" href="/tag/">标签</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="RSS 订阅" href="/rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <button type="button" class="w-5 h-5" title="切换明暗主题" aria-label="切换明暗主题" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </button>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <button type="button" class="w-5 h-5" aria-label="打开菜单" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </button>
+        <button type="button" class="w-5 h-5 hidden" aria-label="关闭菜单" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/95 dark:bg-zinc-900/95 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/archives/" class="flex h-12 sm:h-auto items-center">文章</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/category/" class="flex h-12 sm:h-auto items-center">分类</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/tag/" class="flex h-12 sm:h-auto items-center">标签</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        从前一天的资料到当日交付：文献与实验结果汇总方法
+      </h1>
+      <div>
+        <section class="flex flex-wrap items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2026-11-22</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>10 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>3k words</span>
+          </span>
+          
+            <span class="inline-flex items-center gap-3 whitespace-nowrap">
+              <span class="text-gray-400" aria-hidden="true">·</span>
+              <span class="inline-flex items-center gap-1" aria-live="polite">
+                <iconify-icon width="18" icon="mdi:eye-outline" aria-hidden="true"></iconify-icon>
+                <span>阅读量：<span id="page-views-status">加载中…</span><span id="busuanzi_container_page_pv" style="display:none"><span id="busuanzi_value_page_pv"></span> 次</span></span>
+              </span>
+            </span>
+          
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <p>一份文献与实验结果汇总，需要把阅读资料、引用关系、实验记录和图表组织到同一个问题框架中。前一天留下的材料构成起点，当天新增的证据补充其中，交付时再固定内容、核对来源并生成文件。</p>
+<p>本文以博客版《20261121-文献与实验结果汇总.pdf》为例，整理从资料接续到一天结束交付的操作方法。下列指令由本次任务提炼，可替换日期、课题和资料位置后使用。</p>
+<h2 id="一、输入、产出与整体顺序"><a href="#一、输入、产出与整体顺序" class="headerlink" title="一、输入、产出与整体顺序"></a>一、输入、产出与整体顺序</h2><p><strong>输入：</strong> 前一天的阅读清单、精读笔记、文献库、实验报告、数值文件、图件、任务清单，以及当天新增的交付。</p>
+<p><strong>产出：</strong> 三份主题整理、现有图表清单、汇总 Markdown、同内容 PDF 和博客页面。</p>
+<p>整体顺序为：</p>
+<p><strong>接续资料 → 确定交付 → 分别整理机制、文献网络和实验结果 → 建立图表清单 → 固定当日版本 → 汇编与核验 → 发布 → 次日增补。</strong></p>
+<p>“接续前一天资料”是这套每日流程的起点。本次汇总实际收录了截至 2026 年 11 月 21 日能够回查的资料，其中包含更早的实验记录。</p>
+<h2 id="二、逐步执行"><a href="#二、逐步执行" class="headerlink" title="二、逐步执行"></a>二、逐步执行</h2><h3 id="1-接续前一天的资料"><a href="#1-接续前一天的资料" class="headerlink" title="1. 接续前一天的资料"></a>1. 接续前一天的资料</h3><p><strong>定义：</strong> 将已有材料登记为可查找、可追溯的输入，明确每份材料的内容、版本和状态。</p>
+<p><strong>目标：</strong> 确定今天已经拥有什么，以及哪些问题仍需要补充证据。</p>
+<p><strong>指令：</strong></p>
+<blockquote>
+<p>读取前一天的任务清单、文献笔记、实验报告和图表目录。按“材料名称、位置、更新时间、回答的问题、完成状态”建立资料清单。将当天新交付追加到清单中。任务状态结合最终答复、交付文件及核验记录确认。</p>
+</blockquote>
+<p><strong>产出：</strong> 资料清单，以及与具体问题对应的缺项列表。个人路径和内部任务标识保存在本地来源台账中。</p>
+<h3 id="2-确定当天交付及完成条件"><a href="#2-确定当天交付及完成条件" class="headerlink" title="2. 确定当天交付及完成条件"></a>2. 确定当天交付及完成条件</h3><p><strong>定义：</strong> 将“完成调研”拆成能够单独阅读和验收的成果。</p>
+<p><strong>目标：</strong> 让每条工作线都对应明确的问题、文件和交付时间。</p>
+<p><strong>指令：</strong></p>
+<blockquote>
+<p>根据今日清单，列出每项成果的名称、核心问题、输入资料、输出格式和完成条件。分别安排机制与构效关系、文献网络、已跑实验结果三条整理线，并设置现有图表清单。确定开始汇编和完成验收的时间。</p>
+</blockquote>
+<p><strong>产出：</strong> 当日交付表。</p>
+<table>
+<thead>
+<tr>
+<th>成果</th>
+<th>回答的问题</th>
+<th>完成条件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>机制与构效关系</td>
+<td>研究对象怎样发挥功能，哪些结构变化与功能有关？</td>
+<td>核心结论对应原始研究及具体证据</td>
+</tr>
+<tr>
+<td>文献网络</td>
+<td>哪些研究反复出现，关键分歧在哪里？</td>
+<td>样本范围、引用关系和分歧来源清楚</td>
+</tr>
+<tr>
+<td>已跑实验结果</td>
+<td>已完成什么，结果支持什么判断？</td>
+<td>条件、对照、数值、图表和适用范围齐全</td>
+</tr>
+<tr>
+<td>现有图表清单</td>
+<td>哪些图表可以支撑后续写作？</td>
+<td>编号、问题、版本和源文件对应</td>
+</tr>
+</tbody></table>
+<h3 id="3-整理机制与构效关系"><a href="#3-整理机制与构效关系" class="headerlink" title="3. 整理机制与构效关系"></a>3. 整理机制与构效关系</h3><p><strong>定义：</strong> 沿研究问题组织原始文献中的结构、作用和功能证据。</p>
+<p><strong>目标：</strong> 建立“结构变化—分子作用—功能测量”的联系，为解释实验结果提供背景。</p>
+<p><strong>指令：</strong></p>
+<blockquote>
+<p>从研究者确认的文献库和阅读清单开始。依据原始论文及精读资料，按研究对象整理机制、结构与功能联系、核心结论和实验条件。每个关键判断附论文题名超链接，并记录对应图表或段落。将原论文结论与本次综合分析分别表述。</p>
+</blockquote>
+<p><strong>产出：</strong> 按研究对象组织的机制稿。本次对应 Cas9、Calcineurin 与 TDP-43–RNA 三个体系。</p>
+<h3 id="4-建立文献网络"><a href="#4-建立文献网络" class="headerlink" title="4. 建立文献网络"></a>4. 建立文献网络</h3><p><strong>定义：</strong> 将文献之间的引用关系和研究结论组织成可以检索、比较的网络。</p>
+<p><strong>目标：</strong> 找到共同基础、反复出现的研究，以及需要保留条件差异的争议。</p>
+<p><strong>指令：</strong></p>
+<blockquote>
+<p>在确认的文献集合内核对题名、作者和 DOI。提取参考文献，统一 DOI 格式，并按“引用论文—被引论文”去重。分别统计论文在当前样本中的被引来源篇数、作者在当前样本中的署名情况。根据原文比较共同结论和分歧，记录实验对象、方法与条件差异。结合问题相关性确定关键资料。</p>
+</blockquote>
+<p><strong>产出：</strong> 文献目录、引用关系表、样本内频次统计和分歧对照。引用频次描述本次样本中的连接程度，关键资料的选择同时考虑其对研究问题的直接贡献。</p>
+<h3 id="5-整理已跑实验结果"><a href="#5-整理已跑实验结果" class="headerlink" title="5. 整理已跑实验结果"></a>5. 整理已跑实验结果</h3><p><strong>定义：</strong> 从已有报告、日志、数值文件和图件中，提取能够回查的实验条件与结果。</p>
+<p><strong>目标：</strong> 说明已经完成的工作、相对对照的变化，以及结论成立的具体条件。</p>
+<p><strong>指令：</strong></p>
+<blockquote>
+<p>检索指定项目和存储位置中的已有实验交付。每组实验按“问题、数据与样本、方法与对照、评价指标、关键数值、图表、结论及适用条件”整理。回查 CSV、JSON 或日志中的数字，记录训练与评价样本、结构和姿态信息的使用方式、结果选择规则及实现版本。将已有结果和计划实验分别归类。</p>
+</blockquote>
+<p><strong>产出：</strong> 实验结果稿及数值来源索引。</p>
+<p>例如，使用结构真值选取最佳候选时，选择条件应与误差数值一起呈现；图像相关系数描述图像一致性，坐标误差描述结构准确性。两类指标共同构成评价依据。</p>
+<h3 id="6-建立现有图表清单"><a href="#6-建立现有图表清单" class="headerlink" title="6. 建立现有图表清单"></a>6. 建立现有图表清单</h3><p><strong>定义：</strong> 给每组图表建立编号，并连接其问题、数据、版本和正文位置。</p>
+<p><strong>目标：</strong> 让后续写作能够快速找到可用证据，明确需要补充的图表。</p>
+<p><strong>指令：</strong></p>
+<blockquote>
+<p>收集上述三条整理线涉及的图件和数值表。每组图件使用一个编号，同一图的 PNG、PDF、SVG 共用编号。登记标题、回答的问题、对应结论、源数据、生成文件、版本及验收状态。检查图中文字、单位、样本范围和图注是否与数值文件一致。</p>
+</blockquote>
+<p><strong>产出：</strong> 图表清单。本文案例中，F01–F13 对应 13 组图件，T01–T02 对应 2 组数值表。</p>
+<h3 id="7-固定当日交付范围"><a href="#7-固定当日交付范围" class="headerlink" title="7. 固定当日交付范围"></a>7. 固定当日交付范围</h3><p><strong>定义：</strong> 在约定的汇编时间，固定本版实际采用的材料及其版本。</p>
+<p><strong>目标：</strong> 使交付内容能够复现，并让持续进行的工作进入后续版本。</p>
+<p><strong>指令：</strong></p>
+<blockquote>
+<p>到达汇编时间后，检查各条工作线的最终答复、实际交付和核验记录。以当前可回查的证据形成当日稿，登记收录范围、资料截止时间和来源版本。将继续进行的事项列入下一版清单。各工作线保留各自文件，汇总使用独立目录。</p>
+</blockquote>
+<p><strong>产出：</strong> 当日版本的来源台账和后续增补清单。材料仍在整理时，可先依据已有证据形成可独立阅读的章节。</p>
+<h3 id="8-汇编-Markdown-与-PDF"><a href="#8-汇编-Markdown-与-PDF" class="headerlink" title="8. 汇编 Markdown 与 PDF"></a>8. 汇编 Markdown 与 PDF</h3><p><strong>定义：</strong> 把主题稿和图表清单整理为结构一致、可以完整阅读的文档。</p>
+<p><strong>目标：</strong> 保留博客版的证据和内容，同时获得方便编辑、阅读和传递的文件。</p>
+<p><strong>指令：</strong></p>
+<blockquote>
+<p>按“机制与构效关系、文献网络、已跑实验结果、现有图表清单”的顺序汇编。统一章节层级、表格、图号、单位和引用格式。各部分保留来源与适用条件，文献使用题名超链接。保存 Markdown，并据此生成 PDF；检查导出后的正文、表格、图件和链接。</p>
+</blockquote>
+<p><strong>产出：</strong> 内容对应的 Markdown 与 PDF。文件名中的日期表示该版资料汇总日期，交付记录另存实际生成时间。</p>
+<h3 id="9-核验内容与呈现"><a href="#9-核验内容与呈现" class="headerlink" title="9. 核验内容与呈现"></a>9. 核验内容与呈现</h3><p><strong>定义：</strong> 分别核对科学内容、来源关联和文件显示效果。</p>
+<p><strong>目标：</strong> 让读者看到的数字、图表和结论与来源一致。</p>
+<p><strong>指令：</strong></p>
+<blockquote>
+<p>逐项核对关键数字、单位、样本范围、对照和选择条件。检查每个结论对应的来源及图表。将 PDF 每页渲染后检查表格换页、图片清晰度、文字边界和链接。核对 Markdown 与 PDF 的章节及关键数值，保存验收记录和文件校验值。</p>
+</blockquote>
+<p><strong>产出：</strong> 内容核验记录、逐页检查记录和文件清单。文件校验值用于确认交付副本的一致性，科学判断由原始证据核查支持。</p>
+<h3 id="10-发布并接续下一天"><a href="#10-发布并接续下一天" class="headerlink" title="10. 发布并接续下一天"></a>10. 发布并接续下一天</h3><p><strong>定义：</strong> 将通过核验的版本发布到指定位置，并保留后续修订的入口。</p>
+<p><strong>目标：</strong> 让当天成果可访问、可追溯，次日成果能够与之比较。</p>
+<p><strong>指令：</strong></p>
+<blockquote>
+<p>逐项确认公开正文、图表和附件的范围。清理个人信息、内部路径和任务标识，保留影响科学解释的条件。备份本次源文件，生成并部署博客，核验正式网址、正文和图片。保存发布记录。次日收齐新增交付后，与本版逐项比较，形成独立 v2，保留 v1 的内容、链接和发布日期。</p>
+</blockquote>
+<p><strong>产出：</strong> 已核验的博客链接、交付记录，以及下一版的输入清单。PDF 和原始附件分别记录本地交付位置与公开范围。</p>
+<h2 id="三、本次文件的实际组成"><a href="#三、本次文件的实际组成" class="headerlink" title="三、本次文件的实际组成"></a>三、本次文件的实际组成</h2><p>博客版《20261121-文献与实验结果汇总.pdf》由三篇主题文章和现有图表清单汇编，采用以下顺序：</p>
+<table>
+<thead>
+<tr>
+<th>顺序</th>
+<th>内容</th>
+<th>本次范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>机制与构效关系</td>
+<td>7 项原始研究的阅读资料，覆盖 3 个体系</td>
+</tr>
+<tr>
+<td>2</td>
+<td>文献网络</td>
+<td>117 篇 DOI 文献，其中 113 篇提供参考文献</td>
+</tr>
+<tr>
+<td>3</td>
+<td>已跑实验结果</td>
+<td>7 组已有实验交付</td>
+</tr>
+<tr>
+<td>4</td>
+<td>现有图表清单</td>
+<td>13 组图件、2 组数值表</td>
+</tr>
+</tbody></table>
+<p>文献网络沿用已有专题交付；机制稿和实验稿依据可回查的阅读资料、报告与数值文件另行汇总。各部分的来源和评价条件随正文保留。</p>
+<p>本地博客版 PDF 共 19 页，交付记录时间为 2026 年 11 月 21 日 23:40；汇总博客于 23:47 完成线上核验。此前设置的 20:00 是三篇主题博客的计划交付截止时间，实际完成情况以交付记录为准。</p>
+<h2 id="四、第二天如何继续"><a href="#四、第二天如何继续" class="headerlink" title="四、第二天如何继续"></a>四、第二天如何继续</h2><p>次日先接续本版来源台账，再检查新增文献、完成的实验和修订图件。每项更新按“原结论、新证据、变化原因、影响的章节或图表”登记。</p>
+<p>v2 的增量可分为三类：新增证据、数值或来源修正、结论范围调整。由这些变化确定需要改写的段落，并将新版本与旧版本分别发布。</p>
+<p>当天汇总由此成为下一天的起始材料，也成为论文提纲、论点与图表安排的证据入口。</p>
+<h2 id="来源"><a href="#来源" class="headerlink" title="来源"></a>来源</h2><ul>
+<li><a href="https://niuyihao.github.io/2026/11/21/today-delivery-summary-v1/">《今日交付汇总 v1》</a></li>
+<li><a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">《Cas9、Calcineurin与TDP-43–RNA：机制、构效关系与核心结论》</a></li>
+<li><a href="https://niuyihao.github.io/2026/11/21/literature-network-and-key-evidence/">《文献网络：反复引用的研究、机制分歧与关键资料》</a></li>
+<li><a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">《已跑实验Result整理》</a></li>
+</ul>
+<p>流程依据包括本次任务要求、交付协议、来源台账、PDF 核验记录和发布记录。</p>
+
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/%E7%A7%91%E7%A0%94/">科研</a>
+        </span>
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/AI%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97/">AI使用心得</a>
+        </span>
+      
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+        <a href="/2026/11/22/running-polymer-chain-simulations/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
+          跑高分子链模拟
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/11/22/xiamen-winter-trip-2027/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          寒假厦门五天四晚旅行计划
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script defer src="/js/page-views.js" data-site-url="https://niuyihao.github.io"></script>
+
+
+  <!-- copyright -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">主题许可 CC BY-NC-SA 4.0</a>
+    <span>© 2026 我的博客</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">主题作者 xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

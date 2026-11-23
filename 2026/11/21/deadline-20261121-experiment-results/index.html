@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+
+
+<title>已跑实验Result整理 | 我的博客</title>
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/nprogress/nprogress.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/rss2.xml" title="我的博客" type="application/rss+xml">
+</head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="我的博客" />
+          我的博客
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        已跑实验Result整理
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/archives/">文章</a>
+        
+          <a class="hidden sm:flex" href="/category/">分类</a>
+        
+          <a class="hidden sm:flex" href="/tag/">标签</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="RSS 订阅" href="/rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <button type="button" class="w-5 h-5" title="切换明暗主题" aria-label="切换明暗主题" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </button>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <button type="button" class="w-5 h-5" aria-label="打开菜单" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </button>
+        <button type="button" class="w-5 h-5 hidden" aria-label="关闭菜单" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/95 dark:bg-zinc-900/95 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/archives/" class="flex h-12 sm:h-auto items-center">文章</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/category/" class="flex h-12 sm:h-auto items-center">分类</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/tag/" class="flex h-12 sm:h-auto items-center">标签</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        已跑实验Result整理
+      </h1>
+      <div>
+        <section class="flex flex-wrap items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2026-11-21</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>9 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>2.6k words</span>
+          </span>
+          
+            <span class="inline-flex items-center gap-3 whitespace-nowrap">
+              <span class="text-gray-400" aria-hidden="true">·</span>
+              <span class="inline-flex items-center gap-1" aria-live="polite">
+                <iconify-icon width="18" icon="mdi:eye-outline" aria-hidden="true"></iconify-icon>
+                <span>阅读量：<span id="page-views-status">加载中…</span><span id="busuanzi_container_page_pv" style="display:none"><span id="busuanzi_value_page_pv"></span> 次</span></span>
+              </span>
+            </span>
+          
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <h2 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h2><p>本篇整理截至 2026 年 11 月 21 日已有报告及数值文件中的七组实验，覆盖 Cas9、Calcineurin、TDP-43、FUS 与 1AKE。资料来自重建与柔性拟合项目的最终报告、逐样本评分和核验记录。</p>
+<p>CC 表示图像 Pearson 相关系数；RMSD 表示按各实验规定原子集合对齐后的坐标误差；dRMSD 表示残基对距离误差。每组实验保留自己的成像条件、结构先验、样本划分和评价对象。</p>
+<h2 id="Results"><a href="#Results" class="headerlink" title="Results"></a>Results</h2><h3 id="1-标准模拟基准：Cas9-的运动幅度收缩"><a href="#1-标准模拟基准：Cas9-的运动幅度收缩" class="headerlink" title="1. 标准模拟基准：Cas9 的运动幅度收缩"></a>1. 标准模拟基准：Cas9 的运动幅度收缩</h3><p>1AKE 与 Cas9 基准均包含 50 个结构状态、50,000 张投影，训练 20 epochs，共 15,620 steps。1AKE 使用官方含噪模拟图像，Cas9 使用干净全原子投影；两组均采用已知姿态，评分覆盖全部训练输入。</p>
+<table>
+<thead>
+<tr>
+<th>体系</th>
+<th align="right">平均 RMSD（Å）</th>
+<th align="right">中位数（Å）</th>
+<th align="right">P90（Å）</th>
+<th align="right">固定参考平均 RMSD（Å）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1AKE</td>
+<td align="right">1.0764</td>
+<td align="right">1.0036</td>
+<td align="right">1.7514</td>
+<td align="right">3.5257</td>
+</tr>
+<tr>
+<td>Cas9</td>
+<td align="right">14.0885</td>
+<td align="right">11.9396</td>
+<td align="right">26.1618</td>
+<td align="right">14.0459</td>
+</tr>
+</tbody></table>
+<p>Cas9 的 D435–E945 真值范围为 <strong>18.0712–74.2351 Å</strong>，重建后各状态距离中位数范围为 <strong>18.9538–23.2128 Å</strong>。这一结果显示大幅域间运动发生明显收缩，平均结构误差与固定参考接近。1AKE 控制组则显示该流程在另一受控体系中具有恢复结构的能力。</p>
+<p>信息源：<a href="/files/deadline-20261121-results/standard-benchmark.json">标准模拟基准数值摘要</a>。</p>
+<h3 id="2-Cas9-多参考：参考覆盖扩大后的结构改善"><a href="#2-Cas9-多参考：参考覆盖扩大后的结构改善" class="headerlink" title="2. Cas9 多参考：参考覆盖扩大后的结构改善"></a>2. Cas9 多参考：参考覆盖扩大后的结构改善</h3><p>模拟数据包含 400 个构象、1,600 张已知姿态干净投影。CryoDyna 与 CryoSTAR 分别从 22 个参考结构出发，共完成 44 次训练；每次 24,000 steps，使用单一随机种子。</p>
+<p>下表以结构真值评分，为每个构象选取 RMSD 最小的重建结果，并与同一参考池中 RMSD 最小的固定参考比较。数值描述真值辅助选择条件下的性能。</p>
+<table>
+<thead>
+<tr>
+<th align="right">参考数</th>
+<th align="right">CryoDyna RMSD（Å）</th>
+<th align="right">CryoSTAR RMSD（Å）</th>
+<th align="right">固定参考 RMSD（Å）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">2</td>
+<td align="right">6.9859</td>
+<td align="right">6.5543</td>
+<td align="right">8.9233</td>
+</tr>
+<tr>
+<td align="right">4</td>
+<td align="right">6.0247</td>
+<td align="right">5.6715</td>
+<td align="right">7.6584</td>
+</tr>
+<tr>
+<td align="right">8</td>
+<td align="right">5.1198</td>
+<td align="right">5.3546</td>
+<td align="right">6.8395</td>
+</tr>
+<tr>
+<td align="right">16</td>
+<td align="right">5.0896</td>
+<td align="right">5.1980</td>
+<td align="right">6.6869</td>
+</tr>
+<tr>
+<td align="right">22</td>
+<td align="right">5.0872</td>
+<td align="right">4.9863</td>
+<td align="right">6.6677</td>
+</tr>
+</tbody></table>
+<p>22 个参考下，两种方法相对固定参考的平均 RMSD 分别降低 <strong>23.70% 和 25.22%</strong>。CryoDyna 在 8 个参考后收益趋缓，CryoSTAR 在 8–22 个参考之间继续获得较小幅度改善。</p>
+<p><img src="/images/deadline-20261121-results/reference-count.png" alt="Cas9 参考数量与重建指标"></p>
+<p>图中两类选择分别使用结构 RMSD 和特征距离误差。按距离误差选取时，三对距离 MAE 均在 3 Å 以内，对应平均 RMSD 仍为 8.0054&#x2F;8.0330 Å；按 RMSD 选取时，D435–E945 MAE 为 3.6723&#x2F;5.4228 Å。<strong>局部距离恢复与整体结构恢复对应不同的最优组合。</strong></p>
+<p>单次完整重建中，全局最优的平均 RMSD 为 8.3188&#x2F;7.9498 Å。逐构象真值选择得到约 5 Å 的结果，体现了候选集合的潜力及选择条件的影响。原交付保留科学验收标记 <code>REVIEW REQUIRED</code>。</p>
+<p>信息源：<a href="/files/deadline-20261121-results/multiref-stage-metrics.csv">多参考各阶段完整指标</a>。</p>
+<h3 id="3-Cas9-实验图像：从模板匹配最优起点继续训练"><a href="#3-Cas9-实验图像：从模板匹配最优起点继续训练" class="headerlink" title="3. Cas9 实验图像：从模板匹配最优起点继续训练"></a>3. Cas9 实验图像：从模板匹配最优起点继续训练</h3><p>本轮覆盖 1,817 个颗粒，两种方法各包含 20 个模板分组、每组训练 24,000 steps。全部颗粒唯一归入各自的模板组。下表统一采用最后一个检查点，并保留模板匹配（TM）起点。</p>
+<table>
+<thead>
+<tr>
+<th>样本范围</th>
+<th align="right">数量</th>
+<th align="right">TM 平均 CC</th>
+<th align="right">CryoDyna 最终 CC</th>
+<th align="right">CryoSTAR 最终 CC</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>全部颗粒</td>
+<td align="right">1,817</td>
+<td align="right">0.335670</td>
+<td align="right">0.389779</td>
+<td align="right">0.469880</td>
+</tr>
+<tr>
+<td>共同子集</td>
+<td align="right">82</td>
+<td align="right">0.352786</td>
+<td align="right">0.405191</td>
+<td align="right">0.488226</td>
+</tr>
+<tr>
+<td>Track6</td>
+<td align="right">18</td>
+<td align="right">0.382146</td>
+<td align="right">0.440532</td>
+<td align="right">0.524794</td>
+</tr>
+</tbody></table>
+<p>全量平均 CC 分别增加 <strong>0.054109 和 0.134210</strong>；CryoDyna 的 1,817 个颗粒、CryoSTAR 的 1,814 个颗粒高于各自 TM 起点。该结果直接描述训练图像一致性的改善，三维精度由结构误差或独立结构证据评价。</p>
+<p><img src="/images/deadline-20261121-results/tm-final-cc.png" alt="模板匹配起点与续训最终相关系数"></p>
+<p>图中散点对应颗粒，黑色菱形为均值，横线为四分位区间；apo、4ZT0 和 Phenix 行沿用历史对照，TM start 行为本轮续训结果。两面板分别展示共同 82 颗粒及 Track6 的 18 颗粒。</p>
+<p><img src="/images/deadline-20261121-results/tm-learning-curves.png" alt="两种方法的学习曲线"></p>
+<p>两条全量平均学习曲线分别有 13 和 6 个相邻检查点下降。最终分数、组平均最优检查点和逐颗粒最优检查点采用不同的选择规则，本文主表统一使用最终分数。</p>
+<p>信息源：<a href="/files/deadline-20261121-results/tm-per-particle-cc.csv">逐颗粒 CC</a> · <a href="/files/deadline-20261121-results/tm-summary-cc.csv">汇总 CC</a>。</p>
+<h3 id="4-TDP-43：已知结构初始化的朝向恢复"><a href="#4-TDP-43：已知结构初始化的朝向恢复" class="headerlink" title="4. TDP-43：已知结构初始化的朝向恢复"></a>4. TDP-43：已知结构初始化的朝向恢复</h3><p>输入为固定结构旋转生成的模拟图像，每种条件各 150 帧。CryoSPARC 以同一正确结构生成的密度初始化，真值姿态独立保存用于评分，使用相对旋转角评价。</p>
+<table>
+<thead>
+<tr>
+<th>条件</th>
+<th align="right">最终误差中位数</th>
+<th align="right">P90</th>
+<th align="right">最大误差</th>
+<th align="right">误差小于 5°</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>清晰图像</td>
+<td align="right">0.541°</td>
+<td align="right">0.966°</td>
+<td align="right">2.919°</td>
+<td align="right">150&#x2F;150</td>
+</tr>
+<tr>
+<td>SNR &#x3D; 1</td>
+<td align="right">1.515°</td>
+<td align="right">2.524°</td>
+<td align="right">3.971°</td>
+<td align="right">150&#x2F;150</td>
+</tr>
+</tbody></table>
+<p>该结果支持固定形状、所测转动路径、正确参考初始化及指定噪声条件下的朝向恢复。参考密度提供结构先验，评价对象为朝向误差。</p>
+<p>信息源：<a href="/files/deadline-20261121-results/tdp-pose-errors.csv">逐帧朝向误差</a>。</p>
+<h3 id="5-几何柔性拟合：1AKE-与-FUS-的结构对照"><a href="#5-几何柔性拟合：1AKE-与-FUS-的结构对照" class="headerlink" title="5. 几何柔性拟合：1AKE 与 FUS 的结构对照"></a>5. 几何柔性拟合：1AKE 与 FUS 的结构对照</h3><p>主方法使用模板构象空间初始化与几何正则残基形变。1AKE 采用 5 个锚点模板，评价其余 45 个插值构象；FUS 使用 10 个结构组，每组 108 张图像拟合、108 张图像在独立姿态配准后评价。</p>
+<table>
+<thead>
+<tr>
+<th>测试</th>
+<th>CC：模板 → 柔性</th>
+<th>RMSD：模板 → 柔性（Å）</th>
+<th>dRMSD：模板 → 柔性（Å）</th>
+<th>三项共同改善</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1AKE，45 个留出构象</td>
+<td>0.998563 → 1.000000</td>
+<td>0.490 → 0.110</td>
+<td>0.452 → 0.086</td>
+<td>45&#x2F;45</td>
+</tr>
+<tr>
+<td>FUS，10 个结构组</td>
+<td>0.678597 → 0.680315</td>
+<td>15.212 → 14.637</td>
+<td>12.276 → 11.821</td>
+<td>9&#x2F;10</td>
+</tr>
+</tbody></table>
+<p>FUS 的第 5 组 CC 从 0.69269 增至 0.69545，RMSD 从 15.871 增至 16.417 Å。这一实例呈现了图像拟合改善与结构误差增大的并存。FUS 数值以估计的 3 Å&#x2F;原始像素和高斯成像近似为条件；1AKE 插值构象之间具有相关性。</p>
+<p><img src="/images/deadline-20261121-results/flexible-comparison.png" alt="几何柔性拟合与模板比较"></p>
+<p>信息源：<a href="/files/deadline-20261121-results/flexible-source-data.csv">柔性拟合源数据</a>。</p>
+<h3 id="6-四体系受控扩展：噪声与姿态条件"><a href="#6-四体系受控扩展：噪声与姿态条件" class="headerlink" title="6. 四体系受控扩展：噪声与姿态条件"></a>6. 四体系受控扩展：噪声与姿态条件</h3><p>扩展实验包含 1AKE、FUS、Calcineurin 和 Cas9，共 72 个条件、216 组方法输出、864 张独特噪声图像。每体系使用 3 次独立结构形变，分别施加 SNR 0.1、1、10；每组包含 8 个训练视角、4 个验证视角和 12 个最终测试视角。三种方法为刚性模板、图低频参考和分阶段柔性拟合。</p>
+<p>下表为分阶段柔性方法的平均 RMSD；各均值汇总同一体系、同一姿态条件下的 9 个条件。</p>
+<table>
+<thead>
+<tr>
+<th>体系</th>
+<th align="right">刚性模板（Å）</th>
+<th align="right">已知姿态柔性（Å）</th>
+<th align="right">未知姿态柔性（Å）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1AKE</td>
+<td align="right">1.9215</td>
+<td align="right">0.9998</td>
+<td align="right">1.1390</td>
+</tr>
+<tr>
+<td>FUS</td>
+<td align="right">2.9562</td>
+<td align="right">1.9215</td>
+<td align="right">2.2916</td>
+</tr>
+<tr>
+<td>Calcineurin</td>
+<td align="right">3.4124</td>
+<td align="right">2.6403</td>
+<td align="right">2.8004</td>
+</tr>
+<tr>
+<td>Cas9</td>
+<td align="right">2.4449</td>
+<td align="right">1.8107</td>
+<td align="right">1.9853</td>
+</tr>
+</tbody></table>
+<p>柔性方法相对刚性模板在 <strong>65&#x2F;72</strong> 条件下同时改善 RMSD、dRMSD 与测试 CC，相对图低频参考为 <strong>60&#x2F;72</strong>。未知姿态下的平均 RMSD 高于已知姿态条件，体现姿态估计对结构拟合的影响。</p>
+<p>这里的结构真值由受控形变生成；Cas9 与 Calcineurin 的起点来自历史拟合结构。测试 CC 使用评价器提供的模拟测试姿态，因此其含义是指定真实姿态条件下的留出图像一致性。独立形变共 12 次，噪声和姿态条件在这些形变上重复组合。</p>
+<p>信息源：<a href="/files/deadline-20261121-results/four-system-summary.csv">四体系条件汇总</a>。</p>
+<h3 id="7-FUS-全原子开发对照：100-ps-的四臂实验"><a href="#7-FUS-全原子开发对照：100-ps-的四臂实验" class="headerlink" title="7. FUS 全原子开发对照：100 ps 的四臂实验"></a>7. FUS 全原子开发对照：100 ps 的四臂实验</h3><p>两个人工选定开发目标各运行纯 MD、结构约束、纯图像驱动、图像加结构约束四条轨迹，共八次 100,000 步全原子积分；步长 1 fs。物理四臂共享固定候选姿态，各目标采用 108 张拟合图与 108 张评价图。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th align="right">两目标平均 RMSD（Å）</th>
+<th align="right">平均评价 CC</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>纯 MD</td>
+<td align="right">12.8934</td>
+<td align="right">0.674415</td>
+</tr>
+<tr>
+<td>结构约束</td>
+<td align="right">11.8595</td>
+<td align="right">0.678843</td>
+</tr>
+<tr>
+<td>纯图像驱动</td>
+<td align="right">12.6747</td>
+<td align="right">0.674751</td>
+</tr>
+<tr>
+<td>图像＋结构约束</td>
+<td align="right">11.8749</td>
+<td align="right">0.678827</td>
+</tr>
+</tbody></table>
+<p>目标 2 的图像加结构约束结果相对模板，RMSD 由 13.5482 降至 12.0205 Å，评价 CC 由 0.692236 增至 0.693282。目标 1 相应 RMSD 为 11.7293 Å，模板为 11.7223 Å。图像增益随目标变化，当前均值中结构约束单臂与联合臂表现接近。</p>
+<p>这批轨迹使用原中心差分 CMAP 插值，后续跨引擎核验记录了插值差异。本文将其作为该实现版本的 100 ps 开发结果。</p>
+<p>信息源：<a href="/files/deadline-20261121-results/fus-allatom-100ps.csv">全原子开发对照数值</a>。</p>
+<h2 id="Discussion"><a href="#Discussion" class="headerlink" title="Discussion"></a>Discussion</h2><p>**参考覆盖决定候选空间的质量。**Cas9 单参考标准基准呈现运动收缩；多参考实验在真值辅助选择下将平均 RMSD 降到约 5 Å。两组数据、成像与训练设置各有差异，组合起来提供了参考依赖和候选选择的研究线索。</p>
+<p>**图像一致性和三维准确性需要分别量化。**最新 Cas9 实验图像拟合取得稳定的平均 CC 增益，FUS 则提供了 CC 上升同时 RMSD 增大的具体实例。模拟数据中的坐标真值、留出图像和功能相关距离，分别回答不同层面的恢复问题。</p>
+<p>**姿态与形变共同影响拟合。**TDP-43 已知参考实验给出了朝向恢复的定量结果；四体系开发对照显示未知姿态条件带来更高的平均结构误差。两类实验分别测量固定形状的朝向恢复与形状—姿态联合估计。</p>
+<p>**物理积分的增益具有条件依赖。**FUS 100 ps 开发对照中，纯图像项和联合约束项的收益随目标变化；结构约束、图像项和力场实现的贡献，需要按对应实验臂解释。</p>
+<p>本文覆盖以上七组已有交付。逐样本表格及阶段指标随文提供，文献背景见<a href="/2026/11/21/deadline-20261121-three-system-review/">三体系机制与构效关系</a>，引用关系见<a href="/2026/11/21/literature-network-and-key-evidence/">文献网络与关键资料</a>。</p>
+
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/%E7%A7%91%E7%A0%94/">科研</a>
+        </span>
+      
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+        <a href="/2026/11/21/today-delivery-summary-v1/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
+          「论文」Day1 文献与实验结果汇总
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/11/21/deadline-20261121-three-system-review/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          Cas9、Calcineurin与TDP-43–RNA：机制、构效关系与核心结论
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script defer src="/js/page-views.js" data-site-url="https://niuyihao.github.io"></script>
+
+
+  <!-- copyright -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">主题许可 CC BY-NC-SA 4.0</a>
+    <span>© 2026 我的博客</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">主题作者 xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

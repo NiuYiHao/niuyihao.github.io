@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+
+
+<title>归档 | 我的博客</title>
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/nprogress/nprogress.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/rss2.xml" title="我的博客" type="application/rss+xml">
+</head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="我的博客" />
+          我的博客
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/archives/">文章</a>
+        
+          <a class="hidden sm:flex" href="/category/">分类</a>
+        
+          <a class="hidden sm:flex" href="/tag/">标签</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="RSS 订阅" href="/rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <button type="button" class="w-5 h-5" title="切换明暗主题" aria-label="切换明暗主题" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </button>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <button type="button" class="w-5 h-5" aria-label="打开菜单" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </button>
+        <button type="button" class="w-5 h-5 hidden" aria-label="关闭菜单" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/95 dark:bg-zinc-900/95 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/archives/" class="flex h-12 sm:h-auto items-center">文章</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/category/" class="flex h-12 sm:h-auto items-center">分类</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/tag/" class="flex h-12 sm:h-auto items-center">标签</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    
+<section  class="px-6 max-w-prose mx-auto gap-12 grid grid-cols-1">
+  <div class="flex flex-col h-48 items-center justify-center">
+    
+      <h1 class="site-title text-4xl leading-relaxed">
+        我的博客
+      </h1>
+      <p class="text-gray-500 mt-2">
+        
+      </p>
+    
+  </div>
+  
+  
+  
+  
+    
+    
+      <div class="relative pointer-events-none" data-timeline-year="2026">
+        <span class="text-9xl opacity-10 absolute -left-11 -top-6 font-bold">2026</span>
+      </div>
+    
+    <div class="timeline-entry" data-article-path="/2026/11/21/deadline-20261121-three-system-review/" data-year="2026">
+    <a class="timeline-article-link" style="--stagger:0" href="/2026/11/21/deadline-20261121-three-system-review/" data-animate>
+      <header>
+        <h2 class="font-bold text-xl">
+          Cas9、Calcineurin与TDP-43–RNA：机制、构效关系与核心结论
+        </h2>
+      </header>
+      <section class="text-gray-400 my-2 text-sm time">
+        <p class="line-clamp-4">
+          11月 21
+          ·
+          20 min
+        </p>
+      </section>
+    </a>
+    
+    </div>
+  
+    
+    
+    <div class="timeline-entry" data-article-path="/2026/11/21/literature-network-and-key-evidence/" data-year="2026">
+    <a class="timeline-article-link" style="--stagger:1" href="/2026/11/21/literature-network-and-key-evidence/" data-animate>
+      <header>
+        <h2 class="font-bold text-xl">
+          文献网络：反复引用的研究、机制分歧与关键资料
+        </h2>
+      </header>
+      <section class="text-gray-400 my-2 text-sm time">
+        <p class="line-clamp-4">
+          11月 21
+          ·
+          11 min
+        </p>
+      </section>
+    </a>
+    
+    </div>
+  
+    
+    
+    <div class="timeline-entry" data-article-path="/2026/11/21/deep-reading-v2/" data-year="2026">
+    <a class="timeline-article-link" style="--stagger:2" href="/2026/11/21/deep-reading-v2/" data-animate>
+      <header>
+        <h2 class="font-bold text-xl">
+          深入阅读v2
+        </h2>
+      </header>
+      <section class="text-gray-400 my-2 text-sm time">
+        <p class="line-clamp-4">
+          11月 21
+          ·
+          15 min
+        </p>
+      </section>
+    </a>
+    
+    </div>
+  
+    
+    
+    <div class="timeline-entry" data-article-path="/2026/11/21/deep-reading-standardized/" data-year="2026">
+    <a class="timeline-article-link" style="--stagger:3" href="/2026/11/21/deep-reading-standardized/" data-animate>
+      <header>
+        <h2 class="font-bold text-xl">
+          深入阅读——规格化
+        </h2>
+      </header>
+      <section class="text-gray-400 my-2 text-sm time">
+        <p class="line-clamp-4">
+          11月 21
+          ·
+          5 min
+        </p>
+      </section>
+    </a>
+    
+    </div>
+  
+    
+    
+    <div class="timeline-entry" data-article-path="/2026/11/21/deep-reading-plan/" data-year="2026">
+    <a class="timeline-article-link" style="--stagger:4" href="/2026/11/21/deep-reading-plan/" data-animate>
+      <header>
+        <h2 class="font-bold text-xl">
+          深入阅读
+        </h2>
+      </header>
+      <section class="text-gray-400 my-2 text-sm time">
+        <p class="line-clamp-4">
+          11月 21
+          ·
+          20 min
+        </p>
+      </section>
+    </a>
+    
+    </div>
+  
+    
+    
+    <div class="timeline-entry" data-article-path="/2026/11/21/deep-reading-literature-and-notes/" data-year="2026">
+    <a class="timeline-article-link" style="--stagger:5" href="/2026/11/21/deep-reading-literature-and-notes/" data-animate>
+      <header>
+        <h2 class="font-bold text-xl">
+          深入阅读：文献精读与资料整理
+        </h2>
+      </header>
+      <section class="text-gray-400 my-2 text-sm time">
+        <p class="line-clamp-4">
+          11月 21
+          ·
+          1 min
+        </p>
+      </section>
+    </a>
+    
+    </div>
+  
+    
+    
+    <div class="timeline-entry" data-article-path="/2026/11/21/defining-a-reading-list/" data-year="2026">
+    <a class="timeline-article-link" style="--stagger:6" href="/2026/11/21/defining-a-reading-list/" data-animate>
+      <header>
+        <h2 class="font-bold text-xl">
+          确定阅读清单
+        </h2>
+      </header>
+      <section class="text-gray-400 my-2 text-sm time">
+        <p class="line-clamp-4">
+          11月 21
+          ·
+          27 min
+        </p>
+      </section>
+    </a>
+    
+    </div>
+  
+    
+    
+    <div class="timeline-entry" data-article-path="/2026/11/21/autumn-semester-plan-2026/" data-year="2026">
+    <a class="timeline-article-link" style="--stagger:7" href="/2026/11/21/autumn-semester-plan-2026/" data-animate>
+      <header>
+        <h2 class="font-bold text-xl">
+          2026秋季学期规划
+        </h2>
+      </header>
+      <section class="text-gray-400 my-2 text-sm time">
+        <p class="line-clamp-4">
+          11月 21
+          ·
+          1 min
+        </p>
+      </section>
+    </a>
+    
+    </div>
+  
+    
+    
+    <div class="timeline-entry" data-article-path="/2026/11/21/paper-and-figure-delivery-plan/" data-year="2026">
+    <a class="timeline-article-link" style="--stagger:8" href="/2026/11/21/paper-and-figure-delivery-plan/" data-animate>
+      <header>
+        <h2 class="font-bold text-xl">
+          「论文」Day0 论文交付计划
+        </h2>
+      </header>
+      <section class="text-gray-400 my-2 text-sm time">
+        <p class="line-clamp-4">
+          11月 21
+          ·
+          1 min
+        </p>
+      </section>
+    </a>
+    
+    </div>
+  
+    
+    
+    <div class="timeline-entry" data-article-path="/2026/11/20/describing-text-editing-tasks-part-3/" data-year="2026">
+    <a class="timeline-article-link" style="--stagger:9" href="/2026/11/20/describing-text-editing-tasks-part-3/" data-animate>
+      <header>
+        <h2 class="font-bold text-xl">
+          如何准确描述文本修改任务——第三弹
+        </h2>
+      </header>
+      <section class="text-gray-400 my-2 text-sm time">
+        <p class="line-clamp-4">
+          11月 20
+          ·
+          2 min
+        </p>
+      </section>
+    </a>
+    
+    </div>
+  
+  
+</section>
+
+<div class="px-6 max-w-prose mx-auto my-8">
+  <nav class="pagination">
+      <a class="page-number" href="/archives/">1</a><a class="page-number" href="/archives/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/archives/page/4/">4</a><a class="page-number" href="/archives/page/5/">5</a><a class="page-number" href="/archives/page/6/">6</a>
+  </nav>
+
+</div>
+
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script defer src="/js/page-views.js" data-site-url="https://niuyihao.github.io"></script>
+
+
+  <!-- copyright -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">主题许可 CC BY-NC-SA 4.0</a>
+    <span>© 2026 我的博客</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">主题作者 xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

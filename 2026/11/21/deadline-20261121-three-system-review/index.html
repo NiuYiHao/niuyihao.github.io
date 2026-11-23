@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+
+
+<title>Cas9、Calcineurin与TDP-43–RNA：机制、构效关系与核心结论 | 我的博客</title>
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/nprogress/nprogress.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/rss2.xml" title="我的博客" type="application/rss+xml">
+</head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="我的博客" />
+          我的博客
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        Cas9、Calcineurin与TDP-43–RNA：机制、构效关系与核心结论
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/archives/">文章</a>
+        
+          <a class="hidden sm:flex" href="/category/">分类</a>
+        
+          <a class="hidden sm:flex" href="/tag/">标签</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="RSS 订阅" href="/rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <button type="button" class="w-5 h-5" title="切换明暗主题" aria-label="切换明暗主题" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </button>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <button type="button" class="w-5 h-5" aria-label="打开菜单" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </button>
+        <button type="button" class="w-5 h-5 hidden" aria-label="关闭菜单" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/95 dark:bg-zinc-900/95 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/archives/" class="flex h-12 sm:h-auto items-center">文章</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/category/" class="flex h-12 sm:h-auto items-center">分类</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/tag/" class="flex h-12 sm:h-auto items-center">标签</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        Cas9、Calcineurin与TDP-43–RNA：机制、构效关系与核心结论
+      </h1>
+      <div>
+        <section class="flex flex-wrap items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2026-11-21</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>20 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>5k words</span>
+          </span>
+          
+            <span class="inline-flex items-center gap-3 whitespace-nowrap">
+              <span class="text-gray-400" aria-hidden="true">·</span>
+              <span class="inline-flex items-center gap-1" aria-live="polite">
+                <iconify-icon width="18" icon="mdi:eye-outline" aria-hidden="true"></iconify-icon>
+                <span>阅读量：<span id="page-views-status">加载中…</span><span id="busuanzi_container_page_pv" style="display:none"><span id="busuanzi_value_page_pv"></span> 次</span></span>
+              </span>
+            </span>
+          
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <h2 id="一、研究范围与共同问题"><a href="#一、研究范围与共同问题" class="headerlink" title="一、研究范围与共同问题"></a>一、研究范围与共同问题</h2><p>Cas9、Calcineurin 与 TDP-43–RNA 分别涉及核酸切割、磷酸酶激活，以及 RNA 识别与细胞内组装。三者共享一个问题：<strong>结合伙伴怎样改变蛋白质的构象与相互作用，并影响功能？</strong></p>
+<p>本次整理纳入每个体系 10 篇文献，共 30 篇，涵盖原始研究和综述。资料覆盖包括 24 篇全文，以及 6 篇摘要、公开摘录或部分补充材料；各篇的图表与补充材料范围列于文末。综合沿“结合事件—结构变化—功能测量”展开。</p>
+<table>
+<thead>
+<tr>
+<th>体系</th>
+<th>主要调控输入</th>
+<th>关键结构变化</th>
+<th>功能输出</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cas9</td>
+<td>向导 RNA、靶 DNA 配对、Mg²⁺与盐条件</td>
+<td>REC 识别叶重排、HNH 对接及核酸通路变化</td>
+<td>DNA 切割效率与特异性</td>
+</tr>
+<tr>
+<td>Calcineurin</td>
+<td>Ca²⁺、钙调蛋白及底物</td>
+<td>调控区折叠、自抑制接触重排</td>
+<td>指定底物的去磷酸化</td>
+</tr>
+<tr>
+<td>TDP-43–RNA</td>
+<td>RNA 序列、长度、修饰及蛋白自缔合</td>
+<td>RRM 界面、局部螺旋与多价组装</td>
+<td>RNA 结合、剪接、核内滞留及病理相关表型</td>
+</tr>
+</tbody></table>
+<h2 id="二、Cas9：核酸识别怎样转化为切割"><a href="#二、Cas9：核酸识别怎样转化为切割" class="headerlink" title="二、Cas9：核酸识别怎样转化为切割"></a>二、Cas9：核酸识别怎样转化为切割</h2><h3 id="1-机制：核酸装载与分步激活"><a href="#1-机制：核酸装载与分步激活" class="headerlink" title="1. 机制：核酸装载与分步激活"></a>1. 机制：核酸装载与分步激活</h3><p>Cas9 由识别叶和核酸酶叶构成；HNH 切割与向导 RNA 配对的靶链，RuvC 切割另一条非靶链。晶体结构与负染电镜显示，RNA 装载伴随两叶重排，形成容纳靶 DNA 的中央通道。apo、RNA 结合态和 RNA–DNA 结合态分别提供了这一过程的结构参照。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.1126/science.1247997">Structures of Cas9 Endonucleases Reveal RNA-Mediated Conformational Activation</a>。</p>
+<p>R-loop 是向导 RNA 与靶 DNA 形成的杂合双链及被置换的非靶链。冷冻电镜捕获了不同配对长度下的中间态：在 16-nt 配对的检查点状态中，HNH 活性位点距靶链待切磷酸约 <strong>31 Å</strong>；18-nt 催化状态中，HNH 转动约 <strong>140°</strong>，进入切割几何。Tyr450 参与早期配对检查；Y450A 在所测 off-target4 上的切割速率为野生型的 <strong>29.1 倍</strong>，对应 on-target 比值为 <strong>1.4</strong>。这些结果将局部核酸识别、结构域激活与错配选择联系起来（Fig. 1、3–4）。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-022-05114-0">R-loop formation and conformational activation mechanisms of Cas9</a>。</p>
+<p>另一组冷冻电镜结构捕获了切割前及切割后的 Cas9 构象，显示 HNH、REC 与核酸协调变化。切割后状态提供产物复合物的结构信息；状态间的排列关系与反应时间顺序分别需要结构和动力学证据。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41594-019-0258-2">Cryo-EM structures reveal coordinated domain motions that govern DNA cleavage by Cas9</a>。</p>
+<h3 id="2-构效关系：REC-感知与-HNH-对接"><a href="#2-构效关系：REC-感知与-HNH-对接" class="headerlink" title="2. 构效关系：REC 感知与 HNH 对接"></a>2. 构效关系：REC 感知与 HNH 对接</h3><p>删除 REC3 后，Cas9 的靶 DNA 亲和力仍接近野生型，切割速率下降约 <strong>1,000 倍</strong>；外加独立 REC3 片段可使切割恢复约 <strong>100 倍</strong>。单分子与体相荧光共振能量转移（FRET）观测同时显示 REC2 开启和 HNH 激活的恢复。删除与回补实验支持 REC3 将核酸识别传递到催化结构域（Fig. 2、Extended Data Fig. 4）。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.1038/nature24268">Enhanced proofreading governs CRISPR–Cas9 targeting accuracy</a>。</p>
+<p>单分子 FRET 提供状态分布和转移速率。D435–E945 标记对报告 REC–RuvC 的相对变化：apo 分布峰约为 <strong>0.99</strong>，加入 sgRNA 后出现约 <strong>0.15、0.92</strong> 两个群体，进一步加入 DNA 后出现约 <strong>0.25、0.98</strong> 两个群体。这些量是荧光能量转移效率；距离解释还涉及染料位置、连接臂及取向。HNH 标记对的波动群体随 Mg²⁺ 条件变化，联系到切割实验的活性差异。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.15252/embj.201796941">Real‐time observation of flexible domain movements in CRISPR–Cas9</a>。</p>
+<p>错配也改变进入特定构象的速度。一项单分子研究中，完全匹配与 4MM 底物对应的开放态至闭合态速率分别为 <strong>0.132 ± 0.006 s⁻¹</strong> 和 <strong>0.027 ± 0.003 s⁻¹</strong>（23°C、100 mM KCl、5 mM MgCl₂；均值 ± SEM，三次重复；Fig. 3）。高保真变体、错配位置、标记位点和缓冲条件共同决定状态定义与动力学结果。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.celrep.2017.12.048">The Conformational Dynamics of Cas9 Governing DNA Cleavage Are Revealed by Single-Molecule FRET</a>。</p>
+<p>盐浓度进一步改变 apo 与 sgRNA 结合态的构象分布；2024 年的研究在 75–700 mM KCl 范围比较状态占比及跃迁，并分别测定 HNH、RuvC 切割活性。因此，跨研究比较 FRET 群体时，盐与配体状态属于解释条件。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jbc.2024.108120">Conformational transitions of Streptococcus pyogenes Cas9 induced by salt and single-guide RNA binding</a>。</p>
+<h3 id="3-核心结论与模拟贡献"><a href="#3-核心结论与模拟贡献" class="headerlink" title="3. 核心结论与模拟贡献"></a>3. 核心结论与模拟贡献</h3><p>分子动力学研究提出，非靶链可以限制 HNH 的运动并促进其接近靶链；增强采样描述了激活路径中的构象和能量障碍；长时间尺度模拟进一步提出 REC2、REC3 与 HNH 的协同变化。这些结果提供原子接触与路径假说，其解释范围对应各自的起始结构、核酸构型和采样方案。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.1021/acscentsci.6b00218">Striking Plasticity of CRISPR-Cas9 and Key Role of Non-target DNA, as Revealed by Molecular Simulations</a>；<a target="_blank" rel="noopener" href="https://doi.org/10.1073/pnas.1707645114">CRISPR-Cas9 conformational activation as elucidated from enhanced molecular simulations</a>；<a target="_blank" rel="noopener" href="https://doi.org/10.1017/S0033583518000070">Key role of the REC lobe during CRISPR–Cas9 activation by ‘sensing’, ‘regulating’, and ‘locking’ the catalytic HNH domain</a>。</p>
+<p><strong>Cas9 的识别与切割通过多域构象调控连接。</strong> R-loop 结构、REC3 删除／回补、FRET 动力学和切割测量共同支持这一联系。域间距离描述几何变化，HNH 对接与功能实验提供催化层面的对应证据。</p>
+<h2 id="三、Calcineurin：结合与折叠怎样解除自抑制"><a href="#三、Calcineurin：结合与折叠怎样解除自抑制" class="headerlink" title="三、Calcineurin：结合与折叠怎样解除自抑制"></a>三、Calcineurin：结合与折叠怎样解除自抑制</h2><h3 id="1-机制：多层自抑制与-Ca²⁺-CaM-调控"><a href="#1-机制：多层自抑制与-Ca²⁺-CaM-调控" class="headerlink" title="1. 机制：多层自抑制与 Ca²⁺&#x2F;CaM 调控"></a>1. 机制：多层自抑制与 Ca²⁺&#x2F;CaM 调控</h3><p>Calcineurin（CaN，钙调神经磷酸酶）由催化亚基 CNA 和调节亚基 CNB 组成，参与 Ca²⁺ 依赖的去磷酸化信号。钙调蛋白（calmodulin，CaM）结合 CNA 调控区，将钙信号连接到酶活性。综述将其组织为静息、Ca²⁺ 负载和 CaM 结合等调控状态。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.1186/s12964-020-00636-4">Calcineurin</a>。</p>
+<p>人 CaNβ&#x2F;CNB1 的结构与生化实验显示，<strong>416–423 位自抑制片段 AIS</strong> 占据 CNA&#x2F;CNB 界面的疏水口袋，该区域参与含 LxVP 基序底物的识别。AIS 与自抑制结构域 AID 协同调控，分别涉及底物停靠和催化区域的可及性；突变、截短及活性实验支持分层激活模型（Fig. 1–4）。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.1038/cr.2016.14">Cooperative autoinhibition and multi-level activation mechanisms of calcineurin</a>。</p>
+<p>CaM 与 CaNβ 400–423 肽段的研究通过热力学及核磁共振（NMR）描述了两个 CaM 结构域的贡献与结合取向。该肽段复合物提供结合界面的证据，完整 CaN 的活性调控由包含其余调控区的实验承接。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.1002/prot.22917">Recognition of β–calcineurin by the domains of calmodulin: Thermodynamic and structural evidence for distinct roles</a>。</p>
+<h3 id="2-构效关系：调控区折叠与远端螺旋"><a href="#2-构效关系：调控区折叠与远端螺旋" class="headerlink" title="2. 构效关系：调控区折叠与远端螺旋"></a>2. 构效关系：调控区折叠与远端螺旋</h3><p>在人 CaNα 的调控区构建体中，CaM 结合增加了约 <strong>50 个残基对应的 α 螺旋信号</strong>；氢氘交换质谱进一步显示调控区受到保护。结合实验将这类折叠变化联系到 AID 与催化区相互作用的改变。这里的螺旋残基数来自整体光谱估计。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jmb.2011.11.008">Structural Basis for Activation of Calcineurin by Calmodulin</a>。</p>
+<p>经典 CaM 结合区之外的远端螺旋也影响酶活。完整 CaNα 的 A451E 替换使磷酸化 RII 肽底物的最大反应速率由 <strong>2.67 ± 0.31</strong> 降至 <strong>1.38 ± 0.17 μmol·min⁻¹·mg⁻¹</strong>；实验采用 30 nM CaN 与 90 nM CaM。原文 Table 1 同时给出小分子底物 pNPP 的动力学结果，两类底物具有各自的识别需求。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.1021/bi400483a">The Distal Helix in the Regulatory Domain of Calcineurin Is Important for Domain Stability and Enzyme Function</a>。</p>
+<p>分子模拟提出远端螺旋可与 CaM 形成第二处接触。针对 CaM 的 K30E、G40D 替换，在 30 nM CaN、90 nM CaM、2 mM CaCl₂、50 mM MnCl₂ 的 pNPP 实验中，使表观 Km 由野生型 <strong>27.6 ± 1.3 mM</strong> 分别升至 <strong>46.0 ± 2.8、35.5 ± 2.2 mM</strong>。模拟提供候选接触，突变与酶动力学支持该表面参与调控；Km 综合反映指定反应条件下的动力学（Fig. 6、Table 1）。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.1021/acs.biochem.9b00626">Calmodulin–Calcineurin Interaction beyond the Calmodulin-Binding Region Contributes to Calcineurin Activation</a>。</p>
+<h3 id="3-核心结论与条件差异"><a href="#3-核心结论与条件差异" class="headerlink" title="3. 核心结论与条件差异"></a>3. 核心结论与条件差异</h3><p><strong>CaN 激活涉及 CaM 结合、调控区折叠及 AIS&#x2F;AID 接触的共同重排。</strong> 结合肽、孤立调控区、完整酶和融合构建体分别解析其中的环节。同工型、温度、金属离子和 pNPP／肽底物条件影响结构与活性的对应关系。</p>
+<p>另外四篇研究的已读摘要分别涉及 Ca²⁺&#x2F;CaM 诱导的二级结构变化、融合构建体的激活结构，以及结合后调控区动态性降低；它们用于补充机制背景，具体实验细节的来源范围列于文末。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.1074/jbc.m708513200">The Secondary Structure of Calcineurin Regulatory Region and Conformational Change Induced by Calcium&#x2F;Calmodulin Binding</a>；<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.cellsig.2013.08.033">Structural basis of calcineurin activation by calmodulin</a>；<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.ijbiomac.2013.12.036">Probing the Ca2+&#x2F;CaM-induced secondary structural and conformational changes in calcineurin</a>；<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.ijbiomac.2015.04.069">Binding of calmodulin changes the calcineurin regulatory region to a less dynamic conformation</a>。</p>
+<h2 id="四、TDP-43–RNA：识别与组装怎样联系功能和病理"><a href="#四、TDP-43–RNA：识别与组装怎样联系功能和病理" class="headerlink" title="四、TDP-43–RNA：识别与组装怎样联系功能和病理"></a>四、TDP-43–RNA：识别与组装怎样联系功能和病理</h2><h3 id="1-机制：串联-RRM-的-RNA-识别"><a href="#1-机制：串联-RRM-的-RNA-识别" class="headerlink" title="1. 机制：串联 RRM 的 RNA 识别"></a>1. 机制：串联 RRM 的 RNA 识别</h3><p>TDP-43 的两个 RNA 识别基序（RNA recognition motif，RRM1&#x2F;RRM2）共同结合富含 UG 的 RNA。在人 TDP-43 <strong>102–269</strong> 残基与 AUG12 RNA（5′-GUGUGAAUGAAU-3′）的 NMR 结构中，RNA 沿 5′→3′方向从 RRM1 延伸至 RRM2，中央 G5 的识别连接两个结构域。等温滴定量热（ITC）在 25°C、pH 6.8 条件下得到野生型解离常数 Kd <strong>26.9 ± 4.3 nM</strong>（代表实验的拟合误差）。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.1038/nsmb.2698">Molecular basis of UG-rich RNA recognition by the human splicing factor TDP-43</a>。</p>
+<p>R151–D247 盐桥位于 RRM 间界面；R151A&#x2F;D247A 双突变使同体系的 Kd 超过 <strong>1,000 nM</strong>，亲和力下降超过 <strong>37 倍</strong>。HeLa 细胞中回补全长蛋白的 CFTR 外显子 9 报告实验进一步显示剪接改变。结构和结合实验采用截短 RBD，功能实验采用全长蛋白，二者共同连接了界面、RNA 识别与特定剪接功能（Fig. 3–4、Table 2）。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.1038/nsmb.2698">Molecular basis of UG-rich RNA recognition by the human splicing factor TDP-43</a>。</p>
+<p>以同一 NMR 结构为起点的分子动力学研究，对 RNA 结合态与 apo 态各运行 20 条、每条 1 μs 的轨迹，描述了 RNA 结合引起的串联 RRM 构象分布和域内稳定性变化。这类轨迹为接触的动态占据提供解释，研究对象限定于串联 RRM。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.bpj.2024.09.031">RNA binding tunes the conformational plasticity and intradomain stability of TDP-43 tandem RNA recognition motifs</a>。</p>
+<h3 id="2-构效关系：蛋白界面与-RNA-多价作用"><a href="#2-构效关系：蛋白界面与-RNA-多价作用" class="headerlink" title="2. 构效关系：蛋白界面与 RNA 多价作用"></a>2. 构效关系：蛋白界面与 RNA 多价作用</h3><p>TDP-43 的 N 端结构域（NTD）能够自缔合。S48E 磷酸化模拟替换削弱 NTD 组装，并提高全长蛋白出现液–液相分离（LLPS）所需的浓度；较高浓度下仍可观察到液滴。细胞报告体系及剪接实验进一步连接组装扰动与功能变化。S48 磷酸化的存在性检测和 S48E 的扰动实验各有对应的证据范围。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.15252/embj.201797452">A single N‐terminal phosphomimic disrupts TDP‐43 polymerization, phase separation, and RNA splicing</a>。</p>
+<p>C 端低复杂度区（CTD）中的短 α 螺旋参与分子间接触。孤立 CTD 研究发现，A321G、Q331K、M337V 等肌萎缩侧索硬化症（ALS）相关替换在所测条件下削弱相分离；后续研究用 G335A、G338A 等设计突变增强局部螺旋倾向，并关联到相分离及细胞剪接读出。蛋白浓度、盐、孵育时间和构建体共同决定凝聚行为。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.str.2016.07.007">ALS Mutations Disrupt Phase Separation Mediated by α-Helical Structure in the TDP-43 Low-Complexity C-Terminal Domain</a>；<a target="_blank" rel="noopener" href="https://doi.org/10.1073/pnas.1912055117">TDP-43 α-helical structure tunes liquid–liquid phase separation and function</a>。</p>
+<p>特异 RNA 结合将这些界面组织成多价网络。含多个 GU 结合位点的 RNA 促进 TDP-43 凝聚并维持液态性质；RRM 亲和力、RNA 位点数量以及 NTD&#x2F;CTD 相互作用共同影响凝聚结果。该研究结合亲和力测量、显微成像和荧光恢复判断组装与流动性。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.15252/embr.202153632">Specific RNA interactions promote TDP-43 multivalent phase separation and maintain liquid properties</a>。</p>
+<h3 id="3-核心结论与病理联系"><a href="#3-核心结论与病理联系" class="headerlink" title="3. 核心结论与病理联系"></a>3. 核心结论与病理联系</h3><p>在细胞中，RNA 结合及 N、C 端相互作用促进大型核糖核蛋白复合物（RNP）的形成。削弱这些相互作用的变体同时减少大分子复合物和核内富集，支持“进入大型 RNP 有助于限制被动胞质外流”的模型。它将 RNA 识别与组装联系到 TDP-43 的核内滞留。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.1371/journal.pbio.3002527">RNA-mediated ribonucleoprotein assembly controls TDP-43 nuclear retention</a>。</p>
+<p>RNA 化学修饰可以改变这一关系。CAG 重复 RNA 上的 N¹-甲基腺苷（m¹A）由 TRMT6–TRMT61A 复合物参与写入、ALKBH3 参与去除；研究所测 CAG7 RNA 的 EMSA 实验中，m¹A 修饰和对应未修饰 RNA 的 Kd 分别约为 <strong>70、146 nM</strong>（Extended Data Fig. 3d–e）。细胞中的定位及相态变化，以及线虫和果蝇的干预结果，支持这一通路参与 CAG 重复扩增相关神经退行性表型。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-023-06701-5">m1A in CAG repeat RNA binds to TDP-43 and induces neurodegeneration</a>。</p>
+<p><strong>TDP-43 的构效关系贯穿碱基识别、RRM 界面、蛋白自缔合和 RNA 介导的组装。</strong> UG RNA 与 m¹A-CAG RNA 对应的结合和细胞结果具有序列、修饰及环境依赖。相分离、核内滞留、剪接和模型动物表型分别构成不同层级的功能证据。</p>
+<p>关于自调控、定位与聚集的综述，以及讨论域间相互作用的 NMR 论文，分别提供背景框架和构象模型线索；本次可用范围为摘要及部分公开材料。信息源：<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41583-021-00431-1">Triad of TDP43 control in neurodegeneration: autoregulation, localization and aggregation</a>；<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.bbrc.2016.03.158">Inter-domain interactions of TDP-43 as decoded by NMR</a>。</p>
+<h2 id="五、跨体系比较：哪些证据连接了结构与功能"><a href="#五、跨体系比较：哪些证据连接了结构与功能" class="headerlink" title="五、跨体系比较：哪些证据连接了结构与功能"></a>五、跨体系比较：哪些证据连接了结构与功能</h2><table>
+<thead>
+<tr>
+<th>比较维度</th>
+<th>Cas9</th>
+<th>Calcineurin</th>
+<th>TDP-43–RNA</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>结构变化</td>
+<td>核酸通路与 HNH&#x2F;REC 相对位置</td>
+<td>调控区折叠、自抑制片段位置</td>
+<td>RRM 界面、局部螺旋与组装接触</td>
+</tr>
+<tr>
+<td>关键干预</td>
+<td>REC3 删除／回补、检查点位点及高保真突变</td>
+<td>AIS&#x2F;AID、远端螺旋和 CaM 表面突变</td>
+<td>RRM&#x2F;NTD&#x2F;CTD 突变、RNA 序列及修饰改变</td>
+</tr>
+<tr>
+<td>功能测量</td>
+<td>靶／错配底物的切割速率</td>
+<td>指定底物的 Km、Vmax</td>
+<td>亲和力、剪接、核质分布及模型表型</td>
+</tr>
+<tr>
+<td>主要比较条件</td>
+<td>配对长度、错配位置、盐与 Mg²⁺</td>
+<td>同工型、构建体、金属离子与底物</td>
+<td>RNA 与蛋白浓度、序列、修饰及细胞环境</td>
+</tr>
+</tbody></table>
+<p>以上文献共同支持：<strong>局部接触和结构域排列通过改变可参与反应的构象或组装状态，联系到分子功能。</strong> Cas9 的 REC3 回补、CaN 调控区突变和 TDP-43 的结合／组装干预，分别提供了这一联系的实验检验。</p>
+<p>结构方法给出特定条件下的构象与接触；单分子轨迹描述群体和转移；分子模拟提出原子尺度路径；功能干预检验结构要素的贡献。对三维重建结果而言，可对应的观测量包括 Cas9 的 HNH 位置、CaN 的调控接触，以及 TDP-43 的 RRM 界面与 RNA 结合表面。结构解释的强度取决于这些量与独立功能测量的对应程度。</p>
+<h2 id="六、文献与阅读范围"><a href="#六、文献与阅读范围" class="headerlink" title="六、文献与阅读范围"></a>六、文献与阅读范围</h2><p>下表列出 30 篇资料及其在本文中的用途。全文与补充材料覆盖完整的有 12 篇；其余 18 篇分别存在正文获取、补充材料覆盖或视频采样范围的限制。视频材料的阅读以抽样画面为限，本文的机制与定量判断取自可回查的正文、图表和实验记录。</p>
+<h3 id="Cas9"><a href="#Cas9" class="headerlink" title="Cas9"></a>Cas9</h3><table>
+<thead>
+<tr>
+<th>文献</th>
+<th>用途</th>
+<th>阅读范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1126/science.1247997">Structures of Cas9 Endonucleases Reveal RNA-Mediated Conformational Activation</a></td>
+<td>RNA 装载与双叶重排</td>
+<td>全文；补图 21 张、补表 2 张及补充方法待读</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1021/acscentsci.6b00218">Striking Plasticity of CRISPR-Cas9 and Key Role of Non-target DNA, as Revealed by Molecular Simulations</a></td>
+<td>非靶链调控 HNH 的模拟</td>
+<td>全文及 SI；6 视频抽样</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1073/pnas.1707645114">CRISPR-Cas9 conformational activation as elucidated from enhanced molecular simulations</a></td>
+<td>增强采样与激活路径</td>
+<td>全文；两份 SI PDF、历史 Movie S2 缺项，现行视频抽样</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/nature24268">Enhanced proofreading governs CRISPR–Cas9 targeting accuracy</a></td>
+<td>REC3 干预及高保真检查</td>
+<td>全文及全部列示 SI</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.celrep.2017.12.048">The Conformational Dynamics of Cas9 Governing DNA Cleavage Are Revealed by Single-Molecule FRET</a></td>
+<td>错配与单分子转移速率</td>
+<td>全文；补图 6 张、补表 5 张及补充方法待读</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.15252/embj.201796941">Real‐time observation of flexible domain movements in CRISPR–Cas9</a></td>
+<td>多位点 FRET 与 Mg²⁺ 条件</td>
+<td>全文及全部列示 SI</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1017/S0033583518000070">Key role of the REC lobe during CRISPR–Cas9 activation by ‘sensing’, ‘regulating’, and ‘locking’ the catalytic HNH domain</a></td>
+<td>REC 协同的长轨迹模拟</td>
+<td>全文及 SI；视频抽样</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41594-019-0258-2">Cryo-EM structures reveal coordinated domain motions that govern DNA cleavage by Cas9</a></td>
+<td>切割前后冷冻电镜状态</td>
+<td>全文及 SI；2 视频抽样</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-022-05114-0">R-loop formation and conformational activation mechanisms of Cas9</a></td>
+<td>R-loop 形成与检查点</td>
+<td>全文、SI 及公开评审；8 视频抽样</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jbc.2024.108120">Conformational transitions of Streptococcus pyogenes Cas9 induced by salt and single-guide RNA binding</a></td>
+<td>盐及 sgRNA 条件依赖</td>
+<td>全文及全部列示 SI</td>
+</tr>
+</tbody></table>
+<h3 id="Calcineurin"><a href="#Calcineurin" class="headerlink" title="Calcineurin"></a>Calcineurin</h3><table>
+<thead>
+<tr>
+<th>文献</th>
+<th>用途</th>
+<th>阅读范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1074/jbc.m708513200">The Secondary Structure of Calcineurin Regulatory Region and Conformational Change Induced by Calcium&#x2F;Calmodulin Binding</a></td>
+<td>Ca²⁺&#x2F;CaM 与调控区背景</td>
+<td>官方摘要</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1002/prot.22917">Recognition of β–calcineurin by the domains of calmodulin: Thermodynamic and structural evidence for distinct roles</a></td>
+<td>CaM 双结构域的结合贡献</td>
+<td>全文；7 页 SI 待读</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jmb.2011.11.008">Structural Basis for Activation of Calcineurin by Calmodulin</a></td>
+<td>结合诱导调控区折叠</td>
+<td>全文；3 页 SI 待读</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.cellsig.2013.08.033">Structural basis of calcineurin activation by calmodulin</a></td>
+<td>融合构建体的激活模型</td>
+<td>摘要与结构条目元数据</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1021/bi400483a">The Distal Helix in the Regulatory Domain of Calcineurin Is Important for Domain Stability and Enzyme Function</a></td>
+<td>远端螺旋与酶动力学</td>
+<td>全文；出版来源列示 SI 为 0 项</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.ijbiomac.2013.12.036">Probing the Ca2+&#x2F;CaM-induced secondary structural and conformational changes in calcineurin</a></td>
+<td>整体二级结构变化背景</td>
+<td>官方摘要</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.ijbiomac.2015.04.069">Binding of calmodulin changes the calcineurin regulatory region to a less dynamic conformation</a></td>
+<td>调控区动态变化背景</td>
+<td>官方摘要</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/cr.2016.14">Cooperative autoinhibition and multi-level activation mechanisms of calcineurin</a></td>
+<td>AIS&#x2F;AID 协同自抑制</td>
+<td>全文及全部列示 SI</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1021/acs.biochem.9b00626">Calmodulin–Calcineurin Interaction beyond the Calmodulin-Binding Region Contributes to Calcineurin Activation</a></td>
+<td>远端螺旋第二接触</td>
+<td>全文及全部列示 SI</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1186/s12964-020-00636-4">Calcineurin</a></td>
+<td>信号与调控机制综述</td>
+<td>综述全文</td>
+</tr>
+</tbody></table>
+<h3 id="TDP-43–RNA"><a href="#TDP-43–RNA" class="headerlink" title="TDP-43–RNA"></a>TDP-43–RNA</h3><table>
+<thead>
+<tr>
+<th>文献</th>
+<th>用途</th>
+<th>阅读范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41583-021-00431-1">Triad of TDP43 control in neurodegeneration: autoregulation, localization and aggregation</a></td>
+<td>自调控、定位和聚集框架</td>
+<td>摘要、图题及题录</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/nsmb.2698">Molecular basis of UG-rich RNA recognition by the human splicing factor TDP-43</a></td>
+<td>UG 识别、界面与剪接</td>
+<td>全文及全部列示 SI</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.bbrc.2016.03.158">Inter-domain interactions of TDP-43 as decoded by NMR</a></td>
+<td>域间相互作用模型线索</td>
+<td>摘要、公开摘录及 3 页 SI</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.str.2016.07.007">ALS Mutations Disrupt Phase Separation Mediated by α-Helical Structure in the TDP-43 Low-Complexity C-Terminal Domain</a></td>
+<td>CTD 螺旋与 ALS 相关突变</td>
+<td>全文；7 张补图、1 视频及补充方法待读</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.15252/embj.201797452">A single N‐terminal phosphomimic disrupts TDP‐43 polymerization, phase separation, and RNA splicing</a></td>
+<td>NTD 自缔合与 S48E</td>
+<td>全文、科学附录及公开评审</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1073/pnas.1912055117">TDP-43 α-helical structure tunes liquid–liquid phase separation and function</a></td>
+<td>CTD 螺旋倾向与功能</td>
+<td>全文及全部列示 SI</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.15252/embr.202153632">Specific RNA interactions promote TDP-43 multivalent phase separation and maintain liquid properties</a></td>
+<td>特异 RNA 与多价凝聚</td>
+<td>全文及 SI；视频抽样</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-023-06701-5">m1A in CAG repeat RNA binds to TDP-43 and induces neurodegeneration</a></td>
+<td>m¹A-CAG 与病理模型</td>
+<td>全文、SI 及更正；8 视频抽样</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.bpj.2024.09.031">RNA binding tunes the conformational plasticity and intradomain stability of TDP-43 tandem RNA recognition motifs</a></td>
+<td>RNA 对串联 RRM 的模拟效应</td>
+<td>全文及全部列示 SI</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1371/journal.pbio.3002527">RNA-mediated ribonucleoprotein assembly controls TDP-43 nuclear retention</a></td>
+<td>RNP 组装与核内滞留</td>
+<td>全文及全部列示 SI</td>
+</tr>
+</tbody></table>
+<p>引用频次与文献之间的连接见<a href="/2026/11/21/literature-network-and-key-evidence/">《文献网络：反复引用的研究、机制分歧与关键资料》</a>。</p>
+
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/%E7%A7%91%E7%A0%94/">科研</a>
+        </span>
+      
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+        <a href="/2026/11/21/deadline-20261121-experiment-results/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
+          已跑实验Result整理
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/11/21/literature-network-and-key-evidence/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          文献网络：反复引用的研究、机制分歧与关键资料
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script defer src="/js/page-views.js" data-site-url="https://niuyihao.github.io"></script>
+
+
+  <!-- copyright -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">主题许可 CC BY-NC-SA 4.0</a>
+    <span>© 2026 我的博客</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">主题作者 xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

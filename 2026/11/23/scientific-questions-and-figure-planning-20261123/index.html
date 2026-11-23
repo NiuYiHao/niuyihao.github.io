@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+
+
+<title>「论文」Day2 科学问题与图版规划 | 我的博客</title>
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/nprogress/nprogress.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/rss2.xml" title="我的博客" type="application/rss+xml">
+</head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="我的博客" />
+          我的博客
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        「论文」Day2 科学问题与图版规划
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/archives/">文章</a>
+        
+          <a class="hidden sm:flex" href="/category/">分类</a>
+        
+          <a class="hidden sm:flex" href="/tag/">标签</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="RSS 订阅" href="/rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <button type="button" class="w-5 h-5" title="切换明暗主题" aria-label="切换明暗主题" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </button>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <button type="button" class="w-5 h-5" aria-label="打开菜单" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </button>
+        <button type="button" class="w-5 h-5 hidden" aria-label="关闭菜单" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/95 dark:bg-zinc-900/95 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/archives/" class="flex h-12 sm:h-auto items-center">文章</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/category/" class="flex h-12 sm:h-auto items-center">分类</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/tag/" class="flex h-12 sm:h-auto items-center">标签</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        「论文」Day2 科学问题与图版规划
+      </h1>
+      <div>
+        <section class="flex flex-wrap items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2026-11-23</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>16 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>4.8k words</span>
+          </span>
+          
+            <span class="inline-flex items-center gap-3 whitespace-nowrap">
+              <span class="text-gray-400" aria-hidden="true">·</span>
+              <span class="inline-flex items-center gap-1" aria-live="polite">
+                <iconify-icon width="18" icon="mdi:eye-outline" aria-hidden="true"></iconify-icon>
+                <span>阅读量：<span id="page-views-status">加载中…</span><span id="busuanzi_container_page_pv" style="display:none"><span id="busuanzi_value_page_pv"></span> 次</span></span>
+              </span>
+            </span>
+          
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <p>图 1–4 合并阅读：<strong>方法验证 → Cas9 → Calcineurin → TDP-43</strong>。图 5 汇总三个体系的研究框架，随后附科学问题与论证文字稿。</p>
+<p><strong>图版均为前瞻性规划。结构、轨迹、阈值、样本与统计数值为示意占位；具体结论随实验及验证结果填写。</strong></p>
+<p><a href="/figure-planning/all-v1/figures-and-text.pdf">下载图版与文字合并 PDF（14 页）</a></p>
+<h2 id="图-1｜带时间戳的连续三维重建及其时空分辨能力"><a href="#图-1｜带时间戳的连续三维重建及其时空分辨能力" class="headerlink" title="图 1｜带时间戳的连续三维重建及其时空分辨能力"></a>图 1｜带时间戳的连续三维重建及其时空分辨能力</h2><p><img src="/figure-planning/all-v1/figure1.svg" alt="图 1 完整规划示意"></p>
+<p><a href="/figure-planning/all-v1/figure1-full-preview.html">打开原版大图</a></p>
+<p>**读图顺序：**a 连续采集；b 三维重建流程；c 三维构象与运动曲线的时间对应；d 结构恢复精度；e 时间分辨能力。d、e 通过已知运动的模拟真值与重建结果比较，评价结构和时间信息的恢复。</p>
+<p><strong>子图：</strong><a href="/figure-planning/all-v1/figure1a-preview.html">figure1a</a> · <a href="/figure-planning/all-v1/figure1b-preview.html">figure1b</a> · <a href="/figure-planning/all-v1/figure1c-preview.html">figure1c</a> · <a href="/figure-planning/all-v1/figure1d-preview.html">figure1d</a> · <a href="/figure-planning/all-v1/figure1e-preview.html">figure1e</a></p>
+<h2 id="图-2｜Cas9：REC2–HNH-的时序协同与构象转换路径"><a href="#图-2｜Cas9：REC2–HNH-的时序协同与构象转换路径" class="headerlink" title="图 2｜Cas9：REC2–HNH 的时序协同与构象转换路径"></a>图 2｜Cas9：REC2–HNH 的时序协同与构象转换路径</h2><p><img src="/figure-planning/all-v1/figure2.svg" alt="图 2 完整规划示意"></p>
+<p><a href="/figure-planning/all-v1/figure2-full-preview.html">打开原版大图</a></p>
+<p>**读图顺序：**a 观察对象与候选指标；b 连续构象；c 运动起点与时间差；d 跨分子重复性；e 状态序列与转换路径。时间差定义为 Δt &#x3D; t_HNH − t_REC2；正值对应 REC2 先动。结构域边界、对齐基准和运动起点判据随构建体及校准结果核定。</p>
+<p><strong>子图：</strong><a href="/figure-planning/all-v1/figure2a-preview.html">figure2a</a> · <a href="/figure-planning/all-v1/figure2b-preview.html">figure2b</a> · <a href="/figure-planning/all-v1/figure2c-preview.html">figure2c</a> · <a href="/figure-planning/all-v1/figure2d-preview.html">figure2d</a> · <a href="/figure-planning/all-v1/figure2e-preview.html">figure2e</a></p>
+<h3 id="与模板匹配相比，新增的信息是什么？"><a href="#与模板匹配相比，新增的信息是什么？" class="headerlink" title="与模板匹配相比，新增的信息是什么？"></a>与模板匹配相比，新增的信息是什么？</h3><p>模板匹配也能给各帧分配状态，进而生成驻留时间与转换路径。图 2e 用于总结生物学现象；方法的核心价值需要由连续运动恢复及比较验证支撑。</p>
+<ul>
+<li><strong>状态之间怎样变化？</strong> 检验结构域连续移动、转动的恢复能力，以及偏离已有模板的构象能否可靠解析。</li>
+<li><strong>两域怎样配合？</strong> 检验同一分子中 REC2 与 HNH 的联合测量及时间差判定能力。</li>
+<li><strong>这些信息有多准确？</strong> 在同一批影像上，与模板匹配比较结构误差、时间差误差和中间态检出能力。</li>
+</ul>
+<p><strong>公平比较的核心：同样的影像，模板匹配能恢复到哪一步，我们的方法又增加了哪些经过验证的信息。</strong> 模板匹配能够准确回答的问题，应作为强基线。具体新增价值由比较结果确定。</p>
+<h2 id="图-3｜CaN：调控区重排与-AID-移位的中间过程"><a href="#图-3｜CaN：调控区重排与-AID-移位的中间过程" class="headerlink" title="图 3｜CaN：调控区重排与 AID 移位的中间过程"></a>图 3｜CaN：调控区重排与 AID 移位的中间过程</h2><p><img src="/figure-planning/all-v1/figure3.svg" alt="图 3 完整规划示意"></p>
+<p><a href="/figure-planning/all-v1/figure3-full-preview.html">打开原版大图</a></p>
+<p>**读图顺序：**a CaM、调控区与 AID；b 连续构象；c 调控区变化与 AID 位移的时间关系；d 候选联合状态与路径。S1–S4 由调控区变化与 AID 距离共同定义；两条虚线路径分别表示调控区先重排、AID 先移位的候选解释。状态阈值与路径归属结合结构分辨能力及数据确定。</p>
+<p><strong>子图：</strong><a href="/figure-planning/all-v1/figure3a-preview.html">figure3a</a> · <a href="/figure-planning/all-v1/figure3b-preview.html">figure3b</a> · <a href="/figure-planning/all-v1/figure3c-preview.html">figure3c</a> · <a href="/figure-planning/all-v1/figure3d-preview.html">figure3d</a> · <a href="/figure-planning/all-v1/figure3d-states-preview.html">figure3d-states</a></p>
+<h2 id="图-4｜TDP-43：RNA-结合与双-RRM-动态配合"><a href="#图-4｜TDP-43：RNA-结合与双-RRM-动态配合" class="headerlink" title="图 4｜TDP-43：RNA 结合与双 RRM 动态配合"></a>图 4｜TDP-43：RNA 结合与双 RRM 动态配合</h2><p><img src="/figure-planning/all-v1/figure4.svg" alt="图 4 完整规划示意"></p>
+<p><a href="/figure-planning/all-v1/figure4-full-preview.html">打开原版大图</a></p>
+<p>**读图顺序：**a 游离态与指定 RNA 结合态；b 两种条件下的连续构象；c 域间距离、相对朝向与逐分子波动；d 共同状态下的占据、驻留与转换。各条件采用相同构建体和匹配溶液条件；示例轨迹来自独立分子，驻留分析考虑轨迹截尾与采样漏检。</p>
+<p><strong>子图：</strong><a href="/figure-planning/all-v1/figure4a-preview.html">figure4a</a> · <a href="/figure-planning/all-v1/figure4b-preview.html">figure4b</a> · <a href="/figure-planning/all-v1/figure4c-preview.html">figure4c</a> · <a href="/figure-planning/all-v1/figure4d-preview.html">figure4d</a></p>
+<h2 id="图-5｜三个体系的综合框架"><a href="#图-5｜三个体系的综合框架" class="headerlink" title="图 5｜三个体系的综合框架"></a>图 5｜三个体系的综合框架</h2><p><img src="/figure-planning/all-v1/figure5.svg" alt="图 5 完整规划示意"></p>
+<p><a href="/figure-planning/all-v1/figure5-preview.html">打开原版大图</a></p>
+<p>**综合原则：**各体系先完成自身结构指标与状态定义的验证，再归纳运动顺序、路径和驻留的共性与差异。功能联系结合匹配条件下的功能及干预证据。</p>
+<h2 id="科学问题与论证文字稿"><a href="#科学问题与论证文字稿" class="headerlink" title="科学问题与论证文字稿"></a>科学问题与论证文字稿</h2><p>以下沿用现有文字稿；研究目标、现有结果与下一步实验分别列出。</p>
+<h3 id="P2-1-整理科学问题"><a href="#P2-1-整理科学问题" class="headerlink" title="P2-1 整理科学问题"></a>P2-1 整理科学问题</h3><p><strong>目标</strong>：比较已有研究的解释，结合项目结果，识别尚未解决的科学问题。</p>
+<p><strong>任务要求</strong>：</p>
+<ol>
+<li><strong>梳理已有研究</strong>：提取各研究的核心科学问题、研究空白（Research Gap）、主要结论及支持证据。</li>
+<li><strong>比较研究结论</strong>：区分不同研究的一致性结论与特异性结论，明确已有认识的适用范围及证据边界。</li>
+<li><strong>识别研究空白</strong>：分析已有技术能够解释什么、尚不能回答什么，重点关注蛋白质结构域的动态变化。</li>
+<li><strong>结合项目优势</strong>：评估现有研究空白能否通过项目的时间分辨成像技术及三维动态重建方法进一步研究。</li>
+<li><strong>形成科学问题</strong>：根据已有证据、未解决问题及项目的技术能力，提出具体、可检验的科学问题。</li>
+</ol>
+<h4 id="Cas9"><a href="#Cas9" class="headerlink" title="Cas9"></a>Cas9</h4><h5 id="1-两个结构域的运动是同步发生，还是存在先后顺序？"><a href="#1-两个结构域的运动是同步发生，还是存在先后顺序？" class="headerlink" title="1. 两个结构域的运动是同步发生，还是存在先后顺序？"></a>1. 两个结构域的运动是同步发生，还是存在先后顺序？</h5><ul>
+<li><strong>已有实验：</strong><a target="_blank" rel="noopener" href="https://doi.org/10.15252/embj.201796941">Osuka 等（2018）</a>用三种分别标记的 Cas9 构建体，观察域间变化、状态转换和驻留时间。</li>
+<li><strong>已有模拟：</strong><a target="_blank" rel="noopener" href="https://doi.org/10.1017/S0033583518000070">Palermo 等（2018）</a>提出 REC2 外移伴随 HNH 接近靶链，提供了协同运动的候选解释。</li>
+</ul>
+<p><strong>候选科学问题：</strong></p>
+<p><strong>在同一个 Cas9 分子的连续时间轨迹中，REC2 外移与 HNH 接近靶链具有怎样的先后关系？这种关系在多次构象转换中是否重复出现？</strong></p>
+<p>项目需要测量：<strong>两种运动的发生时间、时间差及重复性</strong>。成立条件是成像与重建精度足以分辨这两种运动。</p>
+<h5 id="2-需要怎样的时间分辨率，才能区分结构域运动的先后关系？"><a href="#2-需要怎样的时间分辨率，才能区分结构域运动的先后关系？" class="headerlink" title="2. 需要怎样的时间分辨率，才能区分结构域运动的先后关系？"></a>2. 需要怎样的时间分辨率，才能区分结构域运动的先后关系？</h5><p><strong>文献依据：</strong><a target="_blank" rel="noopener" href="https://static-content.springer-cdn.com/esm/art%3A10.1038%2Fs41586-022-05114-0/MediaObjects/41586_2022_5114_MOESM3_ESM.pdf#page=6">Pacesa 等（2022）的作者回复</a>指出，判断捕获的检查点构象是否位于真实 R-loop 形成路径上，需要开展实时单分子测量；针对快速核酸杂交过程，作者提出小于 0.1 秒的时间分辨要求（评审文件第 6 页）。</p>
+<p><strong>候选科学问题：</strong></p>
+<p><strong>分辨同一个 Cas9 分子中 REC2 外移与 HNH 接近靶链的先后关系，需要怎样的时间分辨率？采样间隔和曝光时间增大时，短暂中间态的检出率与运动顺序的判定准确性如何变化？</strong></p>
+<p>项目需要评估：<strong>采样间隔、曝光时间、两种运动的时间差、中间态驻留时间，以及各时间分辨条件下的检出率和顺序判定准确性</strong>。可利用具有已知运动顺序的模拟序列，分别改变采样间隔和曝光时间，评价时间信息的恢复能力。</p>
+<p>文献中的 <strong>&lt;0.1 秒</strong>对应作者讨论的快速 R-loop 形成过程；本项目分辨 REC2–HNH 运动顺序所需的时间分辨率，应结合目标运动的时间尺度及三维重建精度确定。</p>
+<h5 id="3-已有研究解释了什么？带时间戳的连续三维结构还能补充什么？"><a href="#3-已有研究解释了什么？带时间戳的连续三维结构还能补充什么？" class="headerlink" title="3. 已有研究解释了什么？带时间戳的连续三维结构还能补充什么？"></a>3. 已有研究解释了什么？带时间戳的连续三维结构还能补充什么？</h5><table>
+<thead>
+<tr>
+<th>文献已有认识</th>
+<th>候选问题</th>
+<th>我们可补充的观察</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.15252/embj.201796941">Osuka 等（2018）</a>分别测量三组位点的 FRET 变化，观察构象转换与停留时间。</td>
+<td>同一分子中，多个结构域怎样配合运动？</td>
+<td>同时跟踪多个结构域的位置与朝向。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1017/S0033583518000070">Palermo 等（2018）</a>的模拟提出：REC2 外移伴随 HNH 接近靶链。</td>
+<td>两者谁先动？相隔多久？</td>
+<td>比较两种运动的发生时间和时间差。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-022-05114-0">Pacesa 等（2022）</a>捕获多个结构状态，并提出构象转换模型。<a target="_blank" rel="noopener" href="https://static-content.springer-cdn.com/esm/art%3A10.1038%2Fs41586-022-05114-0/MediaObjects/41586_2022_5114_MOESM3_ESM.pdf#page=6">作者回复</a>提出用实时测量检验中间态的路径归属。</td>
+<td>单个分子依次经过哪些构象？每种构象停留多久？</td>
+<td>按时间串联三维构象，比较不同分子的转换路径。</td>
+</tr>
+</tbody></table>
+<p><strong>核心问题：在相同核酸和 Mg²⁺ 条件下，Cas9 的 REC2 与 HNH 怎样协同运动？运动顺序、时间间隔和转换路径在不同分子间有何差异？</strong></p>
+<p>以上为基于这些文献提出的候选问题，后续结合相关研究核验。</p>
+<h5 id="4-后续研究有哪些进展？还值得追问什么？"><a href="#4-后续研究有哪些进展？还值得追问什么？" class="headerlink" title="4. 后续研究有哪些进展？还值得追问什么？"></a>4. 后续研究有哪些进展？还值得追问什么？</h5><table>
+<thead>
+<tr>
+<th>已有进展</th>
+<th>可进一步追问</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41467-024-47830-3">SpRY（2024）</a>：结合动力学与冷冻电镜，捕获多个反应中间态。</td>
+<td>同一个分子按什么顺序经过这些状态？</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41467-025-60668-7">多周转 Cas9（2025）</a>：改变向导 RNA 配对设计，观察产物释放相关结构。</td>
+<td>核酸条件怎样改变转换路径？</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1021/acscatal.6c05718">SpCas9（2026，依据摘要）</a>：模拟与功能实验提出 L2 连接区及 REC2–HNH 相互作用参与激活。</td>
+<td>实验中，两域的位置和朝向怎样配合变化？</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.21203/rs.3.rs-10202707/v1">CjCas9（2026，预印本）</a>：高速 AFM 连续跟踪 REC3 与 HNH。</td>
+<td>在 SpCas9 中，能否进一步解析三维运动及其时间关系？</td>
+</tr>
+</tbody></table>
+<p><strong>保留两个候选问题：</strong></p>
+<ol>
+<li>REC2 与 HNH 怎样协同运动，谁先动、相隔多久？</li>
+<li>不同分子经过哪些中间态，各自停留多久、是否回返？</li>
+</ol>
+<p><strong>我们的切入点：将同一分子的三维位置、朝向与时间对应起来。</strong> </p>
+<p><strong>阶段性归纳</strong></p>
+<p>已有研究揭示了 Cas9 的多种构象状态，并提出结构域协同运动的机制模型。我们进一步关注：同一分子中，REC2 与 HNH 的三维位置和朝向如何随时间变化？不同分子经过哪些中间态，各自停留多久？带时间戳的连续三维结构，有望为这些运动关系和转换路径提供实验依据。</p>
+<h4 id="CaN"><a href="#CaN" class="headerlink" title="CaN"></a>CaN</h4><p>CaM 是参与激活 CaN 的钙调蛋白；AID 是 CaN 的自抑制结构域。</p>
+<h5 id="1-CaM-结合后，AID-怎样移动？"><a href="#1-CaM-结合后，AID-怎样移动？" class="headerlink" title="1. CaM 结合后，AID 怎样移动？"></a>1. CaM 结合后，AID 怎样移动？</h5><p><strong>已有解释：</strong><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jmb.2011.11.008">Rumi-Masante 等（2012）</a>提出，调控区折叠带动 AID 移位。<a target="_blank" rel="noopener" href="https://doi.org/10.1038/cr.2016.14">Li 等（2016）</a>进一步提出，CaM 结合后，调控区仍与催化核心相互作用。</p>
+<p><strong>候选问题：AID 何时移动、移到哪里、停留多久？</strong></p>
+<p>**可补充：**用连续三维结构跟踪 AID 相对催化核心的位置。</p>
+<h5 id="2-CaM-与远端螺旋怎样接触？"><a href="#2-CaM-与远端螺旋怎样接触？" class="headerlink" title="2. CaM 与远端螺旋怎样接触？"></a>2. CaM 与远端螺旋怎样接触？</h5><p>**远端螺旋：**经典 CaM 结合区之外的一段调控螺旋。</p>
+<p><strong>已有解释：</strong><a target="_blank" rel="noopener" href="https://doi.org/10.1021/bi400483a">Dunlap 等（2013）</a>支持这段螺旋参与调控。<a target="_blank" rel="noopener" href="https://doi.org/10.1021/acs.biochem.9b00626">Sun 等（2019）</a>模拟提出它与 CaM 的多个候选接触，功能实验支持相关表面的调控作用。</p>
+<p><strong>候选问题：这些接触怎样转换，与 AID 的移动如何配合？</strong></p>
+<p>**可补充：**跟踪 CaM 与远端螺旋的位置、朝向及其变化时间。</p>
+<h5 id="3-后续研究把问题推进到了哪里？"><a href="#3-后续研究把问题推进到了哪里？" class="headerlink" title="3. 后续研究把问题推进到了哪里？"></a>3. 后续研究把问题推进到了哪里？</h5><p><strong>新证据：</strong><a target="_blank" rel="noopener" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10330910/">2023 年研究</a>发现，CaM 的 N53I 突变降低 CaN 最大活性，同时保留与经典结合片段相近的热稳定性。模拟提示，远端螺旋的接触方式可能发生改变。</p>
+<p><strong>进一步聚焦：不同的 CaM–远端螺旋接触，怎样对应 AID 的位置和停留时间？</strong></p>
+<p>**可补充：**在可分辨的区域内，联合跟踪接触构象与 AID 移动，检验模拟提出的联系。构象与酶活的对应结合匹配条件下的功能实验判断。</p>
+<h4 id="TDP-43"><a href="#TDP-43" class="headerlink" title="TDP-43"></a>TDP-43</h4><p>RRM1 和 RRM2 是 TDP-43 中共同识别 RNA 的两个结构域。</p>
+<h5 id="1-RNA-结合后，两个-RRM-怎样一起运动？"><a href="#1-RNA-结合后，两个-RRM-怎样一起运动？" class="headerlink" title="1. RNA 结合后，两个 RRM 怎样一起运动？"></a>1. RNA 结合后，两个 RRM 怎样一起运动？</h5><p><strong>已有认识：</strong><a target="_blank" rel="noopener" href="https://doi.org/10.1038/nsmb.2698">Lukavsky 等（2013）</a>解析了两个 RRM 共同结合 RNA 的结构。<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.bpj.2024.09.031">Ozguney 等（2024）</a>的模拟提示，RNA 结合限制两域的构象分布，并改变界面接触。</p>
+<p><strong>候选问题：RNA 结合怎样改变两域的距离、朝向和运动幅度？各构象停留多久？</strong></p>
+<p>**可补充：**用带时间戳的连续三维结构，比较游离态与 RNA 结合态的域间运动。比较时统一蛋白构建体和溶液条件，并明确 RNA 序列。</p>
+<h5 id="2-两个-RRM-运动时，RNA-接触怎样变化？"><a href="#2-两个-RRM-运动时，RNA-接触怎样变化？" class="headerlink" title="2. 两个 RRM 运动时，RNA 接触怎样变化？"></a>2. 两个 RRM 运动时，RNA 接触怎样变化？</h5><p><strong>已有解释：</strong><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.bpj.2024.09.031">Ozguney 等（2024）</a>的模拟显示，部分 RNA 接触较稳定，其他接触反复形成和断开，共同维持动态结合界面。</p>
+<p><strong>候选问题：RNA 接触的重排与两个 RRM 的转动，具有怎样的时间关系？</strong></p>
+<p>**可补充：**在 RNA 与结构域可分辨时，跟踪 RNA 所在区域和两域朝向的共同变化；具体残基接触结合局部结构及模拟判断。</p>
+<h5 id="3-后续研究把问题推进到了哪里？-1"><a href="#3-后续研究把问题推进到了哪里？-1" class="headerlink" title="3. 后续研究把问题推进到了哪里？"></a>3. 后续研究把问题推进到了哪里？</h5><p><strong>新证据：</strong><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41467-026-68346-y">Feng 等（2026）</a>结合核磁共振、散射及细胞实验，研究多个 TDP-43 在 RNA 上的组装。结果支持：沿富 GU 序列的协同结合限制相邻分子的 N 端结构域接触，并促进不同 RNA 结合簇之间的联系。</p>
+<p><strong>候选问题：多个 TDP-43 沿 RNA 排列时，分子间接触怎样随时间重排？各排列状态停留多久？</strong></p>
+<p>**可补充：**对含 N 端结构域的多分子体系，在分子可分辨时跟踪相对位置、朝向和接近过程；具体接触界面结合局部结构验证。前两条继续聚焦单个分子内部的 RRM 运动。</p>
+<h4 id="三个体系的候选科学问题"><a href="#三个体系的候选科学问题" class="headerlink" title="三个体系的候选科学问题"></a>三个体系的候选科学问题</h4><table>
+<thead>
+<tr>
+<th>体系</th>
+<th>核心问题</th>
+<th>连续三维观察的切入点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cas9</td>
+<td>REC2 与 HNH 怎样配合运动？谁先动，相隔多久？</td>
+<td>同一分子中两域的位置、朝向与运动时间差。</td>
+</tr>
+<tr>
+<td>CaN</td>
+<td>CaM 结合后，调控区重排怎样与 AID 移位配合？</td>
+<td>调控区域的变化顺序及 AID 的位置、停留时间。</td>
+</tr>
+<tr>
+<td>TDP-43</td>
+<td>RNA 结合怎样改变两个 RRM 的相对运动？</td>
+<td>游离态与 RNA 结合态的域间距离、朝向及构象停留时间。</td>
+</tr>
+</tbody></table>
+<p><strong>共同切入点：在同一分子的连续轨迹中，将三维构象与时间对应起来，检验文献提出的运动关系。</strong></p>
+<h4 id="科学问题的证据与意义"><a href="#科学问题的证据与意义" class="headerlink" title="科学问题的证据与意义"></a>科学问题的证据与意义</h4><p>以下问题聚焦已核对文献中的具体模型；适用范围随蛋白构建体、核酸及溶液条件明确。</p>
+<p><strong>Cas9：结构域协同怎样通向切割构象？</strong></p>
+<ul>
+<li><strong>已有证据：</strong><a target="_blank" rel="noopener" href="https://doi.org/10.15252/embj.201796941">Osuka 等（2018）</a>以分别标记的构建体测得域间 FRET 转换与停留时间；<a target="_blank" rel="noopener" href="https://doi.org/10.1017/S0033583518000070">Palermo 等（2018）</a>的模拟提出 REC2 外移配合 HNH 接近靶链。</li>
+<li>**待检验：**在同一 SpCas9 分子中，两域三维运动的先后、时间差和回返路径怎样对应？</li>
+<li>**意义：**检验 REC2 重排与 HNH 就位的联系，帮助解释切割构象的形成过程；切割功能结合匹配条件下的活性证据判断。</li>
+</ul>
+<p><strong>CaN：调控区重排怎样解除自抑制？</strong></p>
+<ul>
+<li><strong>已有证据：</strong><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jmb.2011.11.008">Rumi-Masante 等（2012）</a>以圆二色谱和氢氘交换测得 CaM 结合后的调控区折叠，并提出 AID 移位模型；<a target="_blank" rel="noopener" href="https://doi.org/10.1021/acs.biochem.9b00626">Sun 等（2019）</a>提出远端螺旋的候选接触，功能实验支持相关表面的调控作用。</li>
+<li>**待检验：**同一复合物中，CaM–调控区的构象变化与 AID 移位按什么顺序发生？各状态停留多久？</li>
+<li>**意义：**为“CaM 结合—调控区重排—自抑制解除”补充时序证据。远端螺旋和 AID 的归属以可分辨的结构为依据。</li>
+</ul>
+<p><strong>TDP-43：RNA 怎样改变两个 RRM 的动态配合？</strong></p>
+<ul>
+<li><strong>已有证据：</strong><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.bpj.2024.09.031">Ozguney 等（2024）</a>的模拟提示 RNA 限制域间构象分布；<a target="_blank" rel="noopener" href="https://doi.org/10.1021/jacs.4c11229">2024 年氢氘交换研究</a>测得 RNA 结合后 RRM 及连接区的交换保护，支持结合与构象稳定的联系。</li>
+<li>**待检验：**固定 RNA 序列和蛋白构建体后，RNA 结合怎样改变同一分子中两域的相对朝向、转换路径和停留时间？</li>
+<li>**意义：**为 RNA 结合稳定哪些域间排列、怎样改变构象转换提供动态证据。聚集与功能联系结合相应实验检验。</li>
+</ul>
+<p><strong>近期进展：</strong><a target="_blank" rel="noopener" href="https://doi.org/10.1126/science.adv3301">Copley 等（2026，摘要）</a>已将特定短 RNA、RRM 稳定与抗聚集构象联系起来。可进一步聚焦单分子的域间运动路径和时间分布。</p>
+<h3 id="P2-2-科学问题和结论"><a href="#P2-2-科学问题和结论" class="headerlink" title="P2-2 科学问题和结论"></a>P2-2 科学问题和结论</h3><h4 id="Cas9：结构域协同怎样通向切割构象？"><a href="#Cas9：结构域协同怎样通向切割构象？" class="headerlink" title="Cas9：结构域协同怎样通向切割构象？"></a>Cas9：结构域协同怎样通向切割构象？</h4><p>**目标：**揭示 REC2 与 HNH 的运动顺序与转换路径。</p>
+<ul>
+<li>**现有结论：**1,817 个颗粒续训后，平均 CC 从 0.336 升至 0.390（CryoDyna）／0.470（CryoSTAR），支持图像拟合改善。</li>
+<li>**下一步：**在明确核酸与 Mg²⁺ 条件后，跟踪两域的连续三维运动，检验“REC2 外移先于 HNH 接近靶链”的假设，比较时间差与回返频率。</li>
+</ul>
+<h4 id="CaN：调控区重排怎样解除自抑制？"><a href="#CaN：调控区重排怎样解除自抑制？" class="headerlink" title="CaN：调控区重排怎样解除自抑制？"></a>CaN：调控区重排怎样解除自抑制？</h4><p>**目标：**解析调控区重排到 AID 移位的中间过程。</p>
+<ul>
+<li>**现有资料：**已整理 1,029 粒子栈与两种方法的初步重建结果，处理条件正在核对。</li>
+<li>**下一步：**在相同 Ca²⁺ 条件下比较 CaM 结合前后的调控区与 AID 运动，解析中间态和驻留时间，并与酶活变化对应。</li>
+</ul>
+<h4 id="TDP-43：RNA-怎样改变两个-RRM-的动态配合？"><a href="#TDP-43：RNA-怎样改变两个-RRM-的动态配合？" class="headerlink" title="TDP-43：RNA 怎样改变两个 RRM 的动态配合？"></a>TDP-43：RNA 怎样改变两个 RRM 的动态配合？</h4><p>**目标：**明确 RNA 如何改变构象转换路径与驻留时间。</p>
+<ul>
+<li>**现有结论：**固定结构、正确参考初始化的模拟中，朝向误差中位数为 0.541°（清晰图像）和 1.515°（SNR＝1），每组 150 帧，支持这些条件下的整体朝向恢复。</li>
+<li>**下一步：**统一构建体与溶液条件，比较游离态和指定 RNA 结合态，检验域间运动范围是否缩小、特定构象驻留是否延长。</li>
+</ul>
+<p>**共同对照：**用已知运动的模拟评估结构与时间误差，比较电子剂量影响，并以独立分子重复检验运动规律。结构与功能的联系结合匹配条件下的功能实验评价。</p>
+<p>结果来源：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">实验设置、图表与完整数值</a>。</p>
+<h3 id="P2-3-各节分论点与核心主张的论证顺序"><a href="#P2-3-各节分论点与核心主张的论证顺序" class="headerlink" title="P2-3 各节分论点与核心主张的论证顺序"></a>P2-3 各节分论点与核心主张的论证顺序</h3><h4 id="核心主张"><a href="#核心主张" class="headerlink" title="核心主张"></a>核心主张</h4><p>研究拟检验以下主张：</p>
+<p>蛋白质的功能调控与结构域运动的时序协同有关；时间分辨三维重建获得的连续轨迹可揭示其运动顺序、构象转换路径及各状态的驻留时间。</p>
+<h4 id="各节分论点"><a href="#各节分论点" class="headerlink" title="各节分论点"></a>各节分论点</h4><ol>
+<li>揭示 REC2 与 HNH 的时序协同，回答 Cas9 切割构象如何形成。</li>
+<li>解析调控区重排与 AID 移位的中间过程，回答 CaN 自抑制如何解除。</li>
+<li>揭示 RNA 对构象转换路径与驻留时间的影响，回答两个 RRM 的动态配合如何受调控。</li>
+</ol>
+<h4 id="支撑核心主张的论证顺序"><a href="#支撑核心主张的论证顺序" class="headerlink" title="支撑核心主张的论证顺序"></a>支撑核心主张的论证顺序</h4><ol>
+<li>**技术基础：**建立三维构象与时间戳的对应，明确可分辨的结构变化与时间尺度。</li>
+<li>**Cas9：**从结构域运动的先后关系入手，解析切割构象的形成路径。</li>
+<li>**CaN：**进一步连接调控区重排与 AID 移位，解析自抑制解除的中间过程。</li>
+<li>**TDP-43：**通过 RNA 结合前后的比较，检验构象转换路径与驻留时间如何受调控。</li>
+<li>**综合：**归纳三个体系中运动顺序、转换路径与驻留时间的作用，结合各自的功能证据讨论时序协同与功能调控的联系。</li>
+</ol>
+
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/%E7%A7%91%E7%A0%94/">科研</a>
+        </span>
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/%E5%9B%BE%E7%89%88%E8%A7%84%E5%88%92/">图版规划</a>
+        </span>
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/Cas9/">Cas9</a>
+        </span>
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/Calcineurin/">Calcineurin</a>
+        </span>
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/TDP-43/">TDP-43</a>
+        </span>
+      
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+        <a href="/2026/11/23/paper-writing-project-retrospective-20261122-demo/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
+          “写论文”项目复盘（20261122）
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/11/23/figure2-planning-v1/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          Cas9图2规划：结构域运动、时间关系与构象转换路径
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script defer src="/js/page-views.js" data-site-url="https://niuyihao.github.io"></script>
+
+
+  <!-- copyright -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">主题许可 CC BY-NC-SA 4.0</a>
+    <span>© 2026 我的博客</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">主题作者 xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

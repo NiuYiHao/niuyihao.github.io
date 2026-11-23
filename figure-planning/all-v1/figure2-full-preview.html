@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+
+
+<title>我的博客</title>
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/nprogress/nprogress.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/rss2.xml" title="我的博客" type="application/rss+xml">
+</head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="我的博客" />
+          我的博客
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/archives/">文章</a>
+        
+          <a class="hidden sm:flex" href="/category/">分类</a>
+        
+          <a class="hidden sm:flex" href="/tag/">标签</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="RSS 订阅" href="/rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <button type="button" class="w-5 h-5" title="切换明暗主题" aria-label="切换明暗主题" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </button>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <button type="button" class="w-5 h-5" aria-label="打开菜单" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </button>
+        <button type="button" class="w-5 h-5 hidden" aria-label="关闭菜单" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/95 dark:bg-zinc-900/95 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/archives/" class="flex h-12 sm:h-auto items-center">文章</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/category/" class="flex h-12 sm:h-auto items-center">分类</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/tag/" class="flex h-12 sm:h-auto items-center">标签</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        
+      </h1>
+      <div>
+        <section class="flex flex-wrap items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2026-11-24</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>4 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>1.1k words</span>
+          </span>
+          
+            <span class="inline-flex items-center gap-3 whitespace-nowrap">
+              <span class="text-gray-400" aria-hidden="true">·</span>
+              <span class="inline-flex items-center gap-1" aria-live="polite">
+                <iconify-icon width="18" icon="mdi:eye-outline" aria-hidden="true"></iconify-icon>
+                <span>阅读量：<span id="page-views-status">加载中…</span><span id="busuanzi_container_page_pv" style="display:none"><span id="busuanzi_value_page_pv"></span> 次</span></span>
+              </span>
+            </span>
+          
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <!doctype html><html lang="zh"><meta charset="utf-8"><title>图2 · 完整规划预览</title><style>body{margin:0;background:#edf0f4;color:#203047;font:15px Arial,"Noto Sans CJK SC",sans-serif}header,footer{max-width:1000px;margin:24px auto;padding:0 16px;line-height:1.8}header{display:flex;justify-content:space-between;align-items:center}button{padding:9px 13px;background:white;border:1px solid #bcc8d6;border-radius:6px;cursor:pointer}#sheet{width:1000px;max-width:96vw;margin:auto;background:white;box-shadow:0 3px 18px #20304712}section{padding:16px 20px 6px}h2{font-size:20px;margin:0 0 8px}svg{width:100%;height:auto;display:block}body.compact #sheet{width:180mm}footer{color:#53667e}footer h3{color:#203047}.notice{color:#855700;background:#fff1d5;padding:10px 15px;border-radius:7px}</style><header><strong>图 2｜Cas9 结构域运动与转换路径</strong><button onclick="document.body.classList.toggle('compact')">切换 180 mm 宽度</button></header><div id="sheet"><section><h2>a　观察对象与运动指标</h2><svg viewBox="0 0 1080 530" xmlns="http://www.w3.org/2000/svg"><defs><marker id="f2a-arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto-start-reverse"><path d="M0 0L6 3L0 6" fill="none" stroke="context-stroke" stroke-width="1.3"/></marker></defs>
+<path d="M102 131Q165 60 282 119Q360 113 419 182Q477 286 415 367Q356 431 267 405Q144 442 87 345Q39 239 102 131Z" fill="#eef1f5" stroke="#d1d9e3" stroke-width="2"/>
+<text x="95" y="456" fill="#7a899b" font-size="15">Cas9 其余区域（简化）</text>
+<path d="M110 222Q101 156 161 150Q218 139 238 184Q260 229 214 263Q153 287 110 222Z" fill="#2689aa" fill-opacity=".85"/><text x="141" y="210" fill="white" font-size="23" font-weight="bold">REC2</text>
+<path d="M273 194Q297 158 340 183Q382 206 361 249Q333 280 292 252Q267 230 273 194Z" fill="#d8863e"/><text x="291" y="225" fill="white" font-size="21" font-weight="bold">HNH</text>
+<path d="M80 328Q170 310 249 326T444 319" stroke="#805fa7" stroke-width="6" fill="none"/><path d="M80 343Q170 325 249 341T444 334" stroke="#baa9d1" stroke-width="5" fill="none"/><text x="375" y="372" fill="#805fa7" font-size="17">靶 DNA</text>
+<circle cx="259" cy="285" r="5" fill="#6b7d91"/><text x="215" y="305" fill="#627187" font-size="13">参考区域</text>
+<path d="M176 232L250 279" stroke="#2689aa" stroke-width="2" stroke-dasharray="5 4" marker-start="url(#f2a-arrow)" marker-end="url(#f2a-arrow)"/><text x="159" y="283" fill="#2689aa" font-size="17">d₁</text>
+<path d="M321 253V322" stroke="#d8863e" stroke-width="2" stroke-dasharray="5 4" marker-start="url(#f2a-arrow)" marker-end="url(#f2a-arrow)"/><text x="337" y="293" fill="#bf752e" font-size="17">d₂</text>
+<path d="M122 128Q162 103 206 128" fill="none" stroke="#2689aa" stroke-width="2" marker-end="url(#f2a-arrow)"/><text x="151" y="102" fill="#2689aa" font-size="16">θ₁</text><path d="M289 155Q325 130 356 155" fill="none" stroke="#d8863e" stroke-width="2" marker-end="url(#f2a-arrow)"/><text x="317" y="128" fill="#bf752e" font-size="16">θ₂</text>
+<g font-size="18" fill="#203047"><text x="550" y="119" font-weight="bold">REC2｜位置与朝向</text><text x="550" y="155" font-size="16" fill="#53667e">d₁：相对参考区域的距离</text><text x="550" y="185" font-size="16" fill="#53667e">θ₁：相对参考坐标系的角度</text><text x="550" y="265" font-weight="bold">HNH｜接近靶链与朝向变化</text><text x="550" y="301" font-size="16" fill="#53667e">d₂：相对靶链指定区域的距离</text><text x="550" y="331" font-size="16" fill="#53667e">θ₂：相对参考坐标系的角度</text></g>
+<rect x="535" y="387" width="495" height="78" rx="9" fill="#f1f5f9"/><text x="557" y="417" font-size="17" fill="#203047">同一分子 · 同一时间轴</text><text x="557" y="445" font-size="15" fill="#53667e">衔接 b、c：连续构象 → 运动曲线 → 时间差</text>
+</svg></section><section><h2>b　连续三维构象</h2><svg viewBox="0 0 1180 410" xmlns="http://www.w3.org/2000/svg"><defs><g id="f2b-rec"><path d="M-55 -27Q-73 -65 -40 -76Q-8 -85 3 -55Q10 -25 -18 -12Q-44 -2 -55 -27Z"/></g><g id="f2b-hnh"><path d="M24 -50Q45 -65 61 -44Q78 -17 54 -7Q27 2 19 -23Q14 -38 24 -50Z"/></g></defs><g font-size="15" fill="#53667e"><circle cx="650" cy="27" r="6" fill="#2689aa"/><text x="664" y="32">REC2</text><circle cx="755" cy="27" r="6" fill="#d8863e"/><text x="769" y="32">HNH</text><path d="M850 27H875" stroke="#805fa7" stroke-width="4"/><text x="885" y="32">靶 DNA</text><path d="M985 27H1010" stroke="#7c8fa2" stroke-dasharray="4 3"/><text x="1020" y="32">起始位置</text></g><g id="f2b-frames"></g><path d="M70 317H1110L1103 312M1110 317L1103 322" fill="none" stroke="#8998aa" stroke-width="1.5"/><text x="1070" y="347" font-size="15" fill="#627187">时间 →</text><text x="590" y="385" text-anchor="middle" font-size="16" fill="#53667e">统一对齐基准与观察视角；各域颜色保持一致</text></svg></section><section><h2>c　两域运动的时间关系</h2><svg viewBox="0 0 1060 580" xmlns="http://www.w3.org/2000/svg">
+<g fill="#53667e" font-size="15"><text x="115" y="33">相对起始构象的中心位移</text><path d="M677 28H708" stroke="#8895a5" stroke-dasharray="5 4"/><text x="718" y="33">候选判定阈值</text><rect x="865" y="20" width="20" height="15" fill="#2689aa" opacity=".15"/><text x="894" y="33">起点区间</text></g>
+<rect x="391" y="82" width="36" height="396" fill="#2689aa" opacity=".1"/><rect x="554" y="82" width="42" height="396" fill="#d8863e" opacity=".12"/>
+<g stroke="#8895a5" fill="none"><path d="M115 105V255H965M115 328V478H965"/></g>
+<g fill="#53667e" font-size="14"><text x="84" y="260">0</text><text x="84" y="483">0</text><text x="120" y="95">位移（Å）</text><text x="120" y="318">位移（Å）</text><text x="900" y="511">时间（s）</text></g>
+<text x="20" y="175" fill="#2689aa" font-weight="bold" font-size="19">REC2</text><text x="20" y="398" fill="#d8863e" font-weight="bold" font-size="19">HNH</text>
+<path d="M115 225H965M115 448H965" stroke="#8895a5" stroke-dasharray="5 4" fill="none"/>
+<path d="M120 255L150 247L180 252L210 244L240 249L270 243L300 250L330 240L360 239L390 232L420 217L450 197L480 171L510 152L540 137L570 130L600 125L630 129L660 120L690 124L720 117L750 126L780 121L810 130L840 127L870 136L900 132L930 140L960 137" stroke="#2689aa" stroke-width="3" fill="none"/>
+<path d="M120 478L150 470L180 475L210 468L240 472L270 468L300 472L330 466L360 469L390 471L420 465L450 470L480 465L510 467L540 459L570 451L600 434L630 412L660 388L690 365L720 352L750 345L780 341L810 348L840 340L870 346L900 343L930 350L960 347" stroke="#d8863e" stroke-width="3" fill="none"/>
+<path d="M409 82V478" stroke="#2689aa" stroke-dasharray="4 4"/><path d="M575 82V478" stroke="#d8863e" stroke-dasharray="4 4"/>
+<path d="M409 76V59H575V76" stroke="#53667e" fill="none" stroke-width="1.5"/><text x="492" y="48" text-anchor="middle" fill="#203047" font-size="17">Δt</text>
+<g font-size="15" text-anchor="middle"><text x="409" y="505" fill="#2689aa">t_REC2</text><text x="575" y="505" fill="#bc742e">t_HNH</text></g>
+<text x="530" y="553" text-anchor="middle" fill="#53667e" font-size="16">Δt = t_HNH − t_REC2</text></svg></section><section><h2>d　跨分子重复性</h2><svg viewBox="0 0 1060 530" xmlns="http://www.w3.org/2000/svg">
+<g fill="#203047" font-size="19" font-weight="bold"><text x="70" y="43">逐分子时间差</text><text x="610" y="43">时间差分布</text></g>
+<g fill="#627187" font-size="14"><text x="70" y="72">点：估计值　横线：估计区间</text><text x="610" y="72">每个分子贡献一个估计值</text></g>
+<g fill="#f5f7fa"><rect x="120" y="100" width="400" height="325" rx="3"/><rect x="650" y="100" width="350" height="325" rx="3"/></g>
+<g stroke="#9ca9b8" stroke-dasharray="5 5"><path d="M280 100V425M790 100V425"/></g>
+<g stroke="#8292a6" fill="none"><path d="M120 425H520M650 100V425H1000"/></g>
+<g id="f2d-points"></g><g id="f2d-bars"></g>
+<g fill="#627187" font-size="14" text-anchor="middle"><text x="120" y="450">−0.4</text><text x="280" y="450">0</text><text x="440" y="450">0.4</text><text x="520" y="450">0.6</text><text x="650" y="450">−0.4</text><text x="790" y="450">0</text><text x="930" y="450">0.4</text><text x="1000" y="450">0.6</text><text x="320" y="478">Δt（s，示例刻度）</text><text x="825" y="478">Δt（s，示例刻度）</text></g>
+<g fill="#627187" font-size="14"><text x="610" y="94">分子数</text><text x="632" y="430">0</text><text x="632" y="330">1</text><text x="632" y="230">2</text><text x="632" y="130">3</text></g>
+<g font-size="14" text-anchor="middle"><text x="195" y="513" fill="#53667e">HNH 先动 ←</text><text x="405" y="513" fill="#53667e">→ REC2 先动</text><text x="720" y="513" fill="#53667e">HNH 先动 ←</text><text x="902" y="513" fill="#53667e">→ REC2 先动</text></g>
+</svg></section><section><h2>e　构象转换路径</h2><svg viewBox="0 0 1080 470" xmlns="http://www.w3.org/2000/svg"><defs><marker id="f2e-arr" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L6 3L0 6Z" fill="#7b8da0"/></marker></defs><g font-size="19" font-weight="bold" fill="#203047"><text x="30" y="43">逐分子状态序列</text><text x="655" y="43">观察到的转换</text></g><g id="f2e-legend"></g><g id="f2e-tracks"></g><path d="M95 342H575" stroke="#8292a6"/><g id="f2e-ticks"></g><text x="335" y="402" text-anchor="middle" font-size="15" fill="#627187">时间（s，示例刻度）</text>
+<g fill="none" stroke="#7b8da0" marker-end="url(#f2e-arr)"><path id="f2e-e01" d="M716 202Q765 155 811 202"/><path id="f2e-e10" d="M810 238Q765 282 716 238"/><path id="f2e-e12" d="M879 202Q928 155 976 202"/><path id="f2e-e21" d="M976 238Q928 282 880 238"/></g><g id="f2e-nodes"></g><g id="f2e-counts" font-size="16" fill="#53667e" text-anchor="middle"></g><g font-size="14" fill="#627187"><text x="655" y="330">箭头方向：状态转换方向</text><text x="655" y="359">线宽与数字：转换次数</text></g></svg></section></div><footer><p class="notice">完整规划示意：全部形状、轨迹、阈值、样本与统计数值均为占位素材。</p><p><strong>a</strong> 定义观察对象与候选指标；<strong>b</strong> 展示代表性连续构象；<strong>c</strong> 比较两域运动时间；<strong>d</strong> 检验跨分子重复性；<strong>e</strong> 总结构象状态与路径。对齐基准、运动起点和状态划分随结构与验证结果核定。</p><h3>与模板匹配相比，新增的信息是什么？</h3><p>模板匹配也能给各帧分配状态，进而生成驻留时间与转换路径。图 2e 用于总结生物学现象；方法的核心价值需要由连续运动恢复及比较验证支撑。</p><ul><li><strong>状态之间怎样变化？</strong> 检验连续移动、转动以及偏离已有模板的构象能否可靠解析。</li><li><strong>两域怎样配合？</strong> 检验同一分子中 REC2、HNH 的联合测量与时间差判定能力。</li><li><strong>这些信息有多准确？</strong> 在同一批影像上比较结构误差、时间差误差和中间态检出能力。</li></ul><p><strong>同样的影像，模板匹配能恢复到哪一步，我们的方法又增加了哪些经过验证的信息。</strong> 模板匹配能够准确回答的问题，应作为强基线。具体新增价值由比较结果确定。</p></footer><script>{}{const shifts=[[-0,0,0,0,0,0],[-9,-3,-9,1,3,3],[-17,-5,-15,3,15,9],[-15,-3,-12,4,24,16],[-9,-2,-7,2,17,10]];document.querySelector('#f2b-frames').innerHTML=shifts.map((s,i)=>`<g transform="translate(${120+i*230} 205)"><path d="M-77 -67Q-28 -105 38 -78Q90 -53 86 13Q76 69 8 80Q-69 80 -92 26Q-108 -23 -77 -67Z" fill="#eef1f5" stroke="#d8e0e8"/><path d="M-85 42Q-35 29 0 40T85 39" stroke="#805fa7" stroke-width="4" fill="none"/><path d="M-85 51Q-35 38 0 49T85 48" stroke="#baa9d1" stroke-width="3" fill="none"/><use href="#f2b-rec" transform="translate(${s[0]} ${s[1]}) rotate(${s[2]} -30 -40)" fill="#2689aa"/><use href="#f2b-hnh" transform="translate(${s[3]} ${s[4]}) rotate(${s[5]} 40 -30)" fill="#d8863e"/><use href="#f2b-rec" fill="none" stroke="#145e78" stroke-width="1.4" stroke-dasharray="4 3"/><use href="#f2b-hnh" fill="none" stroke="#a15b25" stroke-width="1.4" stroke-dasharray="4 3"/><text x="0" y="-120" text-anchor="middle" font-size="18" fill="#53667e">t${i}</text></g>`).join('');}{}{
+const data=[[-.22,-.34,-.10],[-.06,-.19,.07],[.04,-.06,.14],[.17,.08,.26],[.23,.11,.35],[.29,.20,.38],[.37,.25,.49],[.45,.32,.58]];
+const scale=v=>280+400*v;
+document.querySelector('#f2d-points').innerHTML=data.map((d,i)=>{const y=122+i*39;const c=d[1]<=0&&d[2]>=0?'#8995a4':'#2689aa';return `<text x="95" y="${y+5}" text-anchor="end" font-size="14" fill="#627187">M${i+1}</text><path d="M${scale(d[1])} ${y}H${scale(d[2])}" stroke="${c}" stroke-width="2"/><path d="M${scale(d[1])} ${y-5}V${y+5}M${scale(d[2])} ${y-5}V${y+5}" stroke="${c}"/><circle cx="${scale(d[0])}" cy="${y}" r="5" fill="${c}"/>`;}).join('');
+const edges=[-.4,-.2,0,.2,.4,.6];document.querySelector('#f2d-bars').innerHTML=edges.slice(0,-1).map((a,i)=>{const n=data.filter(d=>d[0]>=a&&d[0]<edges[i+1]).length;return `<rect x="${790+350*a+2}" y="${425-n*100}" width="66" height="${n*100}" fill="#2689aa" opacity=".7"/>`;}).join('');
+}{
+const colors=['#2689aa','#d8863e','#9176b5'];
+const tracks=[[[0,1.0],[1,1.0],[2,1.0],[1,1.0]],[[0,1.5],[1,1.0],[2,1.5]],[[0,.5],[1,1],[0,.5],[1,1],[2,1]],[[1,1],[2,1],[1,1],[2,1]]];
+const counts=Array.from({length:3},()=>[0,0,0]);
+document.querySelector('#f2e-legend').innerHTML=colors.map((c,i)=>`<rect x="${95+i*105}" y="72" width="20" height="15" rx="3" fill="${c}"/><text x="${123+i*105}" y="85" font-size="14" fill="#53667e">S${i+1}</text>`).join('')+'<text x="95" y="112" fill="#627187" font-size="13">端点斜线：轨迹边界处的驻留片段</text>';
+document.querySelector('#f2e-tracks').innerHTML=tracks.map((t,i)=>{let elapsed=0;const y=140+i*47;let out=`<text x="75" y="${y+19}" text-anchor="end" fill="#627187" font-size="14">M${i+1}</text>`;t.forEach(([s,d],j)=>{out+=`<rect x="${95+elapsed*120}" y="${y}" width="${d*120}" height="29" fill="${colors[s]}" stroke="white" stroke-width="1"/>`;elapsed+=d;if(j)counts[t[j-1][0]][s]++;});out+=`<path d="M96 ${y+26}l8 -23M566 ${y+26}l8 -23" stroke="white" stroke-width="2"/>`;return out;}).join('');
+document.querySelector('#f2e-ticks').innerHTML=[0,1,2,3,4].map(t=>`<path d="M${95+t*120} 342v5" stroke="#8292a6"/><text x="${95+t*120}" y="367" text-anchor="middle" font-size="14" fill="#627187">${t}</text>`).join('');
+document.querySelector('#f2e-nodes').innerHTML=colors.map((c,i)=>`<circle cx="${683+i*164}" cy="220" r="33" fill="${c}"/><text x="${683+i*164}" y="226" fill="white" font-size="20" text-anchor="middle">S${i+1}</text>`).join('');
+const edges=[[0,1,765,168],[1,0,765,289],[1,2,929,168],[2,1,929,289]];document.querySelector('#f2e-counts').innerHTML=edges.map(([a,b,x,y])=>{document.querySelector('#f2e-e'+a+b).setAttribute('stroke-width',1+counts[a][b]);return `<text x="${x}" y="${y}">${counts[a][b]}</text>`}).join('');
+}</script></html>
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+    </div>
+    <div>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script defer src="/js/page-views.js" data-site-url="https://niuyihao.github.io"></script>
+
+
+  <!-- copyright -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">主题许可 CC BY-NC-SA 4.0</a>
+    <span>© 2026 我的博客</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">主题作者 xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+
+
+<title>寒假厦门五天四晚旅行计划 | 我的博客</title>
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/nprogress/nprogress.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/rss2.xml" title="我的博客" type="application/rss+xml">
+</head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="我的博客" />
+          我的博客
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        寒假厦门五天四晚旅行计划
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/archives/">文章</a>
+        
+          <a class="hidden sm:flex" href="/category/">分类</a>
+        
+          <a class="hidden sm:flex" href="/tag/">标签</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="RSS 订阅" href="/rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <button type="button" class="w-5 h-5" title="切换明暗主题" aria-label="切换明暗主题" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </button>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <button type="button" class="w-5 h-5" aria-label="打开菜单" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </button>
+        <button type="button" class="w-5 h-5 hidden" aria-label="关闭菜单" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/95 dark:bg-zinc-900/95 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/archives/" class="flex h-12 sm:h-auto items-center">文章</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/category/" class="flex h-12 sm:h-auto items-center">分类</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/tag/" class="flex h-12 sm:h-auto items-center">标签</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        寒假厦门五天四晚旅行计划
+      </h1>
+      <div>
+        <section class="flex flex-wrap items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2026-11-22</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>7 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>2.1k words</span>
+          </span>
+          
+            <span class="inline-flex items-center gap-3 whitespace-nowrap">
+              <span class="text-gray-400" aria-hidden="true">·</span>
+              <span class="inline-flex items-center gap-1" aria-live="polite">
+                <iconify-icon width="18" icon="mdi:eye-outline" aria-hidden="true"></iconify-icon>
+                <span>阅读量：<span id="page-views-status">加载中…</span><span id="busuanzi_container_page_pv" style="display:none"><span id="busuanzi_value_page_pv"></span> 次</span></span>
+              </span>
+            </span>
+          
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <p><strong>出行时间：</strong> 2027 年 1—2 月，五天四晚。优先比较 1 月中旬工作日的机酒价格，再结合双方假期确定日期。</p>
+<p>2027 年春节假期为 <strong>2 月 5—13 日</strong>，元旦假期为 <strong>1 月 1—3 日</strong>。选日期时同时比较节前、节后的机票和住宿总价。来源：<a target="_blank" rel="noopener" href="https://chinajob.mohrss.gov.cn/h5/c/2026-11-09/635850.shtml">2027 年部分节假日安排</a>。</p>
+<p><strong>信息核对日期：</strong> 2026 年 11 月 22 日。具体航班、房价、开放时间和预约名额，在选定出行日期后复核。</p>
+<h2 id="一、行程概览"><a href="#一、行程概览" class="headerlink" title="一、行程概览"></a>一、行程概览</h2><ul>
+<li><strong>D1：</strong> 北京 → 厦门 → 酒店 → 中山路步行街。</li>
+<li><strong>D2：</strong> 鼓浪屿一日游，住厦门市区。</li>
+<li><strong>D3：</strong> 环岛路局部散步或骑行 → 曾厝垵 → 黄厝海滩。</li>
+<li><strong>D4：</strong> 集美学村公共街区 → 龙舟池 → 十里长堤。</li>
+<li><strong>D5：</strong> 沙坡尾及厦门大学周边 → 酒店取行李 → 机场 → 北京；按航班时间调整游览长度。</li>
+</ul>
+<p>四晚住同一家酒店，优先选中山路或镇海路地铁站附近、进出方便的房源。预订时确认房间实际位置、窗户、隔音、电梯、行李寄存及退改条件，结合近期评价选择。</p>
+<h2 id="二、旅行预算"><a href="#二、旅行预算" class="headerlink" title="二、旅行预算"></a>二、旅行预算</h2><p><strong>两人同住一间房时，按每人 3500 元准备；两人合计约 7000 元。</strong> 以下为规划额度，机票与房价需在确定日期后查询。</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th align="right">每人预算</th>
+<th>计算口径</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>北京—厦门往返机票</td>
+<td align="right">1200 元</td>
+<td>以含税总价比较，同时核对行李额度、机场和退改规则</td>
+</tr>
+<tr>
+<td>四晚住宿</td>
+<td align="right">500 元</td>
+<td>按 250 元／间／晚 × 4 晚 ÷ 2 人估算</td>
+</tr>
+<tr>
+<td>船票与景点</td>
+<td align="right">150 元</td>
+<td>以普通客船、日光岩、菽庄花园为主要付费项目</td>
+</tr>
+<tr>
+<td>市内及机场交通</td>
+<td align="right">300 元</td>
+<td>地铁、公交为主，搭配必要的打车；机场接驳单独核价</td>
+</tr>
+<tr>
+<td>餐饮</td>
+<td align="right">750 元</td>
+<td>五天平均 150 元／人／天</td>
+</tr>
+<tr>
+<td>其他消费</td>
+<td align="right">200 元</td>
+<td>饮品、伴手礼等</td>
+</tr>
+<tr>
+<td>备用金</td>
+<td align="right">400 元</td>
+<td>应对价格变化、天气调整或交通追加</td>
+</tr>
+<tr>
+<td><strong>合计</strong></td>
+<td align="right"><strong>3500 元</strong></td>
+<td><strong>两人同住条件下的人均规划额度</strong></td>
+</tr>
+</tbody></table>
+<p>若每人单独住一间、仍按 250 元／间／晚计算，人均住宿为 1000 元，总预算相应为 <strong>4000 元／人</strong>。机票或房价超过上述额度时，先重算总额，再确定预订。</p>
+<p>鼓浪屿普通客船公告价为 <strong>35 元／人，含一次返程权益</strong>。日光岩、菽庄花园公示成人票价分别为 <strong>50、30 元</strong>，三项合计约 <strong>115 元／人</strong>；仅游这两个收费景点时，可比较单票与联票后选择。上述为已公布票价，实际游玩日期的价格、开放范围和优惠资格以官方售票页为准。来源：<a target="_blank" rel="noopener" href="https://www.xmferry.com/xwzx/zxgg/30544.htm">轮渡票价公告</a>、<a target="_blank" rel="noopener" href="https://www.glyylq.cn/article.php?id=697">景区票价公示</a>。</p>
+<h2 id="三、每日行程"><a href="#三、每日行程" class="headerlink" title="三、每日行程"></a>三、每日行程</h2><h3 id="D1｜抵达厦门与中山路"><a href="#D1｜抵达厦门与中山路" class="headerlink" title="D1｜抵达厦门与中山路"></a>D1｜抵达厦门与中山路</h3><p><strong>路线：</strong> 北京 → 厦门 → 酒店 → 中山路步行街。</p>
+<ul>
+<li>抵达后先办理入住、休息，再逛骑楼老街。</li>
+<li>晚餐可选择沙茶面、花生汤等小吃；抵达较晚时，将散步留给之后的晚上。</li>
+<li>北京端和厦门端均按订单确认机场、航站楼及航班时刻。</li>
+</ul>
+<p><strong>机场安排：</strong> 厦门空港 2026 年公告提出翔安机场计划于年底投用，并安排高崎机场同步结束民用运输；正式投用时间以主管部门公告为准。2027 年行程按实际航班确认机场与接驳，随后更新酒店往返路线和交通费用。来源：<a target="_blank" rel="noopener" href="https://static.cninfo.com.cn/finalpage/2026-10-01/1225592034.PDF">厦门空港机场转场相关公告</a>。</p>
+<h3 id="D2｜鼓浪屿一日游"><a href="#D2｜鼓浪屿一日游" class="headerlink" title="D2｜鼓浪屿一日游"></a>D2｜鼓浪屿一日游</h3><p><strong>建议路线：</strong> 酒店 → 东渡客运码头 → 三丘田码头 → 历史街区 → 日光岩 → 菽庄花园 → 三丘田码头 → 厦门市区。</p>
+<ol>
+<li><strong>先买票，再去对应码头。</strong> 通过厦门轮渡官方“屿见厦门”小程序选游客航线，认准订单上的出发码头。东渡客运码头位于东港路 2 号；中山路旁的厦门轮渡码头白天以居民航线运营，游客夜航另有安排。<a target="_blank" rel="noopener" href="https://m.xmferry.com/wx/hbjgd/index.htm">轮渡出行指南</a></li>
+<li><strong>提前查看预售日期。</strong> 官方常见问题页写预售 15 天（含当日），另一份出行指南写提前 10 天；以小程序可选日期及当期公告为准。<a target="_blank" rel="noopener" href="https://www.xmferry.com/wybm/wshlk/wlgpp/index.htm">官方购票常见问题</a></li>
+<li><strong>提前 1 小时到出发码头。</strong> 酒店到码头的路程另计；携带购票所用有效证件。<a target="_blank" rel="noopener" href="https://m.xmferry.com/wx/hbjgd/index.htm">轮渡出行指南</a></li>
+<li>上午安排日光岩，下午安排菽庄花园和街巷散步，午餐与休息穿插其中。购景点票时同时确认开放时段和停止入园时间，给岛上步行与排队留余量。</li>
+<li>下午确认返程航线、目的码头及末班安排，再决定离岛时间。当前规则允许凭有效凭证在 20 天内乘坐一次返程航班；返程目的码头随航线及时段变化，抵达后再安排回酒店的交通。<a target="_blank" rel="noopener" href="https://www.xmferry.com/wybm/wshlk/wlgpp/index.htm">官方返程说明</a></li>
+</ol>
+<p>若只买到内厝澳到达航线，按实际登岛码头重新排列步行顺序。穿舒适、防滑的鞋，轻装上岛。</p>
+<h3 id="D3｜海岸线散步"><a href="#D3｜海岸线散步" class="headerlink" title="D3｜海岸线散步"></a>D3｜海岸线散步</h3><p><strong>路线：</strong> 厦大白城一带 → 环岛路局部路段 → 曾厝垵 → 黄厝海滩。</p>
+<ul>
+<li>上午选一小段海岸散步或骑行，按现场允许通行的道路和骑行区域走。</li>
+<li>曾厝垵安排为短暂停留、小吃与休息；正餐根据菜单、价格和近期评价选择。</li>
+<li>前往黄厝可乘公交或网约车，将体力留给海边游览。</li>
+<li>下午看海、拍照，按风力和体感决定停留时间。黄厝以海景散步为主，日落观赏放在 D4 的十里长堤作为天气合适时的选项。</li>
+</ul>
+<h3 id="D4｜集美学村与十里长堤"><a href="#D4｜集美学村与十里长堤" class="headerlink" title="D4｜集美学村与十里长堤"></a>D4｜集美学村与十里长堤</h3><p><strong>路线：</strong> 地铁 1 号线集美学村站 → 公共街区与龙舟池 → 十里长堤 → 返回酒店。</p>
+<ul>
+<li>以公共街区和嘉庚风格建筑外观为主要游览内容；校园内部参观按各校现场开放安排。</li>
+<li>午餐后前往十里长堤，按当天导航确认步行距离，体力需要时用短途交通衔接。</li>
+<li>傍晚视天气欣赏海景，日落前确认回程交通；风大或下雨时缩短海边停留。</li>
+<li>返回中山路一带用晚餐，跨岛往返时间计入当天安排。</li>
+</ul>
+<h3 id="D5｜沙坡尾与返程"><a href="#D5｜沙坡尾与返程" class="headerlink" title="D5｜沙坡尾与返程"></a>D5｜沙坡尾与返程</h3><p><strong>路线：</strong> 退房寄存行李 → 沙坡尾与厦大周边 → 取行李 → 机场。</p>
+<ul>
+<li>上午逛沙坡尾和文创小店；午前或较早的下午航班，以取行李、赴机场为主。</li>
+<li>厦大校园作为<strong>预约成功且时间充足时的可选项目</strong>，也可放到 D3，再压缩当天海岸线安排。</li>
+<li>厦大当前通过“厦门大学访客预约系统”微信公众号免费预约，需提前 1—3 天，按预约时段持有效证件从访客中心核验入校。参观名额、通道及开放安排以官方系统为准；有名额时自行预约即可。<a target="_blank" rel="noopener" href="https://baowei.xmu.edu.cn/info/1003/1005.htm">厦大官方参观指南</a></li>
+<li>建议按国内航班<strong>起飞前约 2 小时到达航站楼</strong>规划，再叠加取行李、实际路程与交通缓冲；航空公司的值机、托运和登机截止时间须另行核对。</li>
+</ul>
+<h2 id="四、订票和消费时确认什么"><a href="#四、订票和消费时确认什么" class="headerlink" title="四、订票和消费时确认什么"></a>四、订票和消费时确认什么</h2><ol>
+<li><strong>酒店：</strong> 核对具体房型、每间总价、四晚合计、取消截止时间和入住人数；保留订单截图。</li>
+<li><strong>餐饮：</strong> 点海鲜先确认按斤、按只还是按份计价，以及加工费、份量和合计金额，再确认下单；保留账单。厦门市场监管部门提示重点核对计价单位和收费标准。<a target="_blank" rel="noopener" href="https://news.xmnn.cn/xmxw/202405/t20240529_159260.html">旅游消费提醒</a></li>
+<li><strong>船票与校园：</strong> 从官方渠道进入购票、预约页面，按订单核实航线、日期、证件和费用。</li>
+<li><strong>天气：</strong> 临行查看逐日预报与海上风力，带防风外套、适合步行的鞋和雨具。鼓浪屿日与市区活动可按天气、船票及退改条件协调顺序。</li>
+<li><strong>出发前一日：</strong> 复核航班机场、酒店地址、船班运行公告、景点开放时段及预约凭证。</li>
+</ol>
+
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+        <a href="/2026/11/22/literature-and-results-daily-delivery-methodology/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
+          从前一天的资料到当日交付：文献与实验结果汇总方法
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/11/21/today-delivery-summary-v1/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          「论文」Day1 文献与实验结果汇总
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script defer src="/js/page-views.js" data-site-url="https://niuyihao.github.io"></script>
+
+
+  <!-- copyright -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">主题许可 CC BY-NC-SA 4.0</a>
+    <span>© 2026 我的博客</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">主题作者 xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

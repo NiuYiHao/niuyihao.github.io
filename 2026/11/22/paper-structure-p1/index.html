@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+
+
+<title>「论文」论文结构 | 我的博客</title>
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/nprogress/nprogress.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/rss2.xml" title="我的博客" type="application/rss+xml">
+</head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="我的博客" />
+          我的博客
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        「论文」论文结构
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/archives/">文章</a>
+        
+          <a class="hidden sm:flex" href="/category/">分类</a>
+        
+          <a class="hidden sm:flex" href="/tag/">标签</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="RSS 订阅" href="/rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <button type="button" class="w-5 h-5" title="切换明暗主题" aria-label="切换明暗主题" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </button>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <button type="button" class="w-5 h-5" aria-label="打开菜单" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </button>
+        <button type="button" class="w-5 h-5 hidden" aria-label="关闭菜单" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/95 dark:bg-zinc-900/95 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/archives/" class="flex h-12 sm:h-auto items-center">文章</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/category/" class="flex h-12 sm:h-auto items-center">分类</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/tag/" class="flex h-12 sm:h-auto items-center">标签</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        「论文」论文结构
+      </h1>
+      <div>
+        <section class="flex flex-wrap items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2026-11-22</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>62 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>17.1k words</span>
+          </span>
+          
+            <span class="inline-flex items-center gap-3 whitespace-nowrap">
+              <span class="text-gray-400" aria-hidden="true">·</span>
+              <span class="inline-flex items-center gap-1" aria-live="polite">
+                <iconify-icon width="18" icon="mdi:eye-outline" aria-hidden="true"></iconify-icon>
+                <span>阅读量：<span id="page-views-status">加载中…</span><span id="busuanzi_container_page_pv" style="display:none"><span id="busuanzi_value_page_pv"></span> 次</span></span>
+              </span>
+            </span>
+          
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <h2 id="P1-项目核心论点提炼"><a href="#P1-项目核心论点提炼" class="headerlink" title="P1 项目核心论点提炼"></a>P1 项目核心论点提炼</h2><h3 id="P1-1-概括资料的核心论点"><a href="#P1-1-概括资料的核心论点" class="headerlink" title="P1-1 概括资料的核心论点"></a>P1-1 概括资料的核心论点</h3><h4 id="资料有哪些"><a href="#资料有哪些" class="headerlink" title="资料有哪些"></a>资料有哪些</h4><table>
+<thead>
+<tr>
+<th>资料</th>
+<th>包含内容</th>
+<th>入口</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>原始文献与精读笔记</strong></td>
+<td>Cas9、Calcineurin、TDP-43–RNA 各 10 篇，共 30 篇；包括已获取的正文、补充材料、图表及逐篇阅读记录，各篇阅读覆盖范围随交接清单标注</td>
+<td>30 篇资料交接清单</td>
+</tr>
+<tr>
+<td><strong>文献综合与引用网络</strong></td>
+<td>三个体系的生物／病理机制、构效关系、核心结论，以及反复被引用的研究、机制分歧与关键资料</td>
+<td><a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系综述</a> · <a href="https://niuyihao.github.io/2026/11/21/literature-network-and-key-evidence/">文献网络</a></td>
+</tr>
+<tr>
+<td><strong>项目已完成的实验与计算结果</strong></td>
+<td>已跑实验的设置、结果、评价指标和对应分析，用于判断项目现有证据支持哪些结论</td>
+<td><a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">已跑实验结果汇总</a></td>
+</tr>
+<tr>
+<td><strong>现有图表与数值资料</strong></td>
+<td>昨日交付汇总中的 13 组图件、2 组数值表及来源索引，用于把结果与具体证据对应起来</td>
+<td><a href="https://niuyihao.github.io/2026/11/21/today-delivery-summary-v1/">交付汇总</a></td>
+</tr>
+</tbody></table>
+<h4 id="每份资料的核心论点"><a href="#每份资料的核心论点" class="headerlink" title="每份资料的核心论点"></a>每份资料的核心论点</h4><h4 id="每份资料的核心论点v2"><a href="#每份资料的核心论点v2" class="headerlink" title="每份资料的核心论点v2"></a>每份资料的核心论点v2</h4><p>method：请记住这些标识符：“论文结构”（标记为：tmp）、<strong>原始文献与精读笔记</strong>（A）、<strong>文献综合与引用网络（B）、项目已完成的实验与计算结果（C）、现有图表与数值资料（D）</strong><br>请基于tmp，以及C，对“每份资料的核心论点——第一篇（题目：Jinek 等（2014）：<a target="_blank" rel="noopener" href="https://doi.org/10.1126/science.1247997">《Structures of Cas9 Endonucleases Reveal RNA-Mediated Conformational Activation》</a>，发表于 <em>Science</em>。）——<strong>项目已完成的实验与计算结果“作答</strong>：</p>
+<ol>
+<li>第一篇（题目：Jinek 等（2014）：<a target="_blank" rel="noopener" href="https://doi.org/10.1126/science.1247997">《Structures of Cas9 Endonucleases Reveal RNA-Mediated Conformational Activation》</a>，发表于 <em>Science</em>。）：<br>   <strong>精读笔记</strong>：引导 RNA 装载是 Cas9 构象激活的关键步骤。它促使 Cas9 的两个结构叶重新排列，形成容纳靶 DNA 的中央通道，使 Cas9 进入适于靶标搜索与识别的状态。</li>
+</ol>
+<p>   <strong>引用网络和文献综合</strong>：Jinek 等（2014）为“核酸装载与分步激活”提供了整体结构依据：RNA 装载伴随 Cas9 两叶重排，形成容纳靶 DNA 的中央通道。游离态、RNA 结合态和 RNA–DNA 结合态构成比较这一过程的结构参照。在综述的论证中，这篇研究建立了“RNA 结合—整体构象重排”的联系。后续研究进一步通过 R-loop 中间态结构、REC3 删除与回补、单分子 FRET 和切割实验，将核酸识别、结构域运动与催化功能连接起来，共同支持综合论点：<strong>Cas9 的识别与切割通过多域构象调控连接。</strong><br>   <strong>项目已完成的实验与计算结果</strong>：Jinek 等（2014）揭示了 RNA 装载伴随的 Cas9 两叶重排。围绕这一结构变化，项目中的相关计算检验了：<strong>重建方法能够恢复多大幅度的 Cas9 构象变化，以及参考结构和候选选择怎样影响恢复精度。</strong><br>   <strong>现有图表与数值资料</strong>：围绕 Jinek 等（2014）提出的“RNA 装载伴随 Cas9 两叶重排”，现有项目图表提供了<strong>构象变化恢复程度、参考结构影响和图像拟合表现</strong>三个方面的评价资料。**在论文论证中的作用：**Jinek 等的结构研究提供构象重排的生物学背景；上述项目图表用于量化重建方法恢复相关几何变化的能力。D435–E945 距离、整体 RMSD 和图像 CC 分别对应局部几何、整体结构准确性与投影一致性。</p>
+<ol start="2">
+<li><p><strong>第2篇｜Palermo 等（2016）：<a target="_blank" rel="noopener" href="https://doi.org/10.1021/acscentsci.6b00218">《Striking Plasticity of CRISPR-Cas9 and Key Role of Non-target DNA, as Revealed by Molecular Simulations》</a>，发表于 <em>ACS Central Science</em>。</strong></p>
+<p><strong>精读笔记</strong>：分子动力学模拟提示，核酸装载改变 Cas9 的域间运动耦合，非靶 DNA 通过与 HNH 连接区的接触，促进 HNH 接近切割所需的位置。</p>
+<p><strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>将本篇归入“非靶链与 HNH 激活”的原子尺度解释。它承接 S1 的整体重排问题，把关注点推进到非靶链、连接区和催化结构域之间的接触；S3 与 S7 继续讨论激活路径和 REC 叶协同运动。这一联系属于机制层面的综合。</p>
+<p><strong>项目已完成的实验与计算结果</strong>：<strong>与本篇的联系是检验重建对大幅域间变化的保留能力。</strong> 非靶链存在／去除的配对模拟、L1&#x2F;L2 接触和 H840–靶链距离属于进一步对接本篇机制所需的观测量。</p>
+<p><strong>现有图表与数值资料</strong>：F01–F02：标准基准与特征距离：当前条件下整体误差接近固定参考，域间距离范围收缩；评价大幅运动的恢复程度；D435–E945 描述 REC–RuvC 几何。 F04–F06：局部距离与 RMSD：参考及选择规则影响局部、整体结构评价；HNH 位置、非靶链接触需采用各自的指标。</p>
+</li>
+<li><p><strong>第3篇｜Palermo 等（2017）：<a target="_blank" rel="noopener" href="https://doi.org/10.1073/pnas.1707645114">《CRISPR-Cas9 conformational activation as elucidated from enhanced molecular simulations》</a>，发表于 <em>PNAS</em>。</strong></p>
+<p><strong>精读笔记</strong>：靶向分子动力学与高斯加速分子动力学描绘了 Cas9 的候选激活路径，并提出 RNA 招募中间态及 HNH 催化准备构象。</p>
+<p><strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>将本篇用于说明“增强采样描述激活路径中的构象和能量障碍”。S1 提供结构参照，S2 讨论非靶链相关接触，本篇补充状态之间如何连接的计算模型。模型中的中间态和能量障碍保留其模拟来源。</p>
+<p><strong>项目已完成的实验与计算结果</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">已跑实验结果</a>的多参考实验使用三对特征距离评价恢复结果。按距离误差选择时，三对距离 MAE 均在 3 Å 以内，整体平均 RMSD 仍约为 8 Å。<strong>该结果说明，接近特征距离真值的候选构象还需要整体结构评价。</strong> 本项目这组结果对应模拟图像重建；本篇的自由能与激活路径对应增强采样轨迹。</p>
+<p><strong>现有图表与数值资料</strong>：F04：按 RMSD 选择的特征距离：全局最优候选的局部距离仍有误差；逐构象以结构真值选择。 F05：按距离误差选择的特征距离：距离最优与整体结构最优对应不同候选；三对距离 MAE 与整体 RMSD 联合报告。 F06：全部参考的距离与 RMSD：参考起点影响候选结构覆盖；可用于筛查需进一步分析的构象。</p>
+</li>
+<li><p><strong>第4篇｜Chen 等（2017）：<a target="_blank" rel="noopener" href="https://doi.org/10.1038/nature24268">《Enhanced proofreading governs CRISPR–Cas9 targeting accuracy》</a>，发表于 <em>Nature</em>。</strong></p>
+<p><strong>精读笔记</strong>：REC3 参与核酸配对的构象检查，并通过 REC2 与 HNH 的协同变化调节催化激活；高保真变体可通过限制错配底物的激活提高特异性。</p>
+<p><strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>将本篇作为 REC3 感知与 HNH 对接之间的干预证据。<a href="https://niuyihao.github.io/2026/11/21/literature-network-and-key-evidence/">文献引用网络</a>记录 S9 → 本篇的引用关系：后续 R-loop 结构可用于比较单分子实验中的检查点和激活状态。该联系把结构观测、删除／回补与切割功能组织到同一问题下。</p>
+<p><strong>项目已完成的实验与计算结果</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">已跑实验结果</a>中，22 个参考下，逐构象按真值 RMSD 选择的 CryoDyna／CryoSTAR 平均 RMSD 为 5.09／4.99 Å。<strong>这些结果评价候选构象的整体恢复能力。</strong> 对接本篇的构效关系时，还需分别考察 REC3 配对识别、REC2 开启、HNH 对接及相应切割读数；现有项目结果提供的是这一分析前的结构方法评价。</p>
+<p><strong>现有图表与数值资料</strong>：F03：参考数量比较：真值辅助选择下，扩大参考池改善平均 RMSD；评价可供后续结构域分析的候选集合。 F04–F06：距离及整体误差：局部几何与整体结构需共同评价；HNH 相关距离应与 REC2／REC3 位置对应。</p>
+</li>
+<li><p><strong>第5篇｜Yang 等（2018）：<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.celrep.2017.12.048">《The Conformational Dynamics of Cas9 Governing DNA Cleavage Are Revealed by Single-Molecule FRET》</a>，发表于 <em>Cell Reports</em>。</strong></p>
+<p><strong>精读笔记</strong>：靶 DNA 的配对程度影响 Cas9 的构象转换及 HNH 局部位置，构象动力学参与切割前的校对。</p>
+<p><strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>用本篇说明“错配改变进入特定构象的速度”。<a href="https://niuyihao.github.io/2026/11/21/literature-network-and-key-evidence/">文献引用网络</a>既记录 S9 对本篇的引用，也保留其与 Chen、Dagdas 等研究的动力学分歧。综合时，构象定义、探针、底物和缓冲条件共同决定结果的可比性。</p>
+<p><strong>项目已完成的实验与计算结果</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">已跑实验结果</a>给出了 Cas9 候选构象的距离与 RMSD 评分，以及实验图像续训的 CC 改善。<strong>这些资料可评价结构和投影的恢复质量；本篇的转换速率需要保留时间顺序和观测间隔的轨迹。</strong> 把项目构象连接到催化前校对，还需对齐底物配对状态、状态划分和切割测量。</p>
+<p><strong>现有图表与数值资料</strong>：F04–F06：距离与 RMSD：不同选择规则改变构象恢复结果；结构几何及坐标误差。 F07–F08：CC 与学习曲线：续训提高图像一致性，训练检查点之间存在波动；横轴为训练过程；分子跃迁速率需对应物理时间轨迹。</p>
+</li>
+<li><p><strong>第6篇｜Osuka 等（2018）：<a target="_blank" rel="noopener" href="https://doi.org/10.15252/embj.201796941">《Real‐time observation of flexible domain movements in CRISPR–Cas9》</a>，发表于 <em>The EMBO Journal</em>。</strong></p>
+<p><strong>精读笔记</strong>：Cas9 在溶液中存在可逆结构域运动，核酸和 Mg²⁺ 改变构象分布与波动，HNH 的瞬态位置与 DNA 切割相关。</p>
+<p><strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>用本篇连接“结构域相对位置—状态分布—切割条件”。<a href="https://niuyihao.github.io/2026/11/21/literature-network-and-key-evidence/">文献引用网络</a>将其与 S8、S9 作为互补证据：单分子实验提供波动与驻留，冷冻电镜提供结构状态。共同关注点为 REC 重排、HNH 定位及核酸配对状态。</p>
+<p><strong>项目已完成的实验与计算结果</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">已跑实验结果</a>直接使用同名残基对评价模拟重建。标准基准的 D435–E945 范围明显收缩；多参考实验按距离误差选择时，三对距离 MAE 均低于 3 Å。<strong>这使本篇成为项目特征距离选择的直接文献依据。</strong> 对照时须区分残基坐标距离、结构估计距离与染料 FRET 效率，并保留核酸和 Mg²⁺ 条件。</p>
+<p><strong>现有图表与数值资料</strong>：F02：D435–E945 范围：当前单参考基准呈现运动幅度收缩；REC–RuvC 相对几何。 F04–F05：三对距离：局部指标恢复依赖候选选择规则；与三组探针对应的残基距离。 F06：全部参考的距离与 RMSD：局部距离与整体结构可并列评价；驻留时间及转移概率另由时间轨迹提供。</p>
+</li>
+<li><p><strong>第7篇｜Palermo 等（2018）：<a target="_blank" rel="noopener" href="https://doi.org/10.1017/S0033583518000070">《Key role of the REC lobe during CRISPR–Cas9 activation by ‘sensing’, ‘regulating’, and ‘locking’ the catalytic HNH domain》</a>，发表于 <em>Quarterly Reviews of Biophysics</em>。</strong></p>
+<p><strong>精读笔记</strong>：长时间尺度分子模拟提出 REC 叶通过感知、调节和稳定 HNH 的相对位置，协助形成催化准备构象。</p>
+<p><strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>将本篇与 S2、S3 一并归入模拟贡献。S4 的 REC3 删除／回补提供功能干预证据，本篇提供 REC–HNH 接触与运动路径的计算解释；两类资料分别承担功能联系和候选原子机制的论证。</p>
+<p><strong>项目已完成的实验与计算结果</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">已跑实验结果</a>中，多参考重建改善了整体 RMSD，并呈现局部距离选择与整体结构选择的差异。<strong>该结果提示，分析 REC–HNH 协同时，应同时查看结构域排列和关键接触。</strong> 当前汇总中的 D435–E945 主要描述 REC–RuvC 几何，REC1 盐桥和 REC3–HNH 耦合需要进一步从对应结构或有序轨迹中提取。</p>
+<p><strong>现有图表与数值资料</strong>：F03–F06：多参考、距离与 RMSD：候选覆盖和评分规则影响结构恢复；REC2 位置、REC1 接触、HNH–靶链几何。 F07：实验图像拟合：续训后投影一致性提高；将图像评分与结构域指标共同记录。</p>
+</li>
+<li><p><strong>第8篇｜Zhu 等（2019）：<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41594-019-0258-2">《Cryo-EM structures reveal coordinated domain motions that govern DNA cleavage by Cas9》</a>，发表于 <em>Nature Structural &amp; Molecular Biology</em>。</strong></p>
+<p><strong>精读笔记</strong>：Cas9 切割相关复合物的结构状态显示，HNH、REC2、REC3 与核酸发生协调重排，连接构象检查、切割及产物结合。</p>
+<p><strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>将本篇用于补充切割前后结构域与核酸的协调变化。<a href="https://niuyihao.github.io/2026/11/21/literature-network-and-key-evidence/">文献引用网络</a>把它与 S6 的实时观测、S9 的 R-loop 研究并列：结构提供空间参照，单分子轨迹提供时间与分布信息。</p>
+<p><strong>项目已完成的实验与计算结果</strong>：<strong>与本篇的联系是评估参考池对不同域间排列的覆盖。</strong> 22 个参考下真值辅助选择获得约 5 Å 的平均 RMSD；将实验图像中的候选命名为切割前、切割后或产物态，还需核对核酸组成、靶链状态和 HNH 几何。</p>
+<p><strong>现有图表与数值资料</strong>：F03：参考数量比较：扩大候选覆盖带来结构误差改善；参考池对不同结构排列的覆盖。 F06：全部参考的距离与 RMSD：不同参考产生不同局部／整体结果；筛选可与结构状态比较的候选。 F07：续训 CC：实验投影一致性改善；与核酸及结构状态标注共同解释。</p>
+</li>
+<li><p><strong>第9篇｜Pacesa 等（2022）：<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-022-05114-0">《R-loop formation and conformational activation mechanisms of Cas9》</a>，发表于 <em>Nature</em>。</strong></p>
+<p><strong>精读笔记</strong>：R-loop 的逐步形成通过构象检查点调节 Cas9 激活，核酸配对长度和局部识别接触共同影响催化构型与靶向特异性。</p>
+<p><strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>用本篇连接 R-loop 形成、构象检查点与催化激活。<a href="https://niuyihao.github.io/2026/11/21/literature-network-and-key-evidence/">文献引用网络</a>明确记录本篇引用 S4、S5，形成结构与单分子校对机制的比较线索。本次 113 篇来源文献组成的网络样本中，它的被引计数为 0，研究价值由其对当前机制问题提供的证据体现。</p>
+<p><strong>项目已完成的实验与计算结果</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">已跑实验结果</a>中的标准基准和多参考实验量化构象恢复精度。<strong>这些实验可为识别检查点相关几何提供方法基础。</strong> 对接本篇时，除 D435–E945 等全局指标，还需核对 RNA–DNA 配对长度、HNH–待切磷酸距离以及 Tyr450 周围接触；这些变量决定候选结构的具体机制含义。</p>
+<p><strong>现有图表与数值资料</strong>：F01–F02：标准基准：整体误差与域间运动恢复需分别核验；配对长度、核酸组成和原子定义统一。 F04–F06：局部／整体评价：距离近似与整体结构精度具有不同评分结果；HNH–靶链距离及局部接触单列。</p>
+</li>
+<li><p><strong>第10篇｜He 等（2025；在线发表于 2024 年）：<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jbc.2024.108120">《Conformational transitions of Streptococcus pyogenes Cas9 induced by salt and single-guide RNA binding》</a>，发表于 <em>Journal of Biological Chemistry</em>。</strong></p>
+</li>
+</ol>
+<p>   <strong>精读笔记</strong>：盐浓度改变 apo Cas9 的构象平衡，sgRNA 结合进一步改变其盐响应；作者据此提出包含构象采样的结合与激活模型。</p>
+<p>   <strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>用本篇强调盐与配体状态是比较 Cas9 FRET 群体的重要条件。它与 S6 共享 D435–E945 观测位点，并为 S1 的 RNA 诱导重排补充溶液条件和构象平衡维度。</p>
+<p>   <strong>项目已完成的实验与计算结果</strong>：<strong>与本篇比较时，需把结构距离、FRET 效率及盐依赖群体占比分开记录。</strong> 当前项目汇总提供受控图像重建结果，盐浓度梯度和 sgRNA 结合动力学是对应生物实验的条件轴。</p>
+<p>   <strong>现有图表与数值资料</strong>：F02：D435–E945 范围：量化大幅域间变化的恢复程度；与同残基对 FRET 观测建立几何联系。 F04–F06：距离与 RMSD：特征距离及整体结构可联合核验；保留原子／染料定义及结合状态。</p>
+<ol start="11">
+<li><strong>第11篇｜Shen 等（2008）：<a target="_blank" rel="noopener" href="https://doi.org/10.1074/jbc.m708513200">《The Secondary Structure of Calcineurin Regulatory Region and Conformational Change Induced by Calcium&#x2F;Calmodulin Binding》</a>，发表于 <em>Journal of Biological Chemistry</em>。</strong></li>
+</ol>
+<p>   <strong>精读笔记</strong>：作者摘要报告，Calcineurin 调控区的抑制作用与其构象状态相关，Ca²⁺／钙调蛋白（CaM）结合可改变调控区结构并解除相应抑制。</p>
+<p>   <strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>将本篇作为“CaM 结合伴随调控区结构变化”的早期背景。S13、S15 进一步通过折叠、交换保护和突变功能研究展开这一问题，S18 讨论多层自抑制。综合时按调控片段、完整酶和实验方法保留各自范围。</p>
+<p>   <strong>项目已完成的实验与计算结果</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">已跑实验结果</a>的四体系受控形变实验包含 Calcineurin。刚性模板、已知姿态柔性拟合、未知姿态柔性拟合的平均 RMSD 分别为 <strong>3.4124、2.6403、2.8004 Å</strong>，各柔性均值汇总该姿态条件下的 9 个条件。<strong>这组结果支持对给定受控形变的结构恢复评价。</strong> 本篇的 CaM 结合和抑制解除需要与调控区构象、复合物组成及酶活读数对应。</p>
+<p>   <strong>现有图表与数值资料</strong>：F12：四体系柔性拟合：Calcineurin 的柔性拟合平均误差低于刚性模板；真值来自历史拟合结构的受控形变。 <a href="https://niuyihao.github.io/files/deadline-20261121-results/four-system-summary.csv">四体系数值表</a>：比较已知与未知姿态下的结构恢复；3 次形变 × 3 个噪声水平；测试 CC 使用评价器真值姿态。</p>
+<ol start="12">
+<li><strong>第12篇｜O’Donnell 等（2011）：<a target="_blank" rel="noopener" href="https://doi.org/10.1002/prot.22917">《Recognition of β–calcineurin by the domains of calmodulin: Thermodynamic and structural evidence for distinct roles》</a>，发表于 <em>Proteins</em>。</strong></li>
+</ol>
+<p>   <strong>精读笔记</strong>：Ca²⁺ 负载的 CaM 与 Calcineurin 结合肽形成紧凑的 1∶1 复合物，CaM 两个结构域共同贡献高亲和力，并具有不同的热力学作用。</p>
+<p>   <strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>用本篇补充 CaM 如何结合 Calcineurin 的局部界面和计量关系。它与 S13 的调控区折叠、S19 的远端第二接触共同组织为“经典结合区—调控区—远端接触”的问题链，各研究保留结合肽和完整蛋白的差别。</p>
+<p>   <strong>项目已完成的实验与计算结果</strong>：<strong>对应本篇时，复合物计量和结合肽范围决定结构比较对象。</strong> CaM–肽取向与界面接触属于局部指标，可与整体 RMSD 并列评价。</p>
+<p>   <strong>现有图表与数值资料</strong>：F12 及<a href="https://niuyihao.github.io/files/deadline-20261121-results/four-system-summary.csv">四体系数值表</a>：受控形变下的整体坐标恢复；作为局部界面分析前的方法基准；CaM／肽组成需另行核对。</p>
+<ol start="13">
+<li><strong>第13篇｜Rumi-Masante 等（2012）：<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jmb.2011.11.008">《Structural Basis for Activation of Calcineurin by Calmodulin》</a>，发表于 <em>Journal of Molecular Biology</em>。</strong></li>
+</ol>
+<p>   <strong>精读笔记</strong>：CaM 结合促使 Calcineurin 调控区发生折叠，作者据此提出调控区折叠与自抑制结构域（AID）移位耦合的激活模型。</p>
+<p>   <strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>将本篇作为“CaM 结合—调控区折叠”的主要证据。<a href="https://niuyihao.github.io/2026/11/21/literature-network-and-key-evidence/">文献引用网络</a>保留它与 S18 的机制分歧：本篇强调 AID 移位，S18 强调 AID 取向调整及其他自抑制区域。比较需同时核对构建体、底物和活性条件。</p>
+<p>   <strong>项目已完成的实验与计算结果</strong>：<strong>与本篇关联时，整体误差评价还需接续调控区的局部折叠与 AID 位置分析。</strong> 受控形变数据的结构范围决定它能够表达哪些变化；光谱估计的螺旋增量和氢氘交换保护量分别由相应实验支持。</p>
+<p>   <strong>现有图表与数值资料</strong>：F12 及<a href="https://niuyihao.github.io/files/deadline-20261121-results/four-system-summary.csv">四体系数值表</a>：已知／未知姿态下的形变恢复具有不同误差；调控区残基覆盖、二级结构、AID 与催化区的相对位置。</p>
+<ol start="14">
+<li><strong>第14篇｜Ye 等（2013）：<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.cellsig.2013.08.033">《Structural basis of calcineurin activation by calmodulin》</a>，发表于 <em>Cellular Signalling</em>。</strong></li>
+</ol>
+<p>   <strong>精读笔记</strong>：作者利用共价连接的 CaM–Calcineurin 构建体研究激活状态，摘要将酶活提高与调控区的结构组织联系起来。</p>
+<p>   <strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>将本篇作为融合构建体的激活结构背景，与 S13、S18 的调控区和自抑制模型并列。它提示结构比较应明确蛋白是否共价连接，以及该构建体的活性参照。</p>
+<p>   <strong>项目已完成的实验与计算结果</strong>：<strong>对应本篇时，需先核对参考结构的构建体、CaM 组成及调控片段覆盖，再解释拟合得到的构象。</strong> 已有平均 RMSD 支持方法层面的形变恢复评价。</p>
+<p>   <strong>现有图表与数值资料</strong>：F12 及<a href="https://niuyihao.github.io/files/deadline-20261121-results/four-system-summary.csv">四体系数值表</a>：刚性与柔性模型的误差比较；融合连接、亚基组成、调控区覆盖及活性参照。</p>
+<ol start="15">
+<li><strong>第15篇｜Dunlap 等（2013）：<a target="_blank" rel="noopener" href="https://doi.org/10.1021/bi400483a">《The Distal Helix in the Regulatory Domain of Calcineurin Is Important for Domain Stability and Enzyme Function》</a>，发表于 <em>Biochemistry</em>。</strong></li>
+</ol>
+<p>   <strong>精读笔记</strong>：经典 CaM 结合区之外的远端螺旋参与 Calcineurin 调控区稳定性，并影响酶活。</p>
+<p>   <strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>将本篇连接到 S13 的调控区折叠及 S19 的远端螺旋–CaM 第二接触。<strong>远端区域的稳定性和相互作用能够影响完整酶功能</strong>，构成跨研究的共同问题。</p>
+<p>   <strong>项目已完成的实验与计算结果</strong>：<strong>远端螺旋是本篇提示的局部结构关注点。</strong> 将整体精度与功能联系起来时，需检查远端螺旋是否包含在项目模型中，以及其局部结构、相对位置和相应底物活性。</p>
+<p>   <strong>现有图表与数值资料</strong>：F12 及<a href="https://niuyihao.github.io/files/deadline-20261121-results/four-system-summary.csv">四体系数值表</a>：柔性拟合改善整体坐标误差；远端螺旋的覆盖、局部误差及调控区接触；酶活使用对应实验读数。</p>
+<ol start="16">
+<li><strong>第16篇｜Zhao 等（2014）：<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.ijbiomac.2013.12.036">《Probing the Ca2+&#x2F;CaM-induced secondary structural and conformational changes in calcineurin》</a>，发表于 <em>International Journal of Biological Macromolecules</em>。</strong></li>
+</ol>
+<p>   <strong>精读笔记</strong>：作者摘要报告，Ca²⁺／CaM 结合伴随 Calcineurin 调控区二级结构及构象变化。</p>
+<p>   <strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>把本篇放在 Ca²⁺／CaM 诱导结构变化的背景中，与 S11、S13 和 S17 共同讨论调控区对结合事件的响应。各篇采用的光谱、交换和结合测量分别反映结构组成、可及性或动态性。</p>
+<p>   <strong>项目已完成的实验与计算结果</strong>：<strong>与本篇的联系在于结构变化的测量对象。</strong> 坐标误差、二级结构信号和交换保护分别对应几何、折叠及可及性，后续对照需明确各指标之间的映射。</p>
+<p>   <strong>现有图表与数值资料</strong>：F12 及<a href="https://niuyihao.github.io/files/deadline-20261121-results/four-system-summary.csv">四体系数值表</a>：受控形变的几何恢复；先确认残基范围，再结合光谱和交换读数解释调控区变化。</p>
+<ol start="17">
+<li><strong>第17篇｜Fu 等（2015）：<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.ijbiomac.2015.04.069">《Binding of calmodulin changes the calcineurin regulatory region to a less dynamic conformation》</a>，发表于 <em>International Journal of Biological Macromolecules</em>。</strong></li>
+</ol>
+<p>   <strong>精读笔记</strong>：作者摘要报告，CaM 结合使 Calcineurin 调控区进入动态性较低的构象状态。</p>
+<p>   <strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>用本篇补充“结合之后的动态性”维度。S12 研究结合肽的亲和力，S13 研究调控区折叠，本篇研究 CNRR 动态变化；这些结论需保留肽段、构建体及测量条件。</p>
+<p>   <strong>项目已完成的实验与计算结果</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">已跑实验结果</a>中，Calcineurin 受控形变的恢复精度随姿态条件变化。<strong>这一方法结果支持评估结构差异的可恢复性。</strong> 本篇讨论的结合后动态性，需要进一步用构象分布、时间关联或相应实验量进行比较；单个结构的 RMSD 描述坐标误差。</p>
+<p>   <strong>现有图表与数值资料</strong>：F12 及<a href="https://niuyihao.github.io/files/deadline-20261121-results/four-system-summary.csv">四体系数值表</a>：形变恢复与姿态条件的关系；CaM 结合状态、构建体范围及有序轨迹／动态测量。</p>
+<ol start="18">
+<li><strong>第18篇｜Li 等（2016）：<a target="_blank" rel="noopener" href="https://doi.org/10.1038/cr.2016.14">《Cooperative autoinhibition and multi-level activation mechanisms of calcineurin》</a>，发表于 <em>Cell Research</em>。</strong></li>
+</ol>
+<p>   <strong>精读笔记</strong>：Calcineurin 通过多个自抑制区域共同限制底物接近与催化，CaM 结合及调控接触重排构成多级激活。</p>
+<p>   <strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>用本篇组织 AIS／AID 协同自抑制。<a href="https://niuyihao.github.io/2026/11/21/literature-network-and-key-evidence/">文献引用网络</a>保留 S13 的 AID 移位模型与本篇 AID 取向调整模型的差异；比较需要同时核对异构体、构建体、底物及活性条件。</p>
+<p>   <strong>项目已完成的实验与计算结果</strong>：<strong>本篇给出适合进一步检查的具体结构区域：AIS、AID 和 CNA／CNB 底物停靠界面。</strong> 只有模型覆盖相应残基并保留明确配体条件时，整体重建结果才能进一步用于这些局部接触的分析。</p>
+<p>   <strong>现有图表与数值资料</strong>：F12 及<a href="https://niuyihao.github.io/files/deadline-20261121-results/four-system-summary.csv">四体系数值表</a>：Calcineurin 的受控坐标恢复；AIS–LxVP 口袋接触、AID–催化区距离／取向及模型覆盖。</p>
+<ol start="19">
+<li><strong>第19篇｜Sun 等（2019）：<a target="_blank" rel="noopener" href="https://doi.org/10.1021/acs.biochem.9b00626">《Calmodulin–Calcineurin Interaction beyond the Calmodulin-Binding Region Contributes to Calcineurin Activation》</a>，发表于 <em>Biochemistry</em>。</strong></li>
+</ol>
+<p>   <strong>精读笔记</strong>：经典 CaM 结合区之外的远端螺旋–CaM 接触参与 Calcineurin 激活；模拟给出候选界面，突变和酶动力学支持相关表面的调控作用。</p>
+<p>   <strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>用本篇连接 S15 的远端螺旋功能与候选原子接触。模拟、突变和酶活分别提供结构模型、干预及功能读数，共同支持远端表面参与调控；具体接触路径保留其模型条件。</p>
+<p>   <strong>项目已完成的实验与计算结果</strong>：<strong>与本篇对接时，需在整体精度之外记录 CaM 和远端螺旋的组成、相对位置及接触。</strong> 项目结果可支持结构方法评价，K30E／G40D 的功能作用由文献中的突变和酶动力学支持。</p>
+<p>   <strong>现有图表与数值资料</strong>：F12 及<a href="https://niuyihao.github.io/files/deadline-20261121-results/four-system-summary.csv">四体系数值表</a>：重建形变的平均误差；CaM–远端螺旋接触和局部精度，结合底物条件解释。</p>
+<ol start="20">
+<li><strong>第20篇｜Creamer（2020）：<a target="_blank" rel="noopener" href="https://doi.org/10.1186/s12964-020-00636-4">《Calcineurin》</a>，发表于 <em>Cell Communication and Signaling</em>。</strong></li>
+</ol>
+<p>   <strong>精读笔记</strong>：Calcineurin 的 Ca²⁺依赖激活可以按静息、Ca²⁺负载和 CaM 结合等状态组织，调控区折叠及自抑制接触重排共同参与这一过程。</p>
+<p>   <strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>以本篇为 Calcineurin 调控状态的总体框架，再由 S12–S19 提供结合、折叠、界面和功能证据。<a href="https://niuyihao.github.io/2026/11/21/literature-network-and-key-evidence/">文献引用网络</a>将 CaM 结合伴随调控区重排作为多篇研究的共同主题，同时保留 AID 具体运动方式的分歧。</p>
+<p>   <strong>项目已完成的实验与计算结果</strong>：<strong>本篇状态框架有助于登记重建对象的 Ca²⁺／CaM 状态及构建体范围。</strong> 当前拟合比较评价结构恢复，静息到激活的状态对应需结合完整的样品与功能条件。</p>
+<p>   <strong>现有图表与数值资料</strong>：F12 及<a href="https://niuyihao.github.io/files/deadline-20261121-results/four-system-summary.csv">四体系数值表</a>：受控形变方法基准；先明确调控状态，再评价相应结构变化。</p>
+<ol start="21">
+<li><strong>第21篇｜Tziortzouda、Van Den Bosch 与 Hirth（2021）：<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41583-021-00431-1">《Triad of TDP43 control in neurodegeneration: autoregulation, localization and aggregation》</a>，发表于 <em>Nature Reviews Neuroscience</em>。</strong></li>
+</ol>
+<p>   <strong>精读笔记</strong>：该综述以自调控、亚细胞定位和聚集三条相互联系的过程，组织 TDP-43 稳态及神经退行性改变。</p>
+<p>   <strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>以本篇组织 TDP-43 的自调控、定位和聚集背景。S22 对应 RNA 识别，S24–S27 对应组装，S28 对应修饰 RNA 与病理，S30 对应核内滞留；这些联系按各论文实际测量展开。</p>
+<p>   <strong>项目已完成的实验与计算结果</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">已跑实验结果</a>中 TDP-43 已完成正确参考初始化下的朝向恢复：固定结构生成的图像每条件 150 帧，清晰图像与 SNR＝1 的误差中位数分别为 <strong>0.541°、1.515°</strong>。<strong>该结果评价观测几何恢复，为后续结构分析提供方法基础。</strong> 自调控、定位和物态分别需要相应 RNA、细胞分布和组装测量。</p>
+<p>   <strong>现有图表与数值资料</strong>：T01 及<a href="https://niuyihao.github.io/files/deadline-20261121-results/tdp-pose-errors.csv">逐帧朝向误差</a>：所测噪声条件下，已知结构初始化可恢复朝向；固定形状的相对旋转角误差。</p>
+<ol start="22">
+<li><strong>第22篇｜Lukavsky 等（2013）：<a target="_blank" rel="noopener" href="https://doi.org/10.1038/nsmb.2698">《Molecular basis of UG-rich RNA recognition by the human splicing factor TDP-43》</a>，发表于 <em>Nature Structural &amp; Molecular Biology</em>。</strong></li>
+</ol>
+<p>   <strong>精读笔记</strong>：TDP-43 串联 RNA 识别基序 RRM1／RRM2 共同识别 UG-rich RNA，域间界面与特定碱基接触共同影响结合及剪接。</p>
+<p>   <strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>用本篇建立“碱基识别—RRM 界面—剪接”的联系。<a href="https://niuyihao.github.io/2026/11/21/literature-network-and-key-evidence/">文献引用网络</a>记录 S27 对本篇的引用，把局部 RNA 识别接到多价组装问题；S29 进一步模拟 RNA 对串联 RRM 动态稳定性的影响。</p>
+<p>   <strong>项目已完成的实验与计算结果</strong>：<strong>与本篇的联系是为 RRM 相对几何和 RNA 接触分析建立观测方向的基准。</strong> 现有误差评分对应朝向；R151–D247 接触、RRM 相对位置和 RNA 结合构型需由相应结构资料评价。</p>
+<p>   <strong>现有图表与数值资料</strong>：T01 及<a href="https://niuyihao.github.io/files/deadline-20261121-results/tdp-pose-errors.csv">逐帧朝向误差</a>：清晰／SNR＝1 条件下的朝向误差中位数为 0.541°／1.515°；作为方向恢复基准；局部界面另需接触与结构误差。</p>
+<ol start="23">
+<li><strong>第23篇｜Wei 等（2016）：<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.bbrc.2016.03.158">《Inter-domain interactions of TDP-43 as decoded by NMR》</a>，发表于 <em>Biochemical and Biophysical Research Communications</em>。</strong></li>
+</ol>
+<p>   <strong>精读笔记</strong>：作者根据 NMR 资料讨论 TDP-43 的域间动态相互作用，并在摘要中提出朊样域参与协调开放／闭合构象交换的模型。</p>
+<p>   <strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>将本篇作为域间相互作用和构象模型的线索。它与 S22 的串联 RRM–RNA 结构、S29 的动态模拟共同提示：域间组织、核酸配体和蛋白构建体应在比较中逐项登记。</p>
+<p>   <strong>项目已完成的实验与计算结果</strong>：<strong>对接本篇提出的域间交换时，需进一步区分整体转动与内部结构域重排。</strong> 已完成的正确参考测试给出朝向基准，内部开放／闭合运动需由具有构象变化的结构或轨迹资料承接。</p>
+<p>   <strong>现有图表与数值资料</strong>：T01 及<a href="https://niuyihao.github.io/files/deadline-20261121-results/tdp-pose-errors.csv">逐帧朝向误差</a>：已知固定形状的旋转恢复；对照构象变化时保留整体旋转、域间几何和核酸类型。</p>
+<ol start="24">
+<li><strong>第24篇｜Conicella 等（2016）：<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.str.2016.07.007">《ALS Mutations Disrupt Phase Separation Mediated by α-Helical Structure in the TDP-43 Low-Complexity C-Terminal Domain》</a>，发表于 <em>Structure</em>。</strong></li>
+</ol>
+<p>   <strong>精读笔记</strong>：TDP-43 C 端低复杂度区的局部 α 螺旋参与分子间接触和液–液相分离，ALS 相关突变可改变这一组装过程。</p>
+<p>   <strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>将本篇与 S26 组织为“局部螺旋—自缔合—组装”的证据链。<a href="https://niuyihao.github.io/2026/11/21/literature-network-and-key-evidence/">文献引用网络</a>记录 S27 对本篇及 S22 的引用，将蛋白自身相互作用和特异 RNA 识别连接到多价凝聚。</p>
+<p>   <strong>项目已完成的实验与计算结果</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">已跑实验结果</a>的 TDP-43 已完成结果为固定结构朝向恢复。<strong>它与本篇的联系属于成像分析的方法准备。</strong> CTD 螺旋、自缔合和相分离需要对应残基覆盖、分子数及浓度条件；这些量由本篇 NMR、模拟和液滴实验提供。</p>
+<p>   <strong>现有图表与数值资料</strong>：T01 及<a href="https://niuyihao.github.io/files/deadline-20261121-results/tdp-pose-errors.csv">逐帧朝向误差</a>：固定形状的朝向基准；CTD 二级结构、分子间接触、浓度依赖相分离。</p>
+<ol start="25">
+<li><strong>第25篇｜Wang 等（2018）：<a target="_blank" rel="noopener" href="https://doi.org/10.15252/embj.201797452">《A single N‐terminal phosphomimic disrupts TDP‐43 polymerization, phase separation, and RNA splicing》</a>，发表于 <em>The EMBO Journal</em>。</strong></li>
+</ol>
+<p>   <strong>精读笔记</strong>：TDP-43 N 端结构域（NTD）的头尾组装参与全长蛋白相分离和剪接，S48E 磷酸化模拟替换可削弱组装并改变功能。</p>
+<p>   <strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>用本篇补充 NTD 在组装中的作用，与 S24／S26 的 CTD 接触以及 S27 的 RNA 多价作用共同构成组装框架。S30 进一步把这些相互作用连接到核内滞留。</p>
+<p>   <strong>项目已完成的实验与计算结果</strong>：<strong>对应本篇时，组装状态和寡聚计量是选择结构参考的重要条件。</strong> 现有结果提供姿态方法基准；NTD 头尾接触、S48E 效应及剪接改变分别由本篇的结构、溶液和细胞实验支持。</p>
+<p>   <strong>现有图表与数值资料</strong>：T01 及<a href="https://niuyihao.github.io/files/deadline-20261121-results/tdp-pose-errors.csv">逐帧朝向误差</a>：正确参考初始化下的朝向精度；先登记参考的单体／组装状态，再解释整体形状。</p>
+<ol start="26">
+<li><strong>第26篇｜Conicella 等（2020）：<a target="_blank" rel="noopener" href="https://doi.org/10.1073/pnas.1912055117">《TDP-43 α-helical structure tunes liquid–liquid phase separation and function》</a>，发表于 <em>PNAS</em>。</strong></li>
+</ol>
+<p>   <strong>精读笔记</strong>：TDP-43 C 端局部 α 螺旋的稳定性能够调节自缔合、液–液相分离和功能，G335A／G338A 等替换提供增强螺旋倾向的干预。</p>
+<p>   <strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>将本篇与 S24 并列：S24 研究疾病相关替换，本篇通过设计突变增强局部螺旋倾向，共同支持局部二级结构参与组装调控。结构、相分离和剪接使用各自的构建体与测量条件。</p>
+<p>   <strong>项目已完成的实验与计算结果</strong>：<strong>与本篇相关的结构解释需要进一步关注 CTD 螺旋及分子间接触。</strong> 只有在项目结构包含这些区域并明确组装条件时，重建构象才可与文献中的螺旋／二聚模型比较；流动性及剪接由相应功能测量承接。</p>
+<p>   <strong>现有图表与数值资料</strong>：T01 及<a href="https://niuyihao.github.io/files/deadline-20261121-results/tdp-pose-errors.csv">逐帧朝向误差</a>：所测图像条件下的朝向恢复；螺旋倾向、二聚界面、饱和浓度及流动性分项记录。</p>
+<ol start="27">
+<li><strong>第27篇｜Grese 等（2021）：<a target="_blank" rel="noopener" href="https://doi.org/10.15252/embr.202153632">《Specific RNA interactions promote TDP-43 multivalent phase separation and maintain liquid properties》</a>，发表于 <em>EMBO Reports</em>。</strong></li>
+</ol>
+<p>   <strong>精读笔记</strong>：特异 RNA 结合及结合位点数量调节 TDP-43 的多价凝聚，特定 GU-rich RNA 条件下可促进组装并维持液态性质。</p>
+<p>   <strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/literature-network-and-key-evidence/">文献引用网络</a>记录本篇引用 S22 与 S24，连接 RNA 识别及 CTD 自相互作用。<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>将其与 S25／S26 共同组织为多价网络，并与 S28 的修饰 CAG RNA 比较；RNA 序列、长度、修饰及浓度决定效应的具体含义。</p>
+<p>   <strong>项目已完成的实验与计算结果</strong>：<strong>对接本篇时，RNA 位点数、蛋白计量和组装形态决定应该比较哪类结构对象。</strong> 当前方法基准为观察方向提供参照，液滴融合、流动性及相分离阈值由组装实验单独量化。</p>
+<p>   <strong>现有图表与数值资料</strong>：T01 及<a href="https://niuyihao.github.io/files/deadline-20261121-results/tdp-pose-errors.csv">逐帧朝向误差</a>：固定形状方向恢复；明确粒子／组装体身份、RNA 组成和尺度。 F13：文献引用频次：定位阅读清单内反复出现的研究；具体 RNA 识别与组装联系由 S22、S24 及本篇原文支持。</p>
+<ol start="28">
+<li><strong>第28篇｜Sun 等（2023）：<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-023-06701-5">《m1A in CAG repeat RNA binds to TDP-43 and induces neurodegeneration》</a>，发表于 <em>Nature</em>。</strong></li>
+</ol>
+<p>   <strong>精读笔记</strong>：CAG 重复 RNA 上的 m¹A 修饰增强 TDP-43 结合，并在所研究体系中联系到异常定位、凝胶样组装及神经退行性表型。</p>
+<p>   <strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>用本篇连接 RNA 化学修饰、蛋白结合和病理相关变化。<a href="https://niuyihao.github.io/2026/11/21/literature-network-and-key-evidence/">文献引用网络</a>将其与 S27 的 GU-rich RNA 液态凝聚比较，强调序列、修饰和环境依赖。本次 113 篇来源文献组成的引用网络中，该篇计数为 0，其重要性来自对当前病理机制问题的直接证据。</p>
+<p>   <strong>项目已完成的实验与计算结果</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">已跑实验结果</a>的 TDP-43 已完成测试为已知结构初始化的朝向恢复。<strong>这一结果为成像解释提供几何方法基准。</strong> 将项目观察联系到本篇的病理机制，需同时确认 RNA 序列及修饰、蛋白组成、组装物态和细胞／模型条件；这些身份与功能信息决定结构解释的范围。</p>
+<p>   <strong>现有图表与数值资料</strong>：T01 及<a href="https://niuyihao.github.io/files/deadline-20261121-results/tdp-pose-errors.csv">逐帧朝向误差</a>：所测固定形状的朝向恢复；RNA 修饰身份、样品组成和组装状态。 F13：文献引用频次：描述当前阅读网络中的连接；病理机制评价以本篇干预与功能证据为依据。</p>
+<ol start="29">
+<li><strong>第29篇｜Ozguney、Mohanty 与 Mittal（2024）：<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.bpj.2024.09.031">《RNA binding tunes the conformational plasticity and intradomain stability of TDP-43 tandem RNA recognition motifs》</a>，发表于 <em>Biophysical Journal</em>。</strong></li>
+</ol>
+<p>   <strong>精读笔记</strong>：全原子模拟提示，GU-rich RNA 结合限制 TDP-43 串联 RRM 的构象分布，并影响 RRM1 及域间界面的稳定性。</p>
+<p>   <strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>将本篇接在 S22 的 NMR 结构与界面突变之后：结构实验描述接触和功能，模拟描述接触在时间中的占据及构象分布。两类资料共同关注 RNA 对串联 RRM 组织的影响。</p>
+<p>   <strong>项目已完成的实验与计算结果</strong>：<strong>与本篇最直接的后续关联是比较 RRM 相对位置、域内稳定性及界面接触。</strong> 现有 0.541°／1.515°中位角误差评价旋转恢复；构象分布和接触占据需基于相应坐标集合或有序轨迹计算。</p>
+<p>   <strong>现有图表与数值资料</strong>：T01 及<a href="https://niuyihao.github.io/files/deadline-20261121-results/tdp-pose-errors.csv">逐帧朝向误差</a>：已知形状、指定噪声条件下的朝向精度；RRM 间距离／取向、域内结构、R151–D247 接触占据分项评价。</p>
+<ol start="30">
+<li><strong>第30篇｜dos Passos 等（2024）：<a target="_blank" rel="noopener" href="https://doi.org/10.1371/journal.pbio.3002527">《RNA-mediated ribonucleoprotein assembly controls TDP-43 nuclear retention》</a>，发表于 <em>PLOS Biology</em>。</strong></li>
+</ol>
+<p>   <strong>精读笔记</strong>：RNA 结合及 TDP-43 N、C 端相互作用促进大型核糖核蛋白复合物（RNP）组装，组装有助于核内滞留。</p>
+<p>   <strong>引用网络和文献综合</strong>：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系文献综合</a>将本篇连接到 S22 的 RNA 识别、S25 的 NTD 组装及 S26／S27 的多价相互作用，把这些分子过程进一步联系到核内定位。与 S28 比较时，RNA 条件、复合物形态和细胞背景共同决定定位及病理解释。</p>
+<p>   <strong>项目已完成的实验与计算结果</strong>：<strong>对接本篇时，成像对象的组装身份和计量是结构解释的前提。</strong> 分子或复合物的几何恢复属于结构方法层；核内滞留由细胞定位、穿梭和组装测量共同评价。</p>
+<p>   <strong>现有图表与数值资料</strong>：T01 及<a href="https://niuyihao.github.io/files/deadline-20261121-results/tdp-pose-errors.csv">逐帧朝向误差</a>：固定参考下的朝向恢复基准；复合物大小、组装计量、RNA 组成及细胞分布。</p>
+<h3 id="P1-2-标记与项目直接相关的内容"><a href="#P1-2-标记与项目直接相关的内容" class="headerlink" title="P1-2 标记与项目直接相关的内容"></a>P1-2 标记与项目直接相关的内容</h3><p>什么叫与项目直接相关。我们的项目就是通过LPTEM解出时序信息。每帧有着真实的时间标记。我们可以得到和FRET一样的具有时间戳的，不止两个DOMAIN的距离。这是FRET做不到的。我们可以看到dynamic。我们可以解某些domain的在发挥作用时的变化。换言之：</p>
+<p>本项目拟利用液相透射电子显微镜（LP-TEM）图像序列，重建蛋白质构象随时间的变化。重点量化多个结构域之间的距离、相对取向及其协同变化，并在结构分辨能力支持的范围内分析结合界面和接触关系。</p>
+<p>项目将构象变化与明确的配体、样品及实验条件对应，结合已有结构和功能研究，探讨这些变化的生物学意义。</p>
+<p>以“论文结构——每份资料的核心论点”（资料 α）为来源，围绕以下问题标记相关内容：</p>
+<table>
+<thead>
+<tr>
+<th>研究体系</th>
+<th>主要关注对象</th>
+<th>拟回答的问题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Cas9</strong></td>
+<td>结构域相对运动及协同变化</td>
+<td>各结构域的距离和取向如何随时间变化？不同区域的变化具有怎样的关联？这些变化如何对应核酸结合状态及切割相关构象？</td>
+</tr>
+<tr>
+<td><strong>Calcineurin</strong></td>
+<td>结合界面、调控区及结构域排列</td>
+<td>CaM 结合涉及哪些区域？在明确的结合条件下，调控区、自抑制片段和催化区域之间的位置及接触关系如何变化？</td>
+</tr>
+<tr>
+<td><strong>TDP-43</strong></td>
+<td>RNA 结合界面及 RRM1–RRM2 相对运动</td>
+<td>RNA 与哪些区域接触？两个 RNA 识别结构域的距离、取向及界面接触如何变化？这些变化与 RNA 结合条件具有怎样的联系？</td>
+</tr>
+</tbody></table>
+<p>“与项目直接相关的内容”指能够支持以下至少一项工作的资料：</p>
+<ol>
+<li><strong>选择观察区域</strong>：明确需要关注的结构域、结合界面或关键残基。</li>
+<li><strong>确定测量指标</strong>：选择距离、相对取向、接触关系、状态占比或时间变化指标。</li>
+<li><strong>建立比较条件</strong>：明确配体状态、构建体范围、溶液环境及实验条件。</li>
+<li><strong>解释结构变化</strong>：提供构象参照、候选机制或相应的功能证据。</li>
+<li><strong>评价结果可靠性</strong>：提供结构真值、方法对照及误差评价依据。</li>
+</ol>
+<p>每条资料采用“<strong>相关内容—项目用途—适用条件</strong>”记录，并用一句话概括其作用，例如：<strong>帮助选择观察区域和比较状态。</strong></p>
+<h4 id="逐条标记"><a href="#逐条标记" class="headerlink" title="逐条标记"></a>逐条标记</h4><p>以下标记用于选择观察区域、测量指标和比较条件。时序分析结合原始帧时间、连续追踪身份、采样间隔及重建精度进行。</p>
+<h5 id="Cas9"><a href="#Cas9" class="headerlink" title="Cas9"></a>Cas9</h5><ul>
+<li><p><strong>S1｜Jinek 等（2014）：<a target="_blank" rel="noopener" href="https://doi.org/10.1126/science.1247997">《Structures of Cas9 Endonucleases Reveal RNA-Mediated Conformational Activation》</a>，发表于 <em>Science</em>。</strong></p>
+<p>帮助选择观察区域和比较状态。</p>
+</li>
+<li><p><strong>S2｜Palermo 等（2016）：<a target="_blank" rel="noopener" href="https://doi.org/10.1021/acscentsci.6b00218">《Striking Plasticity of CRISPR-Cas9 and Key Role of Non-target DNA, as Revealed by Molecular Simulations》</a>，发表于 <em>ACS Central Science</em>。</strong></p>
+<p>帮助选择 HNH 及其连接区作为观察区域，并把核酸接触与结构域运动联系起来。</p>
+</li>
+<li><p><strong>S3｜Palermo 等（2017）：<a target="_blank" rel="noopener" href="https://doi.org/10.1073/pnas.1707645114">《CRISPR-Cas9 conformational activation as elucidated from enhanced molecular simulations》</a>，发表于 <em>PNAS</em>。</strong></p>
+<p>帮助选择描述结构域运动的距离指标，并为比较中间构象和候选变化路径提供参照。</p>
+</li>
+<li><p><strong>S4｜Chen 等（2017）：<a target="_blank" rel="noopener" href="https://doi.org/10.1038/nature24268">《Enhanced proofreading governs CRISPR–Cas9 targeting accuracy》</a>，发表于 <em>Nature</em>。</strong></p>
+<p>帮助选择 REC2、REC3 与 HNH 的协同变化作为观察重点，并联系 DNA 识别与切割功能。</p>
+</li>
+<li><p><strong>S5｜Yang 等（2018）：<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.celrep.2017.12.048">《The Conformational Dynamics of Cas9 Governing DNA Cleavage Are Revealed by Single-Molecule FRET》</a>，发表于 <em>Cell Reports</em>。</strong></p>
+<p>帮助区分构象状态，关注状态转换与停留时间，并比较 DNA 配对条件对构象动态的影响。</p>
+</li>
+<li><p><strong>S6｜Osuka 等（2018）：<a target="_blank" rel="noopener" href="https://doi.org/10.15252/embj.201796941">《Real‐time observation of flexible domain movements in CRISPR–Cas9》</a>，发表于 <em>The EMBO Journal</em>。</strong></p>
+<p>为项目选择三对结构域距离提供实验文献依据，并帮助比较核酸结合及 Mg²⁺ 条件下的构象变化。</p>
+</li>
+<li><p><strong>S7｜Palermo 等（2018）：<a target="_blank" rel="noopener" href="https://doi.org/10.1017/S0033583518000070">《Key role of the REC lobe during CRISPR–Cas9 activation by ‘sensing’, ‘regulating’, and ‘locking’ the catalytic HNH domain》</a>，发表于 <em>Quarterly Reviews of Biophysics</em>。</strong></p>
+<p>帮助选择 REC–HNH 协同运动及关键接触作为动态观察对象。</p>
+</li>
+<li><p><strong>S8｜Zhu 等（2019）：<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41594-019-0258-2">《Cryo-EM structures reveal coordinated domain motions that govern DNA cleavage by Cas9》</a>，发表于 <em>Nature Structural &amp; Molecular Biology</em>。</strong></p>
+<p>帮助选择切割相关构象作为参照，并观察 HNH 与 REC 区域的协调变化。</p>
+</li>
+<li><p><strong>S9｜Pacesa 等（2022）：<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-022-05114-0">《R-loop formation and conformational activation mechanisms of Cas9》</a>，发表于 <em>Nature</em>。</strong></p>
+<p>帮助把 RNA–DNA 配对程度、HNH 位置和局部识别接触放在一起比较。</p>
+</li>
+<li><p><strong>S10｜He 等（2025；在线发表于 2024 年）：<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jbc.2024.108120">《Conformational transitions of Streptococcus pyogenes Cas9 induced by salt and single-guide RNA binding》</a>，发表于 <em>Journal of Biological Chemistry</em>。</strong></p>
+<p>帮助选择溶液条件作为比较轴，并区分距离变化与构象群体变化。</p>
+</li>
+</ul>
+<h5 id="Calcineurin"><a href="#Calcineurin" class="headerlink" title="Calcineurin"></a>Calcineurin</h5><ul>
+<li><p><strong>S11｜Shen 等（2008）：<a target="_blank" rel="noopener" href="https://doi.org/10.1074/jbc.m708513200">《The Secondary Structure of Calcineurin Regulatory Region and Conformational Change Induced by Calcium&#x2F;Calmodulin Binding》</a>，发表于 <em>Journal of Biological Chemistry</em>。</strong></p>
+<p>帮助选择 CaM 结合区与调控区作为观察区域，联系结合和结构变化。</p>
+</li>
+<li><p><strong>S12｜O’Donnell 等（2011）：<a target="_blank" rel="noopener" href="https://doi.org/10.1002/prot.22917">《Recognition of β–calcineurin by the domains of calmodulin: Thermodynamic and structural evidence for distinct roles》</a>，发表于 <em>Proteins</em>。</strong></p>
+<p>帮助选择 CaM–结合肽界面及相对取向，并明确比较对象的组成。</p>
+</li>
+<li><p><strong>S13｜Rumi-Masante 等（2012）：<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jmb.2011.11.008">《Structural Basis for Activation of Calcineurin by Calmodulin》</a>，发表于 <em>Journal of Molecular Biology</em>。</strong></p>
+<p>帮助同时关注调控区折叠与 AID 位置，比较结合前后的结构组织。</p>
+</li>
+<li><p><strong>S14｜Ye 等（2013）：<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.cellsig.2013.08.033">《Structural basis of calcineurin activation by calmodulin》</a>，发表于 <em>Cellular Signalling</em>。</strong></p>
+<p>帮助核对参考结构的融合连接与组成，再选择可比较的激活构象。</p>
+</li>
+<li><p><strong>S15｜Dunlap 等（2013）：<a target="_blank" rel="noopener" href="https://doi.org/10.1021/bi400483a">《The Distal Helix in the Regulatory Domain of Calcineurin Is Important for Domain Stability and Enzyme Function》</a>，发表于 <em>Biochemistry</em>。</strong></p>
+<p>帮助把远端螺旋列为局部观察对象，并联系相应底物条件下的功能测量。</p>
+</li>
+<li><p><strong>S16｜Zhao 等（2014）：<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.ijbiomac.2013.12.036">《Probing the Ca2+&#x2F;CaM-induced secondary structural and conformational changes in calcineurin》</a>，发表于 <em>International Journal of Biological Macromolecules</em>。</strong></p>
+<p>帮助区分整体位置变化与局部折叠变化，选择对应的评价指标。</p>
+</li>
+<li><p><strong>S17｜Fu 等（2015）：<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.ijbiomac.2015.04.069">《Binding of calmodulin changes the calcineurin regulatory region to a less dynamic conformation》</a>，发表于 <em>International Journal of Biological Macromolecules</em>。</strong></p>
+<p>帮助把结合后的动态性纳入观察，比较构象分布与时间变化。</p>
+</li>
+<li><p><strong>S18｜Li 等（2016）：<a target="_blank" rel="noopener" href="https://doi.org/10.1038/cr.2016.14">《Cooperative autoinhibition and multi-level activation mechanisms of calcineurin》</a>，发表于 <em>Cell Research</em>。</strong></p>
+<p>帮助选择 AIS、AID 与底物停靠界面，并比较调控接触的变化。</p>
+</li>
+<li><p><strong>S19｜Sun 等（2019）：<a target="_blank" rel="noopener" href="https://doi.org/10.1021/acs.biochem.9b00626">《Calmodulin–Calcineurin Interaction beyond the Calmodulin-Binding Region Contributes to Calcineurin Activation》</a>，发表于 <em>Biochemistry</em>。</strong></p>
+<p>帮助选择 CaM–远端螺旋候选界面，并把接触变化与功能证据对应。</p>
+</li>
+<li><p><strong>S20｜Creamer（2020）：<a target="_blank" rel="noopener" href="https://doi.org/10.1186/s12964-020-00636-4">《Calcineurin》</a>，发表于 <em>Cell Communication and Signaling</em>。</strong></p>
+<p>帮助建立 Calcineurin 的状态分类，组织结合位点与结构变化的比较。</p>
+</li>
+</ul>
+<h5 id="TDP-43–RNA"><a href="#TDP-43–RNA" class="headerlink" title="TDP-43–RNA"></a>TDP-43–RNA</h5><ul>
+<li><p><strong>S21｜Tziortzouda、Van Den Bosch 与 Hirth（2021）：<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41583-021-00431-1">《Triad of TDP43 control in neurodegeneration: autoregulation, localization and aggregation》</a>，发表于 <em>Nature Reviews Neuroscience</em>。</strong></p>
+<p>帮助组织 TDP-43 的功能背景，并为结合、组装和定位问题选择对应证据。</p>
+</li>
+<li><p><strong>S22｜Lukavsky 等（2013）：<a target="_blank" rel="noopener" href="https://doi.org/10.1038/nsmb.2698">《Molecular basis of UG-rich RNA recognition by the human splicing factor TDP-43》</a>，发表于 <em>Nature Structural &amp; Molecular Biology</em>。</strong></p>
+<p>帮助选择 RNA 结合界面与 RRM 间接触，连接结合位点和结构域排列。</p>
+</li>
+<li><p><strong>S23｜Wei 等（2016）：<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.bbrc.2016.03.158">《Inter-domain interactions of TDP-43 as decoded by NMR》</a>，发表于 <em>Biochemical and Biophysical Research Communications</em>。</strong></p>
+<p>帮助选择域间距离与取向，并区分整体转动和内部重排。</p>
+</li>
+<li><p><strong>S24｜Conicella 等（2016）：<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.str.2016.07.007">《ALS Mutations Disrupt Phase Separation Mediated by α-Helical Structure in the TDP-43 Low-Complexity C-Terminal Domain》</a>，发表于 <em>Structure</em>。</strong></p>
+<p>在项目覆盖 CTD 时，帮助选择局部螺旋和分子间接触作为观察对象。</p>
+</li>
+<li><p><strong>S25｜Wang 等（2018）：<a target="_blank" rel="noopener" href="https://doi.org/10.15252/embj.201797452">《A single N‐terminal phosphomimic disrupts TDP‐43 polymerization, phase separation, and RNA splicing》</a>，发表于 <em>The EMBO Journal</em>。</strong></p>
+<p>在项目覆盖 NTD 时，帮助识别组装界面并登记蛋白计量。</p>
+</li>
+<li><p><strong>S26｜Conicella 等（2020）：<a target="_blank" rel="noopener" href="https://doi.org/10.1073/pnas.1912055117">《TDP-43 α-helical structure tunes liquid–liquid phase separation and function》</a>，发表于 <em>PNAS</em>。</strong></p>
+<p>在项目覆盖 CTD 时，帮助比较螺旋与二聚界面的变化。</p>
+</li>
+<li><p><strong>S27｜Grese 等（2021）：<a target="_blank" rel="noopener" href="https://doi.org/10.15252/embr.202153632">《Specific RNA interactions promote TDP-43 multivalent phase separation and maintain liquid properties》</a>，发表于 <em>EMBO Reports</em>。</strong></p>
+<p>帮助把 RNA 结合位点数量、蛋白计量与组装形态联系起来。</p>
+</li>
+<li><p><strong>S28｜Sun 等（2023）：<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-023-06701-5">《m1A in CAG repeat RNA binds to TDP-43 and induces neurodegeneration》</a>，发表于 <em>Nature</em>。</strong></p>
+<p>帮助选择 RNA 修饰与序列作为比较条件，联系结合和组装变化。</p>
+</li>
+<li><p><strong>S29｜Ozguney、Mohanty 与 Mittal（2024）：<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.bpj.2024.09.031">《RNA binding tunes the conformational plasticity and intradomain stability of TDP-43 tandem RNA recognition motifs》</a>，发表于 <em>Biophysical Journal</em>。</strong></p>
+<p>帮助选择 RRM 间距离、取向和接触指标，并比较 RNA 结合前后的动态。</p>
+</li>
+<li><p><strong>S30｜dos Passos 等（2024）：<a target="_blank" rel="noopener" href="https://doi.org/10.1371/journal.pbio.3002527">《RNA-mediated ribonucleoprotein assembly controls TDP-43 nuclear retention》</a>，发表于 <em>PLOS Biology</em>。</strong></p>
+<p>帮助明确成像对象的组装身份，并连接 RNA 结合、复合物形成与定位背景。</p>
+</li>
+</ul>
+<h5 id="项目实验与计算资料"><a href="#项目实验与计算资料" class="headerlink" title="项目实验与计算资料"></a>项目实验与计算资料</h5><ul>
+<li><p><strong>S31｜标准模拟基准——Cas9 的构象恢复与 1AKE 控制。</strong></p>
+<p>帮助检验 Cas9 域间运动的恢复幅度，并定位参考依赖问题。</p>
+</li>
+<li><p><strong>S32｜Cas9 多参考模拟——参考覆盖与候选选择。</strong></p>
+<p>帮助评估参考覆盖和候选选择对结构域运动恢复的影响。</p>
+</li>
+<li><p><strong>S33｜Cas9 实验图像——从模板匹配最优起点继续训练。</strong></p>
+<p>帮助量化实验图像拟合增益，并为时序结构解释配套几何核验。</p>
+</li>
+<li><p><strong>S34｜TDP-43——已知结构初始化的朝向恢复。</strong></p>
+<p>帮助建立逐帧朝向恢复基准，为区分整体转动与内部运动提供条件。</p>
+</li>
+<li><p><strong>S35｜几何柔性拟合——1AKE、FUS 及三视角控制。</strong></p>
+<p>帮助建立图像拟合和结构准确性的联合评价方式。</p>
+</li>
+<li><p><strong>S36｜四体系受控扩展——噪声、姿态与柔性模型的比较。</strong></p>
+<p>帮助检验 Cas9 与 Calcineurin 在不同噪声和姿态条件下的形变恢复能力。</p>
+</li>
+<li><p><strong>S37｜FUS 全原子开发对照——100 ps 四臂实验。</strong></p>
+<p>帮助拆分结构优化中图像、结构约束与物理项的贡献，作为方法开发参照。</p>
+</li>
+</ul>
+<h3 id="P1-3-交付"><a href="#P1-3-交付" class="headerlink" title="P1-3 交付"></a>P1-3 交付</h3><h2 id="P2-明确问题和结论"><a href="#P2-明确问题和结论" class="headerlink" title="P2 明确问题和结论"></a>P2 明确问题和结论</h2><h3 id="P2-1-整理科学问题"><a href="#P2-1-整理科学问题" class="headerlink" title="P2-1 整理科学问题"></a>P2-1 整理科学问题</h3><p>目标：比较已有解释，结合项目结果，整理科学问题。</p>
+<p>做什么呢？其实文献里有很多东西，就比如说cas9，它解释了切割过程的domain变化，或者说它想方设法说明了domain变化很重要。它论述了一个gap。这个gap就是我们要学习的。它解决了gap。我们就要从它们已有的资料里，结合我们这个新型实验技术，找出gap。我们的特长是时间信息，要想办法利用起来呢。比较已有的，怎么比较啊？找一致结论的界限，它们有一些共同结论，也有一些特异性结论。比如说cas9。具体哪个domain随着时间怎样变化的可能是不知道的。只知道位点距离，但不知道domain如何摆动，或者其他的类似的东西。比如时间分辨率。</p>
+<p>也就是说：<br><strong>目标</strong>：比较已有研究的解释，结合项目结果，识别尚未解决的科学问题。</p>
+<p><strong>任务要求</strong>：</p>
+<ol>
+<li><strong>梳理已有研究</strong>：提取各研究的核心科学问题、研究空白（Research Gap）、主要结论及支持证据。</li>
+<li><strong>比较研究结论</strong>：区分不同研究的一致性结论与特异性结论，明确已有认识的适用范围及证据边界。</li>
+<li><strong>识别研究空白</strong>：分析已有技术能够解释什么、尚不能回答什么，重点关注蛋白质结构域的动态变化。</li>
+<li><strong>结合项目优势</strong>：评估现有研究空白能否通过项目的时间分辨成像技术及三维动态重建方法进一步研究。</li>
+<li><strong>形成科学问题</strong>：根据已有证据、未解决问题及项目的技术能力，提出具体、可检验的科学问题。</li>
+</ol>
+<p><strong>以 Cas9 为例</strong>：已有研究通过位点间距离变化揭示部分结构域运动，但这些测量能否确定结构域随时间变化的完整三维运动轨迹，仍需结合具体文献判断。项目可重点研究时间分辨信息能否进一步揭示结构域运动的顺序、幅度及构象转换过程。</p>
+<h4 id="Cas9-1"><a href="#Cas9-1" class="headerlink" title="Cas9"></a>Cas9</h4><ol>
+<li><p>两个结构域的运动是同步发生，还是存在先后顺序？</p>
+<blockquote>
+<p>查到的资料支持把问题进一步聚焦：</p>
+<ul>
+<li><strong>已有实验：</strong><a target="_blank" rel="noopener" href="https://doi.org/10.15252/embj.201796941">Osuka 等（2018）</a>用三种分别标记的 Cas9 构建体，观察域间变化、状态转换和驻留时间。</li>
+<li><strong>已有模拟：</strong><a target="_blank" rel="noopener" href="https://doi.org/10.1017/S0033583518000070">Palermo 等（2018）</a>提出 REC2 外移伴随 HNH 接近靶链，提供了协同运动的候选解释。</li>
+</ul>
+<p>因此，我们可以提出这个<strong>候选科学问题</strong>：</p>
+<blockquote>
+<p><strong>在同一个 Cas9 分子的连续时间轨迹中，REC2 外移与 HNH 接近靶链具有怎样的先后关系？这种关系在多次构象转换中是否重复出现？</strong></p>
+</blockquote>
+<p>项目需要测量：<strong>两种运动的发生时间、时间差及重复性</strong>。成立条件是成像与重建精度足以分辨这两种运动。</p>
+<p>这可以作为 P2-1 的第一条候选问题，接下来核查更多相关文献，确认其研究空白。</p>
+</blockquote>
+</li>
+<li><p>需要怎样的时间分辨率，才能区分结构域运动的先后关系？</p>
+<blockquote>
+<p><strong>文献依据：</strong><a target="_blank" rel="noopener" href="https://static-content.springer-cdn.com/esm/art%3A10.1038%2Fs41586-022-05114-0/MediaObjects/41586_2022_5114_MOESM3_ESM.pdf#page=6">Pacesa 等（2022）的作者回复</a>指出，判断捕获的检查点构象是否位于真实 R-loop 形成路径上，需要开展实时单分子测量；针对快速核酸杂交过程，作者提出小于 0.1 秒的时间分辨要求（评审文件第 6 页）。</p>
+<p>在第一条运动顺序问题的基础上，可以进一步提出这个<strong>候选科学问题</strong>：</p>
+<blockquote>
+<p><strong>分辨同一个 Cas9 分子中 REC2 外移与 HNH 接近靶链的先后关系，需要怎样的时间分辨率？采样间隔和曝光时间增大时，短暂中间态的检出率与运动顺序的判定准确性如何变化？</strong></p>
+</blockquote>
+<p>项目需要评估：<strong>采样间隔、曝光时间、两种运动的时间差、中间态驻留时间，以及各时间分辨条件下的检出率和顺序判定准确性</strong>。可利用具有已知运动顺序的模拟序列，分别改变采样间隔和曝光时间，评价时间信息的恢复能力。</p>
+<p>文献中的 <strong>&lt;0.1 秒</strong>对应作者讨论的快速 R-loop 形成过程；本项目分辨 REC2–HNH 运动顺序所需的时间分辨率，应结合目标运动的时间尺度及三维重建精度确定。</p>
+</blockquote>
+</li>
+<li><p>已有研究解释了什么？带时间戳的连续三维结构还能补充什么？</p>
+</li>
+</ol>
+<blockquote>
+<table>
+<thead>
+<tr>
+<th>文献已有认识</th>
+<th>候选问题</th>
+<th>我们可补充的观察</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.15252/embj.201796941">Osuka 等（2018）</a>分别测量三组位点的 FRET 变化，观察构象转换与停留时间。</td>
+<td>同一分子中，多个结构域怎样配合运动？</td>
+<td>同时跟踪多个结构域的位置与朝向。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1017/S0033583518000070">Palermo 等（2018）</a>的模拟提出：REC2 外移伴随 HNH 接近靶链。</td>
+<td>两者谁先动？相隔多久？</td>
+<td>比较两种运动的发生时间和时间差。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-022-05114-0">Pacesa 等（2022）</a>捕获多个结构状态，并提出构象转换模型。<a target="_blank" rel="noopener" href="https://static-content.springer-cdn.com/esm/art%3A10.1038%2Fs41586-022-05114-0/MediaObjects/41586_2022_5114_MOESM3_ESM.pdf#page=6">作者回复</a>提出用实时测量检验中间态的路径归属。</td>
+<td>单个分子依次经过哪些构象？每种构象停留多久？</td>
+<td>按时间串联三维构象，比较不同分子的转换路径。</td>
+</tr>
+</tbody></table>
+<p><strong>核心问题：在相同核酸和 Mg²⁺ 条件下，Cas9 的 REC2 与 HNH 怎样协同运动？运动顺序、时间间隔和转换路径在不同分子间有何差异？</strong></p>
+<p>以上为基于这些文献提出的候选问题，后续结合相关研究核验。</p>
+</blockquote>
+<ol start="4">
+<li>后续研究有哪些进展？还值得追问什么？</li>
+</ol>
+<blockquote>
+<table>
+<thead>
+<tr>
+<th>已有进展</th>
+<th>可进一步追问</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41467-024-47830-3">SpRY（2024）</a>：结合动力学与冷冻电镜，捕获多个反应中间态。</td>
+<td>同一个分子按什么顺序经过这些状态？</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41467-025-60668-7">多周转 Cas9（2025）</a>：改变向导 RNA 配对设计，观察产物释放相关结构。</td>
+<td>核酸条件怎样改变转换路径？</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1021/acscatal.6c05718">SpCas9（2026，依据摘要）</a>：模拟与功能实验提出 L2 连接区及 REC2–HNH 相互作用参与激活。</td>
+<td>实验中，两域的位置和朝向怎样配合变化？</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.21203/rs.3.rs-10202707/v1">CjCas9（2026，预印本）</a>：高速 AFM 连续跟踪 REC3 与 HNH。</td>
+<td>在 SpCas9 中，能否进一步解析三维运动及其时间关系？</td>
+</tr>
+</tbody></table>
+<p><strong>保留两个候选问题：</strong></p>
+<ol>
+<li>REC2 与 HNH 怎样协同运动，谁先动、相隔多久？</li>
+<li>不同分子经过哪些中间态，各自停留多久、是否回返？</li>
+</ol>
+<p><strong>我们的切入点：将同一分子的三维位置、朝向与时间对应起来。</strong> </p>
+</blockquote>
+<p><strong>阶段性归纳</strong></p>
+<p>已有研究揭示了 Cas9 的多种构象状态，并提出结构域协同运动的机制模型。我们进一步关注：同一分子中，REC2 与 HNH 的三维位置和朝向如何随时间变化？不同分子经过哪些中间态，各自停留多久？带时间戳的连续三维结构，有望为这些运动关系和转换路径提供实验依据。</p>
+<h4 id="CaN"><a href="#CaN" class="headerlink" title="CaN"></a>CaN</h4><p>CaM 是参与激活 CaN 的钙调蛋白；AID 是 CaN 的自抑制结构域。</p>
+<ol>
+<li>CaM 结合后，AID 怎样移动？</li>
+</ol>
+<blockquote>
+<p><strong>已有解释：</strong><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jmb.2011.11.008">Rumi-Masante 等（2012）</a>提出，调控区折叠带动 AID 移位。<a target="_blank" rel="noopener" href="https://doi.org/10.1038/cr.2016.14">Li 等（2016）</a>进一步提出，CaM 结合后，调控区仍与催化核心相互作用。</p>
+<p><strong>候选问题：AID 何时移动、移到哪里、停留多久？</strong></p>
+<p>**可补充：**用连续三维结构跟踪 AID 相对催化核心的位置。</p>
+</blockquote>
+<ol start="2">
+<li>CaM 与远端螺旋怎样接触？</li>
+</ol>
+<blockquote>
+<p>**远端螺旋：**经典 CaM 结合区之外的一段调控螺旋。</p>
+<p><strong>已有解释：</strong><a target="_blank" rel="noopener" href="https://doi.org/10.1021/bi400483a">Dunlap 等（2013）</a>支持这段螺旋参与调控。<a target="_blank" rel="noopener" href="https://doi.org/10.1021/acs.biochem.9b00626">Sun 等（2019）</a>模拟提出它与 CaM 的多个候选接触，功能实验支持相关表面的调控作用。</p>
+<p><strong>候选问题：这些接触怎样转换，与 AID 的移动如何配合？</strong></p>
+<p>**可补充：**跟踪 CaM 与远端螺旋的位置、朝向及其变化时间。</p>
+</blockquote>
+<ol start="3">
+<li>后续研究把问题推进到了哪里？</li>
+</ol>
+<blockquote>
+<p><strong>新证据：</strong><a target="_blank" rel="noopener" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10330910/">2023 年研究</a>发现，CaM 的 N53I 突变降低 CaN 最大活性，同时保留与经典结合片段相近的热稳定性。模拟提示，远端螺旋的接触方式可能发生改变。</p>
+<p><strong>进一步聚焦：不同的 CaM–远端螺旋接触，怎样对应 AID 的位置和停留时间？</strong></p>
+<p>**可补充：**在可分辨的区域内，联合跟踪接触构象与 AID 移动，检验模拟提出的联系。构象与酶活的对应结合匹配条件下的功能实验判断。</p>
+</blockquote>
+<h4 id="TDP-43"><a href="#TDP-43" class="headerlink" title="TDP-43"></a>TDP-43</h4><p>RRM1 和 RRM2 是 TDP-43 中共同识别 RNA 的两个结构域。</p>
+<ol>
+<li>RNA 结合后，两个 RRM 怎样一起运动？</li>
+</ol>
+<blockquote>
+<p><strong>已有认识：</strong><a target="_blank" rel="noopener" href="https://doi.org/10.1038/nsmb.2698">Lukavsky 等（2013）</a>解析了两个 RRM 共同结合 RNA 的结构。<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.bpj.2024.09.031">Ozguney 等（2024）</a>的模拟提示，RNA 结合限制两域的构象分布，并改变界面接触。</p>
+<p><strong>候选问题：RNA 结合怎样改变两域的距离、朝向和运动幅度？各构象停留多久？</strong></p>
+<p>**可补充：**用带时间戳的连续三维结构，比较游离态与 RNA 结合态的域间运动。比较时统一蛋白构建体和溶液条件，并明确 RNA 序列。</p>
+</blockquote>
+<ol start="2">
+<li>两个 RRM 运动时，RNA 接触怎样变化？</li>
+</ol>
+<blockquote>
+<p><strong>已有解释：</strong><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.bpj.2024.09.031">Ozguney 等（2024）</a>的模拟显示，部分 RNA 接触较稳定，其他接触反复形成和断开，共同维持动态结合界面。</p>
+<p><strong>候选问题：RNA 接触的重排与两个 RRM 的转动，具有怎样的时间关系？</strong></p>
+<p>**可补充：**在 RNA 与结构域可分辨时，跟踪 RNA 所在区域和两域朝向的共同变化；具体残基接触结合局部结构及模拟判断。</p>
+</blockquote>
+<ol start="3">
+<li>后续研究把问题推进到了哪里？</li>
+</ol>
+<blockquote>
+<p><strong>新证据：</strong><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41467-026-68346-y">Feng 等（2026）</a>结合核磁共振、散射及细胞实验，研究多个 TDP-43 在 RNA 上的组装。结果支持：沿富 GU 序列的协同结合限制相邻分子的 N 端结构域接触，并促进不同 RNA 结合簇之间的联系。</p>
+<p><strong>候选问题：多个 TDP-43 沿 RNA 排列时，分子间接触怎样随时间重排？各排列状态停留多久？</strong></p>
+<p>**可补充：**对含 N 端结构域的多分子体系，在分子可分辨时跟踪相对位置、朝向和接近过程；具体接触界面结合局部结构验证。前两条继续聚焦单个分子内部的 RRM 运动。</p>
+</blockquote>
+<h4 id="三个体系的候选科学问题"><a href="#三个体系的候选科学问题" class="headerlink" title="三个体系的候选科学问题"></a>三个体系的候选科学问题</h4><table>
+<thead>
+<tr>
+<th>体系</th>
+<th>核心问题</th>
+<th>连续三维观察的切入点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cas9</td>
+<td>REC2 与 HNH 怎样配合运动？谁先动，相隔多久？</td>
+<td>同一分子中两域的位置、朝向与运动时间差。</td>
+</tr>
+<tr>
+<td>CaN</td>
+<td>CaM 结合后，调控区重排怎样与 AID 移位配合？</td>
+<td>调控区域的变化顺序及 AID 的位置、停留时间。</td>
+</tr>
+<tr>
+<td>TDP-43</td>
+<td>RNA 结合怎样改变两个 RRM 的相对运动？</td>
+<td>游离态与 RNA 结合态的域间距离、朝向及构象停留时间。</td>
+</tr>
+</tbody></table>
+<p><strong>共同切入点：在同一分子的连续轨迹中，将三维构象与时间对应起来，检验文献提出的运动关系。</strong></p>
+<h4 id="科学问题的证据与意义"><a href="#科学问题的证据与意义" class="headerlink" title="科学问题的证据与意义"></a>科学问题的证据与意义</h4><p>以下问题聚焦已核对文献中的具体模型；适用范围随蛋白构建体、核酸及溶液条件明确。</p>
+<p><strong>Cas9：结构域协同怎样通向切割构象？</strong></p>
+<ul>
+<li><strong>已有证据：</strong><a target="_blank" rel="noopener" href="https://doi.org/10.15252/embj.201796941">Osuka 等（2018）</a>以分别标记的构建体测得域间 FRET 转换与停留时间；<a target="_blank" rel="noopener" href="https://doi.org/10.1017/S0033583518000070">Palermo 等（2018）</a>的模拟提出 REC2 外移配合 HNH 接近靶链。</li>
+<li>**待检验：**在同一 SpCas9 分子中，两域三维运动的先后、时间差和回返路径怎样对应？</li>
+<li>**意义：**检验 REC2 重排与 HNH 就位的联系，帮助解释切割构象的形成过程；切割功能结合匹配条件下的活性证据判断。</li>
+</ul>
+<p><strong>CaN：调控区重排怎样解除自抑制？</strong></p>
+<ul>
+<li><strong>已有证据：</strong><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jmb.2011.11.008">Rumi-Masante 等（2012）</a>以圆二色谱和氢氘交换测得 CaM 结合后的调控区折叠，并提出 AID 移位模型；<a target="_blank" rel="noopener" href="https://doi.org/10.1021/acs.biochem.9b00626">Sun 等（2019）</a>提出远端螺旋的候选接触，功能实验支持相关表面的调控作用。</li>
+<li>**待检验：**同一复合物中，CaM–调控区的构象变化与 AID 移位按什么顺序发生？各状态停留多久？</li>
+<li>**意义：**为“CaM 结合—调控区重排—自抑制解除”补充时序证据。远端螺旋和 AID 的归属以可分辨的结构为依据。</li>
+</ul>
+<p><strong>TDP-43：RNA 怎样改变两个 RRM 的动态配合？</strong></p>
+<ul>
+<li><strong>已有证据：</strong><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.bpj.2024.09.031">Ozguney 等（2024）</a>的模拟提示 RNA 限制域间构象分布；<a target="_blank" rel="noopener" href="https://doi.org/10.1021/jacs.4c11229">2024 年氢氘交换研究</a>测得 RNA 结合后 RRM 及连接区的交换保护，支持结合与构象稳定的联系。</li>
+<li>**待检验：**固定 RNA 序列和蛋白构建体后，RNA 结合怎样改变同一分子中两域的相对朝向、转换路径和停留时间？</li>
+<li>**意义：**为 RNA 结合稳定哪些域间排列、怎样改变构象转换提供动态证据。聚集与功能联系结合相应实验检验。</li>
+</ul>
+<p><strong>近期进展：</strong><a target="_blank" rel="noopener" href="https://doi.org/10.1126/science.adv3301">Copley 等（2026，摘要）</a>已将特定短 RNA、RRM 稳定与抗聚集构象联系起来。可进一步聚焦单分子的域间运动路径和时间分布。</p>
+<h3 id="P2-2-论文回答的问题和主要结论"><a href="#P2-2-论文回答的问题和主要结论" class="headerlink" title="P2-2 论文回答的问题和主要结论"></a>P2-2 论文回答的问题和主要结论</h3><p>目标：明确论文回答的问题，以及现有结果支持的主要结论</p>
+<h4 id="Cas9：结构域协同怎样通向切割构象？"><a href="#Cas9：结构域协同怎样通向切割构象？" class="headerlink" title="Cas9：结构域协同怎样通向切割构象？"></a>Cas9：结构域协同怎样通向切割构象？</h4><p>**目标：**揭示结构域运动的先后关系与转换路径。</p>
+<ul>
+<li>**我们关注：**同一分子中，REC2 与 HNH 怎样配合运动，谁先动、相隔多久？</li>
+<li>**最新结果：**从模板匹配起点续训后，全部 1,817 个颗粒的平均 CC 从 0.336 提高到 0.390（CryoDyna）／0.470（CryoSTAR），支持图像拟合改善。</li>
+<li>**与科学问题的衔接：**回答运动顺序，还需从对应结构中读出 REC2 与 HNH 的位置变化，并与原始帧时间对应。现阶段，这张图提供重建拟合效果的评价。</li>
+<li>**下一步实验：**检验“REC2 外移先于 HNH 接近靶链”的假设。在明确核酸与 Mg²⁺ 条件后，记录多个分子的连续轨迹，比较两种运动的先后、时间差与回返频率；以时间差能否稳定分辨、顺序能否跨分子重复作为判据。</li>
+</ul>
+<p>来源：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">Cas9 实验图像续训结果与 CC 图</a>。</p>
+<h4 id="CaN：调控区重排怎样解除自抑制？"><a href="#CaN：调控区重排怎样解除自抑制？" class="headerlink" title="CaN：调控区重排怎样解除自抑制？"></a>CaN：调控区重排怎样解除自抑制？</h4><p>**目标：**解析调控区重排到 AID 移位的中间过程。</p>
+<ul>
+<li>**我们关注：**CaM 结合后，调控区怎样变化，AID 怎样移动？</li>
+<li>**现有资料：**已定位影像资料、1,029 粒子栈及两种方法的初步重建结果，正在核对数据来源与处理条件。</li>
+<li>**下一步实验：**检验“CaM 结合促进 AID 离开催化区”的假设。在相同 Ca²⁺ 条件下比较加入 CaM 前后的连续结构，统计 AID 的位置及各状态停留时间，并用匹配条件下的酶活测量检验结构变化与激活的联系。</li>
+</ul>
+<h4 id="TDP-43：RNA-怎样改变两个-RRM-的动态配合？"><a href="#TDP-43：RNA-怎样改变两个-RRM-的动态配合？" class="headerlink" title="TDP-43：RNA 怎样改变两个 RRM 的动态配合？"></a>TDP-43：RNA 怎样改变两个 RRM 的动态配合？</h4><p>**目标：**明确 RNA 如何改变构象转换路径与停留时间。</p>
+<ul>
+<li>**我们关注：**RNA 结合怎样改变两个 RRM 的相对位置、朝向和构象停留时间？</li>
+<li>**现有结果：**固定结构的模拟图像中，以正确结构初始化后，朝向误差中位数为 0.541°（清晰图像）和 1.515°（SNR＝1），每组 150 帧。</li>
+<li>**与科学问题的衔接：**这组结果支持指定条件下的整体朝向恢复。研究两个 RRM 的相对运动，还需检验整体转动与内部形变的区分能力。</li>
+<li>**下一步实验：**检验“RNA 结合限制两域运动并延长特定构象停留”的假设。比较游离态和指定 RNA 结合态的连续轨迹，检验域间运动范围是否缩小、特定构象停留是否延长。</li>
+</ul>
+<p>来源：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">TDP-43 朝向恢复结果</a>。</p>
+<p>**共同对照：**用已知运动的模拟序列评估结构与时间误差，并比较不同电子剂量下的运动统计。组间差异结合独立分子重复及测量误差判断。</p>
+<h2 id="P3各节分论点，核心主张的论证顺序"><a href="#P3各节分论点，核心主张的论证顺序" class="headerlink" title="P3各节分论点，核心主张的论证顺序"></a>P3各节分论点，核心主张的论证顺序</h2><h3 id="P3-1-核心主张"><a href="#P3-1-核心主张" class="headerlink" title="P3-1 核心主张"></a>P3-1 核心主张</h3><p>蛋白质的功能调控与结构域运动的时序协同有关；时间分辨三维重建获得的连续轨迹可揭示其运动顺序、构象转换路径及各状态的驻留时间。</p>
+<h3 id="P3-2-各节分论点"><a href="#P3-2-各节分论点" class="headerlink" title="P3-2 各节分论点"></a>P3-2 各节分论点</h3><ol>
+<li>揭示 REC2 与 HNH 的时序协同，回答 Cas9 切割构象如何形成。</li>
+<li>解析调控区重排与 AID 移位的中间过程，回答 CaN 自抑制如何解除。</li>
+<li>揭示 RNA 对构象转换路径与驻留时间的影响，回答两个 RRM 的动态配合如何受调控。</li>
+</ol>
+<h3 id="P3-3-支撑核心主张的论证顺序"><a href="#P3-3-支撑核心主张的论证顺序" class="headerlink" title="P3-3 支撑核心主张的论证顺序"></a>P3-3 支撑核心主张的论证顺序</h3><ol>
+<li>**技术基础：**建立三维构象与时间戳的对应，明确可分辨的结构变化与时间尺度。</li>
+<li>**Cas9：**从结构域运动的先后关系入手，解析切割构象的形成路径。</li>
+<li>**CaN：**进一步连接调控区重排与 AID 移位，解析自抑制解除的中间过程。</li>
+<li>**TDP-43：**通过 RNA 结合前后的比较，检验构象转换路径与驻留时间如何受调控。</li>
+<li>**综合：**归纳三个体系中运动顺序、转换路径与驻留时间的作用，结合各自的功能证据讨论时序协同与功能调控的联系。</li>
+</ol>
+
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/%E7%A7%91%E7%A0%94/">科研</a>
+        </span>
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C/">论文写作</a>
+        </span>
+      
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+        <a href="/2026/11/23/xiamen-winter-trip-2027-v2/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
+          寒假厦门五天四晚旅行计划 v2
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/11/22/paper-structure-core-arguments/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          论文结构——每份资料的核心论点
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script defer src="/js/page-views.js" data-site-url="https://niuyihao.github.io"></script>
+
+
+  <!-- copyright -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">主题许可 CC BY-NC-SA 4.0</a>
+    <span>© 2026 我的博客</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">主题作者 xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

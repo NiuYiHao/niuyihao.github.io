@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+
+
+<title>「论文」Day1 文献与实验结果汇总 | 我的博客</title>
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/nprogress/nprogress.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/rss2.xml" title="我的博客" type="application/rss+xml">
+</head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="我的博客" />
+          我的博客
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        「论文」Day1 文献与实验结果汇总
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/archives/">文章</a>
+        
+          <a class="hidden sm:flex" href="/category/">分类</a>
+        
+          <a class="hidden sm:flex" href="/tag/">标签</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="RSS 订阅" href="/rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <button type="button" class="w-5 h-5" title="切换明暗主题" aria-label="切换明暗主题" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </button>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <button type="button" class="w-5 h-5" aria-label="打开菜单" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </button>
+        <button type="button" class="w-5 h-5 hidden" aria-label="关闭菜单" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/95 dark:bg-zinc-900/95 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/archives/" class="flex h-12 sm:h-auto items-center">文章</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/category/" class="flex h-12 sm:h-auto items-center">分类</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/tag/" class="flex h-12 sm:h-auto items-center">标签</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        「论文」Day1 文献与实验结果汇总
+      </h1>
+      <div>
+        <section class="flex flex-wrap items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2026-11-21</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>33 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>8.7k words</span>
+          </span>
+          
+            <span class="inline-flex items-center gap-3 whitespace-nowrap">
+              <span class="text-gray-400" aria-hidden="true">·</span>
+              <span class="inline-flex items-center gap-1" aria-live="polite">
+                <iconify-icon width="18" icon="mdi:eye-outline" aria-hidden="true"></iconify-icon>
+                <span>阅读量：<span id="page-views-status">加载中…</span><span id="busuanzi_container_page_pv" style="display:none"><span id="busuanzi_value_page_pv"></span> 次</span></span>
+              </span>
+            </span>
+          
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <p>2026年11月21日</p>
+<h2 id="交付范围"><a href="#交付范围" class="headerlink" title="交付范围"></a>交付范围</h2><table>
+<thead>
+<tr>
+<th>今日清单</th>
+<th>本版内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>文字：文献与结果汇总</td>
+<td>三体系机制、文献网络、已跑实验结果</td>
+</tr>
+<tr>
+<td>图表：现有图表清单</td>
+<td>13 组图件、2 组数值表及来源索引</td>
+</tr>
+</tbody></table>
+<p>本版汇集三体系机制、文献网络、已跑实验结果和现有图表清单。各篇来源、数据口径和评价条件随正文保留。</p>
+<p>图表及数值资料见各节的已发布来源。</p>
+<h2 id="1-Cas9、Calcineurin与TDP-43–RNA：机制、构效关系与核心结论"><a href="#1-Cas9、Calcineurin与TDP-43–RNA：机制、构效关系与核心结论" class="headerlink" title="1. Cas9、Calcineurin与TDP-43–RNA：机制、构效关系与核心结论"></a>1. Cas9、Calcineurin与TDP-43–RNA：机制、构效关系与核心结论</h2><p>来源：七篇原始论文及其阅读资料。</p>
+<p>已发布：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">《Cas9、Calcineurin与TDP-43–RNA：机制、构效关系与核心结论》</a></p>
+<h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h3><p>Cas9、Calcineurin 与 TDP-43–RNA 的共同问题是：局部接触和结构域排列如何影响分子功能。三者分别对应核酸切割的构象调控、磷酸酶自抑制解除，以及 RNA 识别、剪接和组装。本文根据七项原始研究，沿“结构变化—分子作用—功能测量”的顺序整理证据。</p>
+<h3 id="Cas9：核酸装载与催化结构域运动"><a href="#Cas9：核酸装载与催化结构域运动" class="headerlink" title="Cas9：核酸装载与催化结构域运动"></a>Cas9：核酸装载与催化结构域运动</h3><h4 id="RNA-装载改变整体构型"><a href="#RNA-装载改变整体构型" class="headerlink" title="RNA 装载改变整体构型"></a>RNA 装载改变整体构型</h4><p>Jinek 等通过晶体结构、负染电镜、核酸定位及切割实验，描述了 Cas9 的双叶架构。RNA 装载伴随两叶重排，形成容纳靶 DNA 的中央通道；apo、RNA 结合态和 RNA–DNA 结合态分别提供了这一过程的结构参照。[1]</p>
+<p>这一结果把核酸结合与整体几何重排连接起来。重建中比较构象时，配体状态、结构域边界和对齐方式共同决定“运动幅度”的含义。</p>
+<h4 id="单分子观测揭示状态分布与交换"><a href="#单分子观测揭示状态分布与交换" class="headerlink" title="单分子观测揭示状态分布与交换"></a>单分子观测揭示状态分布与交换</h4><p>单分子 FRET 研究分别采用 D435–E945、S355–S867、S867–N1054 三组标记位点，观测 REC–RuvC、REC–HNH 与 HNH–RuvC 的相对变化。D435–E945 对应的 apo FRET 分布集中于约 0.99；加入 sgRNA 后出现约 0.15 与 0.92 两个群体，加入 DNA 后出现约 0.25 与 0.98 两个群体。[2]</p>
+<p>这些数值是荧光能量转移效率。论文依据参考结构估计的 D435–E945 位点间距约为 21、78 和 77 Å，分别对应 apo、sgRNA 及 sgRNA–DNA 状态；染料几何、距离换算及结构模型各有对应的测量口径。[2]</p>
+<p>Mg²⁺ 条件还改变 HNH 的动力学：论文所测条件下，呈现 HNH 波动的分子比例由约 7% 增至约 20%，并观察到与切割相关的对接状态。状态分布、停留时间与切割测量共同支持催化过程中的构象调控。[2]</p>
+<p>**核心结论：**Cas9 功能与多个结构域的相对位置及状态交换有关。D435–E945 距离适合描述 REC–RuvC 几何变化；HNH 状态与切割实验补充催化层面的证据。</p>
+<h3 id="Calcineurin：多层自抑制与-CaM-调控"><a href="#Calcineurin：多层自抑制与-CaM-调控" class="headerlink" title="Calcineurin：多层自抑制与 CaM 调控"></a>Calcineurin：多层自抑制与 CaM 调控</h3><h4 id="自抑制涉及活性位点和底物识别界面"><a href="#自抑制涉及活性位点和底物识别界面" class="headerlink" title="自抑制涉及活性位点和底物识别界面"></a>自抑制涉及活性位点和底物识别界面</h4><p>Calcineurin（CaN）由催化亚基 CNA 与调节亚基 CNB 组成。人 CaNβ&#x2F;CNB1 的晶体结构及生化实验揭示：除自抑制结构域 AID 外，416–423 位的自抑制片段 AIS 占据 CNA&#x2F;CNB 界面的疏水口袋。该位置也参与含 LxVP 基序底物的识别，因此调控同时涉及催化区可及性与底物停靠。[3]</p>
+<p>Ca²⁺&#x2F;钙调蛋白（CaM）结合与 AIS 释放、AID 位置变化相联系。晶体结构提供接触位置，截短、抑制及活性实验支持分层激活模型。小分子底物 pNPP 与肽底物 pRII 对底物识别的依赖不同，两类活性测量保留各自的解释范围。[3]</p>
+<h4 id="远端螺旋连接-CaM-结合与-AID-调控"><a href="#远端螺旋连接-CaM-结合与-AID-调控" class="headerlink" title="远端螺旋连接 CaM 结合与 AID 调控"></a>远端螺旋连接 CaM 结合与 AID 调控</h4><p>另一项研究结合分子模拟、突变和磷酸酶动力学，考察经典 CaM 结合区之外的远端螺旋。模拟提出远端螺旋与 CaM 的接触及 AID 相对位置变化；生化实验显示，CaM K30E、G40D 突变对应的 pNPP 表观 Km 分别约为 46.0 和 35.5 mM，野生型约为 27.6 mM。[4]</p>
+<p>这里，接触构型来自模型与模拟，Km 来自酶动力学测量。两类证据共同支持经典结合区之外的相互作用参与 CaN 调控，具体结构路径仍受模型和构建体条件约束。</p>
+<p>**核心结论：**CaN 的激活包含多个调控接触的重新组织。结构分析可以分别描述 CNA&#x2F;CNB 界面、AIS&#x2F;AID 与 CaM 相关区域，再与指定底物的酶活指标对应。</p>
+<h3 id="TDP-43–RNA：识别、域间组织与组装"><a href="#TDP-43–RNA：识别、域间组织与组装" class="headerlink" title="TDP-43–RNA：识别、域间组织与组装"></a>TDP-43–RNA：识别、域间组织与组装</h3><h4 id="串联-RRM-将-RNA-识别与剪接联系起来"><a href="#串联-RRM-将-RNA-识别与剪接联系起来" class="headerlink" title="串联 RRM 将 RNA 识别与剪接联系起来"></a>串联 RRM 将 RNA 识别与剪接联系起来</h4><p>TDP-43 串联 RNA 识别基序 RRM1&#x2F;RRM2 与 UG-rich RNA 的 NMR 结构显示，RNA 沿两个 RRM 排列，碱基识别与域间界面共同稳定复合物。在 RBD 102–269 与 AUG12 RNA 的体系中，野生型 Kd 约为 26.9 nM；F149A 约为 393.7 nM，亲和力下降约 14.6 倍。[5]</p>
+<p>R151–D247 盐桥位于域间界面。相应双突变的 Kd 超过 1,000 nM；全长蛋白的 HeLa 细胞回补实验同时显示 CFTR 外显子 9 剪接发生变化。这一证据链把 RNA 接触、RRM 排列与特定剪接功能联系起来，结构测量采用截短 RBD，细胞功能测量采用全长蛋白。[5]</p>
+<h4 id="C-端局部螺旋调节自组装"><a href="#C-端局部螺旋调节自组装" class="headerlink" title="C 端局部螺旋调节自组装"></a>C 端局部螺旋调节自组装</h4><p>TDP-43 C 端低复杂度区域中的短螺旋参与自缔合。G335A、G338A 等设计突变提高局部螺旋倾向，并在所测体外条件下增强液–液相分离。论文同时通过全长蛋白的剪接实验研究功能变化。[6]</p>
+<p>这组工作说明，局部二级结构能够影响分子间接触和凝聚行为。凝聚体的形成、流动性及剪接表现分别提供组装、材料性质和功能层面的信息。</p>
+<h4 id="RNA-修饰把结合变化连接到病理模型"><a href="#RNA-修饰把结合变化连接到病理模型" class="headerlink" title="RNA 修饰把结合变化连接到病理模型"></a>RNA 修饰把结合变化连接到病理模型</h4><p>CAG 重复 RNA 的 m¹A 修饰研究发现，TRMT61A 参与甲基化，ALKBH3 参与去甲基化；修饰 RNA 增强 TDP-43 结合，并与胞质错位、凝胶样组装相联系。线虫和果蝇中的干预实验进一步支持这一通路参与 CAG 重复扩增相关的神经退行性表型。[7]</p>
+<p>该结论的实验范围包括特定重复 RNA、细胞表达体系及模型动物。RNA 序列、长度、修饰状态和蛋白构建体，是比较 TDP-43 组装结果时的重要条件。</p>
+<p>**核心结论：**TDP-43 的构效关系贯穿 RNA 结合、RRM 界面、低复杂度区自组装及细胞功能。病理解释还需要定位、物态和功能干预的证据。</p>
+<h3 id="Discussion"><a href="#Discussion" class="headerlink" title="Discussion"></a>Discussion</h3><p>三个体系可以按同一条证据链组织，但各自的功能读数不同：</p>
+<table>
+<thead>
+<tr>
+<th>体系</th>
+<th>结构与相互作用</th>
+<th>功能读数</th>
+<th>当前文献支持的联系</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cas9</td>
+<td>REC、RuvC、HNH 相对位置及核酸结合</td>
+<td>DNA 切割、状态分布与停留时间</td>
+<td>核酸装载改变构象分布，催化伴随 HNH 调控</td>
+</tr>
+<tr>
+<td>Calcineurin</td>
+<td>AIS&#x2F;AID、CNA&#x2F;CNB 界面与 CaM 接触</td>
+<td>指定底物的磷酸酶活性</td>
+<td>多层自抑制及调控区重排共同参与激活</td>
+</tr>
+<tr>
+<td>TDP-43–RNA</td>
+<td>RNA 接触、RRM 界面与 C 端自缔合</td>
+<td>亲和力、剪接、定位、凝聚体动力学及模型表型</td>
+<td>局部结构与相互作用连接正常功能和特定病理过程</td>
+</tr>
+</tbody></table>
+<p>对三维重建而言，这些研究提供了具有功能背景的结构观测量：Cas9 的域间距离与 HNH 位置，CaN 的调控片段接触，TDP-43 的 RRM 界面及 RNA 结合表面。<strong>结构结果与功能结论的连接强度，取决于构象变化、分子干预和功能测量之间的对应程度。</strong></p>
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><p>[1] Jinek et al. (2014). <a target="_blank" rel="noopener" href="https://doi.org/10.1126/science.1247997">Structures of Cas9 Endonucleases Reveal RNA-Mediated Conformational Activation</a>.</p>
+<p>[2] <a target="_blank" rel="noopener" href="https://doi.org/10.15252/embj.201796941">Real-time observation of flexible domain movements in CRISPR–Cas9</a>.</p>
+<p>[3] <a target="_blank" rel="noopener" href="https://doi.org/10.1038/cr.2016.14">Cooperative autoinhibition and multi-level activation mechanisms of calcineurin</a>.</p>
+<p>[4] <a target="_blank" rel="noopener" href="https://doi.org/10.1021/acs.biochem.9b00626">Calmodulin–Calcineurin Interaction beyond the Calmodulin-Binding Region Contributes to Calcineurin Activation</a>.</p>
+<p>[5] Lukavsky et al. (2013). <a target="_blank" rel="noopener" href="https://doi.org/10.1038/nsmb.2698">Molecular basis of UG-rich RNA recognition by the human splicing factor TDP-43</a>.</p>
+<p>[6] Conicella et al. (2020). <a target="_blank" rel="noopener" href="https://doi.org/10.1073/pnas.1912055117">TDP-43 α-helical structure tunes liquid–liquid phase separation and function</a>.</p>
+<p>[7] Sun et al. (2023). <a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-023-06701-5">m¹A in CAG repeat RNA binds to TDP-43 and induces neurodegeneration</a>.</p>
+<h2 id="2-文献网络：反复引用的研究、机制分歧与关键资料"><a href="#2-文献网络：反复引用的研究、机制分歧与关键资料" class="headerlink" title="2. 文献网络：反复引用的研究、机制分歧与关键资料"></a>2. 文献网络：反复引用的研究、机制分歧与关键资料</h2><p>来源：已发布的文献网络分析，覆盖 117 篇具有 DOI 的文献。</p>
+<p>已发布：<a href="https://niuyihao.github.io/2026/11/21/literature-network-and-key-evidence/">《文献网络：反复引用的研究、机制分歧与关键资料》</a></p>
+<p>从一份阅读清单出发，可以沿着引用关系找到反复出现的研究，再回到原文比较它们支持了什么、分歧发生在哪里。本次整理覆盖 Cas9、Calcineurin、TDP-43、Tau、α-synuclein，以及液相电镜和冷冻电镜异质重建相关文献。</p>
+<h3 id="一、文献网络的范围与计数方法"><a href="#一、文献网络的范围与计数方法" class="headerlink" title="一、文献网络的范围与计数方法"></a>一、文献网络的范围与计数方法</h3><p>截至 <strong>2026年11月21日</strong>，原始清单含154个条目，其中137个属于期刊论文、预印本或会议论文。通过 DOI 与 Crossref 元数据核对，获得117篇论文；其中113篇提供参考文献列表，共6,973条参考文献记录。</p>
+<p>将参考文献中的 DOI 标准化，并对“引用论文 → 被引论文”配对去重，得到 <strong>6,462条引用关系、4,266个被引 DOI</strong>。其中，引用双方均属于上述117篇论文的关系有 <strong>332条，连接109篇论文</strong>。</p>
+<p>本文的“引用篇数”指这113篇来源论文中，有多少篇引用了某项研究。同一篇论文对同一研究计一次，作者自引计入统计。统计范围为 Crossref 已收录的 DOI 引用关系；原文中的引用语境与机制解释另行核对。</p>
+<table>
+<thead>
+<tr>
+<th>主题</th>
+<th align="right">已核对 DOI 的论文</th>
+<th align="right">提供参考文献列表的论文</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cas9</td>
+<td align="right">12</td>
+<td align="right">11</td>
+</tr>
+<tr>
+<td>Calcineurin</td>
+<td align="right">14</td>
+<td align="right">14</td>
+</tr>
+<tr>
+<td>TDP-43</td>
+<td align="right">19</td>
+<td align="right">19</td>
+</tr>
+<tr>
+<td>Tau</td>
+<td align="right">27</td>
+<td align="right">26</td>
+</tr>
+<tr>
+<td>α-synuclein</td>
+<td align="right">15</td>
+<td align="right">15</td>
+</tr>
+<tr>
+<td>液相电镜相关文献</td>
+<td align="right">13</td>
+<td align="right">12</td>
+</tr>
+<tr>
+<td>异质重建</td>
+<td align="right">21</td>
+<td align="right">20</td>
+</tr>
+</tbody></table>
+<p>同一篇论文可属于多个主题。样本的主题构成会影响频次分布：异质重建文献较集中，通用重建方法因此占据较多高频位置。</p>
+<h3 id="二、哪些研究被反复引用？"><a href="#二、哪些研究被反复引用？" class="headerlink" title="二、哪些研究被反复引用？"></a>二、哪些研究被反复引用？</h3><p><img src="/images/literature-network/citation-counts.png" alt="阅读清单内的论文引用频次"></p>
+<p>图中数字为113篇来源论文中的引用篇数。完整引用关系与图表数据见文末附件。</p>
+<table>
+<thead>
+<tr>
+<th>研究</th>
+<th align="right">引用篇数</th>
+<th>在这份清单中的作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jsb.2012.09.006">RELION: implementation of a Bayesian approach to cryo-EM structure determination</a></td>
+<td align="right">24</td>
+<td>贝叶斯重建方法基础</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/nmeth.4169">cryoSPARC: algorithms for rapid unsupervised cryo-EM structure determination</a></td>
+<td align="right">21</td>
+<td>重建算法与常用处理流程</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-020-01049-4">CryoDRGN: reconstruction of heterogeneous cryo-EM structures using neural networks</a></td>
+<td align="right">19</td>
+<td>神经网络表征连续结构异质性</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.str.2016.07.007">ALS Mutations Disrupt Phase Separation Mediated by α-Helical Structure in the TDP-43 Low-Complexity C-Terminal Domain</a></td>
+<td align="right">15</td>
+<td>TDP-43低复杂度结构域、相分离与突变效应的连接</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-021-01220-5">Deep learning-based mixed-dimensional Gaussian mixture model for characterizing variability in cryo-EM</a></td>
+<td align="right">15</td>
+<td>高斯混合模型表征结构变化</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1126/science.1134108">Ubiquitinated TDP-43 in frontotemporal lobar degeneration and amyotrophic lateral sclerosis</a></td>
+<td align="right">15</td>
+<td>TDP-43病理研究的基础资料</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.cell.2015.09.015">Phase Separation by Low Complexity Domains Promotes Stress Granule Assembly and Drives Pathological Fibrillization</a></td>
+<td align="right">13</td>
+<td>低复杂度结构域、凝聚体及病理纤维化的联系</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1109/ICCV48922.2021.00403">CryoDRGN2: Ab initio neural reconstruction of 3D protein structures from real cryo-EM images</a></td>
+<td align="right">13</td>
+<td>从头神经网络重建</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jmb.2011.11.010">A Bayesian View on Cryo-EM Structure Determination</a></td>
+<td align="right">12</td>
+<td>重建问题的概率建模</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-023-01853-8">3DFlex: determining structure and motion of flexible proteins from cryo-EM</a></td>
+<td align="right">12</td>
+<td>柔性蛋白结构与运动建模</td>
+</tr>
+</tbody></table>
+<p>这些高频研究形成两组明显的共同基础：<strong>冷冻电镜重建方法</strong>与<strong>低复杂度蛋白的相分离及病理联系</strong>。频次反映它们在当前资料集中的连接程度；具体研究问题还需要对应的直接实验资料。</p>
+<h3 id="三、哪些作者反复出现？"><a href="#三、哪些作者反复出现？" class="headerlink" title="三、哪些作者反复出现？"></a>三、哪些作者反复出现？</h3><p>下表列出各主题的代表性作者。“署名篇数”统计其在117篇论文中的署名记录；“引用来源数”统计113篇来源论文中，引用过这些署名论文的来源篇数。共同作者共享的论文按论文计数。</p>
+<table>
+<thead>
+<tr>
+<th>作者</th>
+<th>主要关联主题</th>
+<th align="right">署名篇数</th>
+<th align="right">引用来源数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ali Punjani</td>
+<td>冷冻电镜重建、柔性建模</td>
+<td align="right">2</td>
+<td align="right">23</td>
+</tr>
+<tr>
+<td>Ellen D. Zhong</td>
+<td>神经网络异质重建</td>
+<td align="right">4</td>
+<td align="right">21</td>
+</tr>
+<tr>
+<td>Markus Zweckstetter</td>
+<td>Tau、α-synuclein构象与组装</td>
+<td align="right">6</td>
+<td align="right">18</td>
+</tr>
+<tr>
+<td>Eckhard Mandelkow</td>
+<td>Tau结构与病理</td>
+<td align="right">7</td>
+<td align="right">17</td>
+</tr>
+<tr>
+<td>Jeetain Mittal</td>
+<td>蛋白相互作用与相分离</td>
+<td align="right">4</td>
+<td align="right">16</td>
+</tr>
+<tr>
+<td>Yuna M. Ayala</td>
+<td>TDP-43与RNA</td>
+<td align="right">4</td>
+<td align="right">10</td>
+</tr>
+<tr>
+<td>Trevor P. Creamer</td>
+<td>Calcineurin与钙调蛋白调控</td>
+<td align="right">6</td>
+<td align="right">9</td>
+</tr>
+<tr>
+<td>Martin Jinek</td>
+<td>Cas9结构与激活</td>
+<td align="right">5</td>
+<td align="right">9</td>
+</tr>
+</tbody></table>
+<p>作者统计采用姓名归一化，并保留署名论文 DOI 供回查。这里呈现的是阅读清单内的研究联系，评价范围限定于本次收录的论文。</p>
+<h3 id="四、引用关系如何连接成研究线索？"><a href="#四、引用关系如何连接成研究线索？" class="headerlink" title="四、引用关系如何连接成研究线索？"></a>四、引用关系如何连接成研究线索？</h3><p>以下每条箭头均来自已收录的参考文献 DOI。右栏概括沿该引用关系可以比较的问题。</p>
+<table>
+<thead>
+<tr>
+<th>后续研究 → 被引用研究</th>
+<th>可比较的问题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-022-05114-0">R-loop formation and conformational activation mechanisms of Cas9</a> → <a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.celrep.2017.12.048">The Conformational Dynamics of Cas9 Governing DNA Cleavage Are Revealed by Single-Molecule FRET</a>、<a target="_blank" rel="noopener" href="https://doi.org/10.1038/nature24268">Enhanced proofreading governs CRISPR–Cas9 targeting accuracy</a></td>
+<td>结构状态如何对应单分子实验中的激活与校验过程？</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.15252/embr.202153632">Specific RNA interactions promote TDP-43 multivalent phase separation and maintain liquid properties</a> → <a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.str.2016.07.007">ALS Mutations Disrupt Phase Separation Mediated by α-Helical Structure in the TDP-43 Low-Complexity C-Terminal Domain</a>、<a target="_blank" rel="noopener" href="https://doi.org/10.1038/nsmb.2698">Molecular basis of UG-rich RNA recognition by the human splicing factor TDP-43</a></td>
+<td>RNA识别与蛋白自身相互作用怎样共同影响组装？</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-024-02486-1">CryoSTAR: leveraging structural priors and constraints for cryo-EM heterogeneous reconstruction</a> → <a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-020-01049-4">CryoDRGN</a>、<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-023-01853-8">3DFlex</a>、<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-024-02377-5">DynaMight</a></td>
+<td>密度表示、形变表示与结构先验分别提供哪些约束？</td>
+</tr>
+</tbody></table>
+<p>引用关系给出文献之间的连接；对结论的支持程度来自各篇研究的实验设计、结果与讨论。</p>
+<h3 id="五、哪些结论在不同研究中反复出现？"><a href="#五、哪些结论在不同研究中反复出现？" class="headerlink" title="五、哪些结论在不同研究中反复出现？"></a>五、哪些结论在不同研究中反复出现？</h3><h4 id="1-Cas9：结构域重排参与激活"><a href="#1-Cas9：结构域重排参与激活" class="headerlink" title="1. Cas9：结构域重排参与激活"></a>1. Cas9：结构域重排参与激活</h4><p><a target="_blank" rel="noopener" href="https://doi.org/10.15252/embj.201796941">Osuka等的实时观测</a>、<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41594-019-0258-2">Zhu等的冷冻电镜结构</a>和<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-022-05114-0">Pacesa等的R-loop研究</a>，从不同观测方式支持Cas9结构域运动与激活的联系。共同关注点包括REC域重排、HNH定位及靶DNA配对状态。</p>
+<p>这三篇研究共同支持“构象变化参与功能调控”；各自观测的状态、时间尺度和实验条件决定其能够说明的具体步骤。</p>
+<h4 id="2-Calcineurin：CaM结合伴随调控区重排"><a href="#2-Calcineurin：CaM结合伴随调控区重排" class="headerlink" title="2. Calcineurin：CaM结合伴随调控区重排"></a>2. Calcineurin：CaM结合伴随调控区重排</h4><p><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jmb.2011.11.008">Structural Basis for Activation of Calcineurin by Calmodulin</a>通过圆二色谱和氢氘交换等实验，研究CaM结合引起的调控区结构变化。<a target="_blank" rel="noopener" href="https://doi.org/10.1038/cr.2016.14">Cooperative autoinhibition and multi-level activation mechanisms of calcineurin</a>进一步考察多个自抑制区域与酶活性。</p>
+<p>两项研究把CaM结合、调控区构象变化和酶活性联系起来；AID自抑制结构域如何解除抑制，是两种模型的主要分歧点。</p>
+<h4 id="3-TDP-43：RNA参与多价组装，序列与状态影响结果"><a href="#3-TDP-43：RNA参与多价组装，序列与状态影响结果" class="headerlink" title="3. TDP-43：RNA参与多价组装，序列与状态影响结果"></a>3. TDP-43：RNA参与多价组装，序列与状态影响结果</h4><p><a target="_blank" rel="noopener" href="https://doi.org/10.15252/embr.202153632">Grese等的研究</a>显示，特定RNA结合及其多价性影响TDP-43相分离和液态性质。<a target="_blank" rel="noopener" href="https://doi.org/10.1371/journal.pbio.3002527">RNA-mediated ribonucleoprotein assembly controls TDP-43 nuclear retention</a>进一步将RNA介导的核糖核蛋白组装与核内保留联系起来。</p>
+<p>共同结论是RNA参与TDP-43组装及其细胞行为。具体结果与RNA序列、长度、结合位点和浓度配比相关。</p>
+<h4 id="4-Tau：相分离为聚集提供一种可能路径"><a href="#4-Tau：相分离为聚集提供一种可能路径" class="headerlink" title="4. Tau：相分离为聚集提供一种可能路径"></a>4. Tau：相分离为聚集提供一种可能路径</h4><p><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41467-017-00480-0">Liquid–liquid phase separation of the microtubule-binding repeats of the Alzheimer-related protein Tau</a>和<a target="_blank" rel="noopener" href="https://doi.org/10.15252/embj.201798049">Tau protein liquid–liquid phase separation can initiate tau aggregation</a>分别在各自的构建体与实验条件下观察到Tau相分离。后一项研究还记录了液滴成熟与聚集过程。</p>
+<p>这里可以建立“凝聚—成熟—聚集”的条件性联系；构建体、磷酸化状态、浓度和拥挤条件属于解释结果的重要变量。</p>
+<h4 id="5-α-synuclein：无序构象集合中存在长程接触"><a href="#5-α-synuclein：无序构象集合中存在长程接触" class="headerlink" title="5. α-synuclein：无序构象集合中存在长程接触"></a>5. α-synuclein：无序构象集合中存在长程接触</h4><p><a target="_blank" rel="noopener" href="https://doi.org/10.1021/ja044834j">Mapping Long-Range Interactions in α-Synuclein using Spin-Label NMR and Ensemble Molecular Dynamics Simulations</a>和<a target="_blank" rel="noopener" href="https://doi.org/10.1021/ja055538p">Defining Long-Range Order and Local Disorder in Native α-Synuclein Using Residual Dipolar Couplings</a>分别利用自旋标记相关NMR与残余偶极耦合等信息研究构象集合。</p>
+<p>两篇研究共同指向无序状态中的长程相互作用。构象集合及接触分布是这一问题的核心描述对象。</p>
+<h3 id="六、分歧在哪里？哪些问题仍需要区分？"><a href="#六、分歧在哪里？哪些问题仍需要区分？" class="headerlink" title="六、分歧在哪里？哪些问题仍需要区分？"></a>六、分歧在哪里？哪些问题仍需要区分？</h3><h4 id="1-Cas9：单分子实验的动力学描述存在直接分歧"><a href="#1-Cas9：单分子实验的动力学描述存在直接分歧" class="headerlink" title="1. Cas9：单分子实验的动力学描述存在直接分歧"></a>1. Cas9：单分子实验的动力学描述存在直接分歧</h4><p>Yang等在<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.celrep.2017.12.048">The Conformational Dynamics of Cas9 Governing DNA Cleavage Are Revealed by Single-Molecule FRET</a>中，明确讨论了与Dagdas等、Chen等单分子结果的差异。作者尝试改变温度、反应时间、缓冲条件、表达细胞和纯化流程，报告部分既有smFRET结果的复现仍存在困难，并提出样品制备与肝素等缓冲因素可能影响构象行为。</p>
+<p>因此，这组文献中的“哪些构象状态及转换支持切割”需要结合实验条件阅读。样品制备因素在该文中属于解释假说；Pacesa等后续结构研究补充了R-loop与激活状态的结构证据。</p>
+<h4 id="2-Calcineurin：AID移位与取向调整两种模型"><a href="#2-Calcineurin：AID移位与取向调整两种模型" class="headerlink" title="2. Calcineurin：AID移位与取向调整两种模型"></a>2. Calcineurin：AID移位与取向调整两种模型</h4><p><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jmb.2011.11.008">Rumi-Masante等</a>提出，CaM结合引起调控区折叠，促使AID移出催化位点。<a target="_blank" rel="noopener" href="https://doi.org/10.1038/cr.2016.14">Li等</a>则提出CaM主要调节AID相对于催化核心的取向，并结合其他自抑制区域解释多级激活。</p>
+<p>两种模型对AID位置变化的解释存在分歧。比较时需要同时保留构建体、异构体、底物和活性测定条件；上述两篇论文留下了值得继续核对的机制问题。</p>
+<h4 id="3-TDP-43：RNA的效应具有条件依赖性"><a href="#3-TDP-43：RNA的效应具有条件依赖性" class="headerlink" title="3. TDP-43：RNA的效应具有条件依赖性"></a>3. TDP-43：RNA的效应具有条件依赖性</h4><p><a target="_blank" rel="noopener" href="https://doi.org/10.15252/embr.202153632">Grese等</a>研究的特定GU重复RNA能够促进多价相分离并维持液态性质，效应随RNA浓度变化。<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-023-06701-5">m1A in CAG repeat RNA binds to TDP-43 and induces neurodegeneration</a>则将m1A修饰的CAG重复RNA与TDP-43凝胶样聚集、胞质错位及神经退行性改变联系起来。</p>
+<p>这两组结果的关键差别包括RNA序列、修饰和实验体系。适合保留的综合判断是：<strong>RNA身份及其与蛋白的配比决定组装路径的一部分。</strong>“RNA促进液态组装”与“特定RNA促进异常聚集”可以在各自条件下成立。</p>
+<h4 id="4-异质重建：结构先验的收益与偏差需要分别检验"><a href="#4-异质重建：结构先验的收益与偏差需要分别检验" class="headerlink" title="4. 异质重建：结构先验的收益与偏差需要分别检验"></a>4. 异质重建：结构先验的收益与偏差需要分别检验</h4><p><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-024-02486-1">CryoSTAR</a>利用结构先验和约束进行异质重建，并提供参考模型变化的检验。<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-024-02377-5">DynaMight</a>中的控制实验显示，错误原子模型约束可能使重建密度趋近错误模型，同时局部分辨率指标仍可能改善。</p>
+<p>两篇研究使用不同模型与正则化方案。合起来得到的具体问题是：结构误差降低、对参考模型的依赖程度和分辨率变化，需要各自对应的证据。<strong>较高分辨率与较准确构象分别属于需要评价的结果。</strong></p>
+<h3 id="七、哪些资料应作为关键依据？"><a href="#七、哪些资料应作为关键依据？" class="headerlink" title="七、哪些资料应作为关键依据？"></a>七、哪些资料应作为关键依据？</h3><p>高频引用资料提供共同背景；直接回答当前机制或验证问题的论文提供具体证据。按这两个用途，可以确定以下核心资料。</p>
+<table>
+<thead>
+<tr>
+<th>用途</th>
+<th>关键资料</th>
+<th>选取依据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>重建方法基础</td>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jsb.2012.09.006">RELION</a>、<a target="_blank" rel="noopener" href="https://doi.org/10.1038/nmeth.4169">cryoSPARC</a>、<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-020-01049-4">CryoDRGN</a></td>
+<td>样本内分别被24、21、19篇论文引用，连接多个结构与方法研究</td>
+</tr>
+<tr>
+<td>Cas9激活过程</td>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-022-05114-0">R-loop formation and conformational activation mechanisms of Cas9</a></td>
+<td>提供R-loop形成及构象激活的结构状态，可与单分子动力学比较</td>
+</tr>
+<tr>
+<td>Calcineurin机制分歧</td>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jmb.2011.11.008">Structural Basis for Activation of Calcineurin by Calmodulin</a>、<a target="_blank" rel="noopener" href="https://doi.org/10.1038/cr.2016.14">Cooperative autoinhibition and multi-level activation mechanisms of calcineurin</a></td>
+<td>保留AID移位与取向调整两种解释及其原始实验依据</td>
+</tr>
+<tr>
+<td>TDP-43的RNA条件效应</td>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.15252/embr.202153632">Specific RNA interactions promote TDP-43 multivalent phase separation and maintain liquid properties</a>、<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-023-06701-5">m1A in CAG repeat RNA binds to TDP-43 and induces neurodegeneration</a></td>
+<td>分别提供特定RNA维持液态性质与修饰RNA诱导异常组装的证据</td>
+</tr>
+<tr>
+<td>构象重建的验证边界</td>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-024-02377-5">DynaMight</a>、<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-024-02486-1">CryoSTAR</a></td>
+<td>包含结构先验、参考依赖及控制实验，可用于比较重建改善的来源</td>
+</tr>
+</tbody></table>
+<p>例如，Pacesa的Cas9研究与m1A–CAG研究在本次113篇来源论文中的引用计数均为0，仍直接回答激活过程与RNA条件效应问题。<strong>关键资料的选择同时取决于研究连接程度和问题相关性。</strong></p>
+<h3 id="八、数据与来源"><a href="#八、数据与来源" class="headerlink" title="八、数据与来源"></a>八、数据与来源</h3><ul>
+<li><a href="/files/literature-network/verified-works.csv">117篇论文目录</a>：标题、作者、DOI、元数据年份及主题。</li>
+<li><a href="/files/literature-network/citation-edges.csv">6,462条引用关系</a>：每行记录引用论文与被引论文的DOI。</li>
+<li><a href="/files/literature-network/selected-authors.csv">代表性作者统计</a>：署名论文、引用来源及各自DOI。</li>
+<li><a href="/files/literature-network/figure-data.csv">引用频次图数据</a> · <a href="/images/literature-network/citation-counts.svg">矢量图</a> · <a href="/images/literature-network/citation-counts.pdf">PDF</a>。</li>
+</ul>
+<p>论文标题与DOI来自文献库及<a target="_blank" rel="noopener" href="https://www.crossref.org/documentation/retrieve-metadata/rest-api/">Crossref REST API</a>。引用频次由已收录参考文献计算；机制归纳与分歧分析依据正文中链接的原始研究。论文目录中的年份采用Crossref的published字段，在线发表与卷期出版可能跨年。</p>
+<h2 id="3-已跑实验Result整理"><a href="#3-已跑实验Result整理" class="headerlink" title="3. 已跑实验Result整理"></a>3. 已跑实验Result整理</h2><p>来源：七组实验的报告及数值文件。</p>
+<p>已发布：<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">《已跑实验Result整理》</a></p>
+<h3 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h3><p>本篇整理截至 2026 年 11 月 21 日已有报告及数值文件中的七组实验，覆盖 Cas9、Calcineurin、TDP-43、FUS 与 1AKE。资料来自重建与柔性拟合项目的最终报告、逐样本评分和核验记录。</p>
+<p>CC 表示图像 Pearson 相关系数；RMSD 表示按各实验规定原子集合对齐后的坐标误差；dRMSD 表示残基对距离误差。每组实验保留自己的成像条件、结构先验、样本划分和评价对象。</p>
+<h3 id="Results"><a href="#Results" class="headerlink" title="Results"></a>Results</h3><h4 id="1-标准模拟基准：Cas9-的运动幅度收缩"><a href="#1-标准模拟基准：Cas9-的运动幅度收缩" class="headerlink" title="1. 标准模拟基准：Cas9 的运动幅度收缩"></a>1. 标准模拟基准：Cas9 的运动幅度收缩</h4><p>1AKE 与 Cas9 基准均包含 50 个结构状态、50,000 张投影，训练 20 epochs，共 15,620 steps。1AKE 使用官方含噪模拟图像，Cas9 使用干净全原子投影；两组均采用已知姿态，评分覆盖全部训练输入。</p>
+<table>
+<thead>
+<tr>
+<th>体系</th>
+<th align="right">平均 RMSD（Å）</th>
+<th align="right">中位数（Å）</th>
+<th align="right">P90（Å）</th>
+<th align="right">固定参考平均 RMSD（Å）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1AKE</td>
+<td align="right">1.0764</td>
+<td align="right">1.0036</td>
+<td align="right">1.7514</td>
+<td align="right">3.5257</td>
+</tr>
+<tr>
+<td>Cas9</td>
+<td align="right">14.0885</td>
+<td align="right">11.9396</td>
+<td align="right">26.1618</td>
+<td align="right">14.0459</td>
+</tr>
+</tbody></table>
+<p>Cas9 的 D435–E945 真值范围为 <strong>18.0712–74.2351 Å</strong>，重建后各状态距离中位数范围为 <strong>18.9538–23.2128 Å</strong>。这一结果显示大幅域间运动发生明显收缩，平均结构误差与固定参考接近。1AKE 控制组则显示该流程在另一受控体系中具有恢复结构的能力。</p>
+<p>信息源：<a href="/files/deadline-20261121-results/standard-benchmark.json">标准模拟基准数值摘要</a>。</p>
+<h4 id="2-Cas9-多参考：参考覆盖扩大后的结构改善"><a href="#2-Cas9-多参考：参考覆盖扩大后的结构改善" class="headerlink" title="2. Cas9 多参考：参考覆盖扩大后的结构改善"></a>2. Cas9 多参考：参考覆盖扩大后的结构改善</h4><p>模拟数据包含 400 个构象、1,600 张已知姿态干净投影。CryoDyna 与 CryoSTAR 分别从 22 个参考结构出发，共完成 44 次训练；每次 24,000 steps，使用单一随机种子。</p>
+<p>下表以结构真值评分，为每个构象选取 RMSD 最小的重建结果，并与同一参考池中 RMSD 最小的固定参考比较。数值描述真值辅助选择条件下的性能。</p>
+<table>
+<thead>
+<tr>
+<th align="right">参考数</th>
+<th align="right">CryoDyna RMSD（Å）</th>
+<th align="right">CryoSTAR RMSD（Å）</th>
+<th align="right">固定参考 RMSD（Å）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">2</td>
+<td align="right">6.9859</td>
+<td align="right">6.5543</td>
+<td align="right">8.9233</td>
+</tr>
+<tr>
+<td align="right">4</td>
+<td align="right">6.0247</td>
+<td align="right">5.6715</td>
+<td align="right">7.6584</td>
+</tr>
+<tr>
+<td align="right">8</td>
+<td align="right">5.1198</td>
+<td align="right">5.3546</td>
+<td align="right">6.8395</td>
+</tr>
+<tr>
+<td align="right">16</td>
+<td align="right">5.0896</td>
+<td align="right">5.1980</td>
+<td align="right">6.6869</td>
+</tr>
+<tr>
+<td align="right">22</td>
+<td align="right">5.0872</td>
+<td align="right">4.9863</td>
+<td align="right">6.6677</td>
+</tr>
+</tbody></table>
+<p>22 个参考下，两种方法相对固定参考的平均 RMSD 分别降低 <strong>23.70% 和 25.22%</strong>。CryoDyna 在 8 个参考后收益趋缓，CryoSTAR 在 8–22 个参考之间继续获得较小幅度改善。</p>
+<p><img src="/images/deadline-20261121-results/reference-count.png" alt="Cas9 参考数量与重建指标"></p>
+<p>图中两类选择分别使用结构 RMSD 和特征距离误差。按距离误差选取时，三对距离 MAE 均在 3 Å 以内，对应平均 RMSD 仍为 8.0054&#x2F;8.0330 Å；按 RMSD 选取时，D435–E945 MAE 为 3.6723&#x2F;5.4228 Å。<strong>局部距离恢复与整体结构恢复对应不同的最优组合。</strong></p>
+<p>单次完整重建中，全局最优的平均 RMSD 为 8.3188&#x2F;7.9498 Å。逐构象真值选择得到约 5 Å 的结果，体现了候选集合的潜力及选择条件的影响。原交付保留科学验收标记 <code>REVIEW REQUIRED</code>。</p>
+<p>信息源：<a href="/files/deadline-20261121-results/multiref-stage-metrics.csv">多参考各阶段完整指标</a>。</p>
+<h4 id="3-Cas9-实验图像：从模板匹配最优起点继续训练"><a href="#3-Cas9-实验图像：从模板匹配最优起点继续训练" class="headerlink" title="3. Cas9 实验图像：从模板匹配最优起点继续训练"></a>3. Cas9 实验图像：从模板匹配最优起点继续训练</h4><p>本轮覆盖 1,817 个颗粒，两种方法各包含 20 个模板分组、每组训练 24,000 steps。全部颗粒唯一归入各自的模板组。下表统一采用最后一个检查点，并保留模板匹配（TM）起点。</p>
+<table>
+<thead>
+<tr>
+<th>样本范围</th>
+<th align="right">数量</th>
+<th align="right">TM 平均 CC</th>
+<th align="right">CryoDyna 最终 CC</th>
+<th align="right">CryoSTAR 最终 CC</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>全部颗粒</td>
+<td align="right">1,817</td>
+<td align="right">0.335670</td>
+<td align="right">0.389779</td>
+<td align="right">0.469880</td>
+</tr>
+<tr>
+<td>共同子集</td>
+<td align="right">82</td>
+<td align="right">0.352786</td>
+<td align="right">0.405191</td>
+<td align="right">0.488226</td>
+</tr>
+<tr>
+<td>Track6</td>
+<td align="right">18</td>
+<td align="right">0.382146</td>
+<td align="right">0.440532</td>
+<td align="right">0.524794</td>
+</tr>
+</tbody></table>
+<p>全量平均 CC 分别增加 <strong>0.054109 和 0.134210</strong>；CryoDyna 的 1,817 个颗粒、CryoSTAR 的 1,814 个颗粒高于各自 TM 起点。该结果直接描述训练图像一致性的改善，三维精度由结构误差或独立结构证据评价。</p>
+<p><img src="/images/deadline-20261121-results/tm-final-cc.png" alt="模板匹配起点与续训最终相关系数"></p>
+<p>图中散点对应颗粒，黑色菱形为均值，横线为四分位区间；apo、4ZT0 和 Phenix 行沿用历史对照，TM start 行为本轮续训结果。两面板分别展示共同 82 颗粒及 Track6 的 18 颗粒。</p>
+<p><img src="/images/deadline-20261121-results/tm-learning-curves.png" alt="两种方法的学习曲线"></p>
+<p>两条全量平均学习曲线分别有 13 和 6 个相邻检查点下降。最终分数、组平均最优检查点和逐颗粒最优检查点采用不同的选择规则，本文主表统一使用最终分数。</p>
+<p>信息源：<a href="/files/deadline-20261121-results/tm-per-particle-cc.csv">逐颗粒 CC</a> · <a href="/files/deadline-20261121-results/tm-summary-cc.csv">汇总 CC</a>。</p>
+<h4 id="4-TDP-43：已知结构初始化的朝向恢复"><a href="#4-TDP-43：已知结构初始化的朝向恢复" class="headerlink" title="4. TDP-43：已知结构初始化的朝向恢复"></a>4. TDP-43：已知结构初始化的朝向恢复</h4><p>输入为固定结构旋转生成的模拟图像，每种条件各 150 帧。CryoSPARC 以同一正确结构生成的密度初始化，真值姿态独立保存用于评分，使用相对旋转角评价。</p>
+<table>
+<thead>
+<tr>
+<th>条件</th>
+<th align="right">最终误差中位数</th>
+<th align="right">P90</th>
+<th align="right">最大误差</th>
+<th align="right">误差小于 5°</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>清晰图像</td>
+<td align="right">0.541°</td>
+<td align="right">0.966°</td>
+<td align="right">2.919°</td>
+<td align="right">150&#x2F;150</td>
+</tr>
+<tr>
+<td>SNR &#x3D; 1</td>
+<td align="right">1.515°</td>
+<td align="right">2.524°</td>
+<td align="right">3.971°</td>
+<td align="right">150&#x2F;150</td>
+</tr>
+</tbody></table>
+<p>该结果支持固定形状、所测转动路径、正确参考初始化及指定噪声条件下的朝向恢复。参考密度提供结构先验，评价对象为朝向误差。</p>
+<p>信息源：<a href="/files/deadline-20261121-results/tdp-pose-errors.csv">逐帧朝向误差</a>。</p>
+<h4 id="5-几何柔性拟合：1AKE-与-FUS-的结构对照"><a href="#5-几何柔性拟合：1AKE-与-FUS-的结构对照" class="headerlink" title="5. 几何柔性拟合：1AKE 与 FUS 的结构对照"></a>5. 几何柔性拟合：1AKE 与 FUS 的结构对照</h4><p>主方法使用模板构象空间初始化与几何正则残基形变。1AKE 采用 5 个锚点模板，评价其余 45 个插值构象；FUS 使用 10 个结构组，每组 108 张图像拟合、108 张图像在独立姿态配准后评价。</p>
+<table>
+<thead>
+<tr>
+<th>测试</th>
+<th>CC：模板 → 柔性</th>
+<th>RMSD：模板 → 柔性（Å）</th>
+<th>dRMSD：模板 → 柔性（Å）</th>
+<th>三项共同改善</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1AKE，45 个留出构象</td>
+<td>0.998563 → 1.000000</td>
+<td>0.490 → 0.110</td>
+<td>0.452 → 0.086</td>
+<td>45&#x2F;45</td>
+</tr>
+<tr>
+<td>FUS，10 个结构组</td>
+<td>0.678597 → 0.680315</td>
+<td>15.212 → 14.637</td>
+<td>12.276 → 11.821</td>
+<td>9&#x2F;10</td>
+</tr>
+</tbody></table>
+<p>FUS 的第 5 组 CC 从 0.69269 增至 0.69545，RMSD 从 15.871 增至 16.417 Å。这一实例呈现了图像拟合改善与结构误差增大的并存。FUS 数值以估计的 3 Å&#x2F;原始像素和高斯成像近似为条件；1AKE 插值构象之间具有相关性。</p>
+<p><img src="/images/deadline-20261121-results/flexible-comparison.png" alt="几何柔性拟合与模板比较"></p>
+<p>信息源：<a href="/files/deadline-20261121-results/flexible-source-data.csv">柔性拟合源数据</a>。</p>
+<h4 id="6-四体系受控扩展：噪声与姿态条件"><a href="#6-四体系受控扩展：噪声与姿态条件" class="headerlink" title="6. 四体系受控扩展：噪声与姿态条件"></a>6. 四体系受控扩展：噪声与姿态条件</h4><p>扩展实验包含 1AKE、FUS、Calcineurin 和 Cas9，共 72 个条件、216 组方法输出、864 张独特噪声图像。每体系使用 3 次独立结构形变，分别施加 SNR 0.1、1、10；每组包含 8 个训练视角、4 个验证视角和 12 个最终测试视角。三种方法为刚性模板、图低频参考和分阶段柔性拟合。</p>
+<p>下表为分阶段柔性方法的平均 RMSD；各均值汇总同一体系、同一姿态条件下的 9 个条件。</p>
+<table>
+<thead>
+<tr>
+<th>体系</th>
+<th align="right">刚性模板（Å）</th>
+<th align="right">已知姿态柔性（Å）</th>
+<th align="right">未知姿态柔性（Å）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1AKE</td>
+<td align="right">1.9215</td>
+<td align="right">0.9998</td>
+<td align="right">1.1390</td>
+</tr>
+<tr>
+<td>FUS</td>
+<td align="right">2.9562</td>
+<td align="right">1.9215</td>
+<td align="right">2.2916</td>
+</tr>
+<tr>
+<td>Calcineurin</td>
+<td align="right">3.4124</td>
+<td align="right">2.6403</td>
+<td align="right">2.8004</td>
+</tr>
+<tr>
+<td>Cas9</td>
+<td align="right">2.4449</td>
+<td align="right">1.8107</td>
+<td align="right">1.9853</td>
+</tr>
+</tbody></table>
+<p>柔性方法相对刚性模板在 <strong>65&#x2F;72</strong> 条件下同时改善 RMSD、dRMSD 与测试 CC，相对图低频参考为 <strong>60&#x2F;72</strong>。未知姿态下的平均 RMSD 高于已知姿态条件，体现姿态估计对结构拟合的影响。</p>
+<p>这里的结构真值由受控形变生成；Cas9 与 Calcineurin 的起点来自历史拟合结构。测试 CC 使用评价器提供的模拟测试姿态，因此其含义是指定真实姿态条件下的留出图像一致性。独立形变共 12 次，噪声和姿态条件在这些形变上重复组合。</p>
+<p>信息源：<a href="/files/deadline-20261121-results/four-system-summary.csv">四体系条件汇总</a>。</p>
+<h4 id="7-FUS-全原子开发对照：100-ps-的四臂实验"><a href="#7-FUS-全原子开发对照：100-ps-的四臂实验" class="headerlink" title="7. FUS 全原子开发对照：100 ps 的四臂实验"></a>7. FUS 全原子开发对照：100 ps 的四臂实验</h4><p>两个人工选定开发目标各运行纯 MD、结构约束、纯图像驱动、图像加结构约束四条轨迹，共八次 100,000 步全原子积分；步长 1 fs。物理四臂共享固定候选姿态，各目标采用 108 张拟合图与 108 张评价图。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th align="right">两目标平均 RMSD（Å）</th>
+<th align="right">平均评价 CC</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>纯 MD</td>
+<td align="right">12.8934</td>
+<td align="right">0.674415</td>
+</tr>
+<tr>
+<td>结构约束</td>
+<td align="right">11.8595</td>
+<td align="right">0.678843</td>
+</tr>
+<tr>
+<td>纯图像驱动</td>
+<td align="right">12.6747</td>
+<td align="right">0.674751</td>
+</tr>
+<tr>
+<td>图像＋结构约束</td>
+<td align="right">11.8749</td>
+<td align="right">0.678827</td>
+</tr>
+</tbody></table>
+<p>目标 2 的图像加结构约束结果相对模板，RMSD 由 13.5482 降至 12.0205 Å，评价 CC 由 0.692236 增至 0.693282。目标 1 相应 RMSD 为 11.7293 Å，模板为 11.7223 Å。图像增益随目标变化，当前均值中结构约束单臂与联合臂表现接近。</p>
+<p>这批轨迹使用原中心差分 CMAP 插值，后续跨引擎核验记录了插值差异。本文将其作为该实现版本的 100 ps 开发结果。</p>
+<p>信息源：<a href="/files/deadline-20261121-results/fus-allatom-100ps.csv">全原子开发对照数值</a>。</p>
+<h3 id="Discussion-1"><a href="#Discussion-1" class="headerlink" title="Discussion"></a>Discussion</h3><p>**参考覆盖决定候选空间的质量。**Cas9 单参考标准基准呈现运动收缩；多参考实验在真值辅助选择下将平均 RMSD 降到约 5 Å。两组数据、成像与训练设置各有差异，组合起来提供了参考依赖和候选选择的研究线索。</p>
+<p>**图像一致性和三维准确性需要分别量化。**最新 Cas9 实验图像拟合取得稳定的平均 CC 增益，FUS 则提供了 CC 上升同时 RMSD 增大的具体实例。模拟数据中的坐标真值、留出图像和功能相关距离，分别回答不同层面的恢复问题。</p>
+<p>**姿态与形变共同影响拟合。**TDP-43 已知参考实验给出了朝向恢复的定量结果；四体系开发对照显示未知姿态条件带来更高的平均结构误差。两类实验分别测量固定形状的朝向恢复与形状—姿态联合估计。</p>
+<p>**物理积分的增益具有条件依赖。**FUS 100 ps 开发对照中，纯图像项和联合约束项的收益随目标变化；结构约束、图像项和力场实现的贡献，需要按对应实验臂解释。</p>
+<p>本文覆盖以上七组已有交付。逐样本表格及阶段指标随文提供，文献背景见<a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-three-system-review/">三体系机制与构效关系</a>，引用关系见<a href="https://niuyihao.github.io/2026/11/21/literature-network-and-key-evidence/">文献网络与关键资料</a>。</p>
+<h2 id="4-现有图表清单"><a href="#4-现有图表清单" class="headerlink" title="4. 现有图表清单"></a>4. 现有图表清单</h2><p>本版核对 13 组图件与 2 组数值表，覆盖 Cas9、Calcineurin、TDP-43、FUS、1AKE 及文献网络。每组图件的不同格式共用一个编号。</p>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>图表</th>
+<th>对应问题</th>
+<th>已发布来源</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>F01</td>
+<td>Cas9 标准模拟基准</td>
+<td>结构误差与固定参考的比较</td>
+<td><a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">实验结果</a></td>
+</tr>
+<tr>
+<td>F02</td>
+<td>Cas9 标准基准特征距离</td>
+<td>D435–E945 运动幅度恢复</td>
+<td><a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">实验结果</a></td>
+</tr>
+<tr>
+<td>F03</td>
+<td>Cas9 参考数量比较</td>
+<td>扩大参考覆盖的收益</td>
+<td><a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">实验结果</a></td>
+</tr>
+<tr>
+<td>F04</td>
+<td>按 RMSD 选择的特征距离</td>
+<td>整体结构评分对应的局部距离</td>
+<td><a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">实验结果</a></td>
+</tr>
+<tr>
+<td>F05</td>
+<td>按距离误差选择的特征距离</td>
+<td>局部距离评分对应的恢复结果</td>
+<td><a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">实验结果</a></td>
+</tr>
+<tr>
+<td>F06</td>
+<td>全部参考的距离与 RMSD</td>
+<td>逐参考检查重建结果</td>
+<td><a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">实验结果</a></td>
+</tr>
+<tr>
+<td>F07</td>
+<td>TM 起点续训最终 CC</td>
+<td>模板起点与最终图像一致性</td>
+<td><a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">实验结果</a></td>
+</tr>
+<tr>
+<td>F08</td>
+<td>TM 起点续训学习曲线</td>
+<td>训练过程中 CC 的变化</td>
+<td><a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">实验结果</a></td>
+</tr>
+<tr>
+<td>F09</td>
+<td>柔性拟合比较</td>
+<td>1AKE 与 FUS 的拟合收益</td>
+<td><a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">实验结果</a></td>
+</tr>
+<tr>
+<td>F10</td>
+<td>FUS 示例投影</td>
+<td>具体目标的图像拟合表现</td>
+<td><a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">实验结果</a></td>
+</tr>
+<tr>
+<td>F11</td>
+<td>FUS 三视角控制</td>
+<td>减少输入视角后的拟合表现</td>
+<td><a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">实验结果</a></td>
+</tr>
+<tr>
+<td>F12</td>
+<td>四体系柔性拟合</td>
+<td>跨体系、噪声及姿态条件比较</td>
+<td><a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">实验结果</a></td>
+</tr>
+<tr>
+<td>F13</td>
+<td>文献引用频次</td>
+<td>当前阅读清单的高频研究</td>
+<td><a href="https://niuyihao.github.io/2026/11/21/literature-network-and-key-evidence/">文献网络</a></td>
+</tr>
+<tr>
+<td>T01</td>
+<td>TDP-43 已知结构初始化的朝向恢复</td>
+<td>数值表</td>
+<td><a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">实验结果</a></td>
+</tr>
+<tr>
+<td>T02</td>
+<td>FUS 全原子 100 ps 比较</td>
+<td>数值表</td>
+<td><a href="https://niuyihao.github.io/2026/11/21/deadline-20261121-experiment-results/">实验结果</a></td>
+</tr>
+</tbody></table>
+<h3 id="F01｜Cas9-标准模拟基准"><a href="#F01｜Cas9-标准模拟基准" class="headerlink" title="F01｜Cas9 标准模拟基准"></a>F01｜Cas9 标准模拟基准</h3><p>50 个状态、50,000 张投影；已知姿态。平均 RMSD 14.0885 Å，固定参考为 14.0459 Å。</p>
+<h3 id="F02｜Cas9-标准基准特征距离"><a href="#F02｜Cas9-标准基准特征距离" class="headerlink" title="F02｜Cas9 标准基准特征距离"></a>F02｜Cas9 标准基准特征距离</h3><p>真值 18.0712–74.2351 Å；重建各状态中位数 18.9538–23.2128 Å。</p>
+<h3 id="F03｜Cas9-参考数量比较"><a href="#F03｜Cas9-参考数量比较" class="headerlink" title="F03｜Cas9 参考数量比较"></a>F03｜Cas9 参考数量比较</h3><p>400 个构象、1,600 张投影；2 种方法、22 个参考。使用结构真值辅助选择；保留 REVIEW REQUIRED。</p>
+<h3 id="F04｜按-RMSD-选择的特征距离"><a href="#F04｜按-RMSD-选择的特征距离" class="headerlink" title="F04｜按 RMSD 选择的特征距离"></a>F04｜按 RMSD 选择的特征距离</h3><p>逐构象选择 RMSD 最小的候选，再考察特征距离。</p>
+<h3 id="F05｜按距离误差选择的特征距离"><a href="#F05｜按距离误差选择的特征距离" class="headerlink" title="F05｜按距离误差选择的特征距离"></a>F05｜按距离误差选择的特征距离</h3><p>逐构象按距离误差选择；选择规则与 F04 分别定义。</p>
+<h3 id="F06｜全部参考的距离与-RMSD"><a href="#F06｜全部参考的距离与-RMSD" class="headerlink" title="F06｜全部参考的距离与 RMSD"></a>F06｜全部参考的距离与 RMSD</h3><p>22 个参考的汇总 PDF，配套各检查点指标。</p>
+<h3 id="F07｜TM-起点续训最终-CC"><a href="#F07｜TM-起点续训最终-CC" class="headerlink" title="F07｜TM 起点续训最终 CC"></a>F07｜TM 起点续训最终 CC</h3><p>图中为共同 82 颗粒和 Track6 的 18 颗粒；全量评分覆盖 1,817 个颗粒。</p>
+<h3 id="F08｜TM-起点续训学习曲线"><a href="#F08｜TM-起点续训学习曲线" class="headerlink" title="F08｜TM 起点续训学习曲线"></a>F08｜TM 起点续训学习曲线</h3><p>两方法各 20 个模板分组、24,000 steps；曲线使用检查点平均值。</p>
+<h3 id="F09｜柔性拟合比较"><a href="#F09｜柔性拟合比较" class="headerlink" title="F09｜柔性拟合比较"></a>F09｜柔性拟合比较</h3><p>1AKE 45 个测试目标；FUS 10 个构象组。图像 CC、RMSD、dRMSD 分别评价。</p>
+<h3 id="F10｜FUS-示例投影"><a href="#F10｜FUS-示例投影" class="headerlink" title="F10｜FUS 示例投影"></a>F10｜FUS 示例投影</h3><p>开发组中按 RMSD 改善选择的示例；配套文件保留目标与图像索引。</p>
+<h3 id="F11｜FUS-三视角控制"><a href="#F11｜FUS-三视角控制" class="headerlink" title="F11｜FUS 三视角控制"></a>F11｜FUS 三视角控制</h3><p>三视角控制中 4&#x2F;10 个目标同时改善图像与结构指标；与多视角实验分别统计。</p>
+<h3 id="F12｜四体系柔性拟合"><a href="#F12｜四体系柔性拟合" class="headerlink" title="F12｜四体系柔性拟合"></a>F12｜四体系柔性拟合</h3><p>1AKE、FUS、Calcineurin、Cas9；72 个条件、216 个方法输出。测试图像 CC 使用真值姿态。</p>
+<h3 id="F13｜文献引用频次"><a href="#F13｜文献引用频次" class="headerlink" title="F13｜文献引用频次"></a>F13｜文献引用频次</h3><p>113 篇提供参考文献的论文；按来源论文计数。</p>
+<h3 id="T01｜TDP-43-已知结构初始化的朝向恢复"><a href="#T01｜TDP-43-已知结构初始化的朝向恢复" class="headerlink" title="T01｜TDP-43 已知结构初始化的朝向恢复"></a>T01｜TDP-43 已知结构初始化的朝向恢复</h3><p>每个条件 150 帧；干净与 SNR&#x3D;1 条件的中位角误差为 0.540789° 和 1.515004°。</p>
+<h3 id="T02｜FUS-全原子-100-ps-比较"><a href="#T02｜FUS-全原子-100-ps-比较" class="headerlink" title="T02｜FUS 全原子 100 ps 比较"></a>T02｜FUS 全原子 100 ps 比较</h3><p>2 个目标、4 个条件、8 次运行；保留原报告的 CMAP 插值版本条件。</p>
+
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/%E7%A7%91%E7%A0%94/">科研</a>
+        </span>
+      
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+        <a href="/2026/11/22/xiamen-winter-trip-2027/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
+          寒假厦门五天四晚旅行计划
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/11/21/deadline-20261121-experiment-results/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          已跑实验Result整理
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script defer src="/js/page-views.js" data-site-url="https://niuyihao.github.io"></script>
+
+
+  <!-- copyright -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">主题许可 CC BY-NC-SA 4.0</a>
+    <span>© 2026 我的博客</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">主题作者 xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

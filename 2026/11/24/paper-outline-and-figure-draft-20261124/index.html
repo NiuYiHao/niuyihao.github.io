@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+
+
+<title>「论文」提纲与图表初版 | 我的博客</title>
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/nprogress/nprogress.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/rss2.xml" title="我的博客" type="application/rss+xml">
+</head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="我的博客" />
+          我的博客
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        「论文」提纲与图表初版
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/archives/">文章</a>
+        
+          <a class="hidden sm:flex" href="/category/">分类</a>
+        
+          <a class="hidden sm:flex" href="/tag/">标签</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="RSS 订阅" href="/rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <button type="button" class="w-5 h-5" title="切换明暗主题" aria-label="切换明暗主题" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </button>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <button type="button" class="w-5 h-5" aria-label="打开菜单" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </button>
+        <button type="button" class="w-5 h-5 hidden" aria-label="关闭菜单" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/95 dark:bg-zinc-900/95 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/archives/" class="flex h-12 sm:h-auto items-center">文章</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/category/" class="flex h-12 sm:h-auto items-center">分类</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/tag/" class="flex h-12 sm:h-auto items-center">标签</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        「论文」提纲与图表初版
+      </h1>
+      <div>
+        <section class="flex flex-wrap items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2026-11-24</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>5 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>1.5k words</span>
+          </span>
+          
+            <span class="inline-flex items-center gap-3 whitespace-nowrap">
+              <span class="text-gray-400" aria-hidden="true">·</span>
+              <span class="inline-flex items-center gap-1" aria-live="polite">
+                <iconify-icon width="18" icon="mdi:eye-outline" aria-hidden="true"></iconify-icon>
+                <span>阅读量：<span id="page-views-status">加载中…</span><span id="busuanzi_container_page_pv" style="display:none"><span id="busuanzi_value_page_pv"></span> 次</span></span>
+              </span>
+            </span>
+          
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <p>2026-11-24｜重写 P1 引言：围绕方法学主张组织文献进展、共性问题与三体系验证。依据：<a href="https://niuyihao.github.io/2026/11/23/scientific-questions-and-figure-planning-v2/">Day2 科学问题与图版规划v2</a>。正文采用研究规划语态；原始论文证据沿用既有精读，Dong 对应十月工作稿及配套 SI。</p>
+<h2 id="P1-引言"><a href="#P1-引言" class="headerlink" title="P1 引言"></a>P1 引言</h2><p>**核心主张：**从连续液相电镜影像恢复蛋白质结构域的三维运动，确定运动的空间精度与时间分辨能力，并将经过验证的动态信息用于研究时序协同、调控过程及互作条件相关变化。</p>
+<h3 id="1-科学动机：结构域运动怎样连接功能"><a href="#1-科学动机：结构域运动怎样连接功能" class="headerlink" title="1. 科学动机：结构域运动怎样连接功能"></a>1. 科学动机：结构域运动怎样连接功能</h3><p>**论证任务：**以 Cas9 为例，说明结构域运动与功能的关联，引出跨体系问题。</p>
+<p><strong>正文：</strong></p>
+<p>结构域运动参与蛋白质的分子识别与功能调控。Cas9 的靶标配对识别通过 REC 区域的构象调控与 HNH 激活相联系；实时观测显示，域间运动与切割相关构象的形成相伴。[9,4] 由此产生一个跨体系的问题：互作过程中，多个结构域怎样协同运动，并经过哪些构象转换参与功能调节？</p>
+<h3 id="2-已有认识：结构状态与动态测量"><a href="#2-已有认识：结构状态与动态测量" class="headerlink" title="2. 已有认识：结构状态与动态测量"></a>2. 已有认识：结构状态与动态测量</h3><p>**论证任务：**概括三个体系已有的结构与动态证据，明确研究进展。</p>
+<p><strong>正文：</strong></p>
+<p>结构解析揭示 Cas9 的构象检查点，单分子荧光共振能量转移（FRET）记录域间变化和驻留时间；Dong 等通过液相影像的模板匹配报告构象转换，并比较 sgRNA 接触阶段的状态比例。[1,4,8] CaN 研究将钙调蛋白结合、调控区重排与酶活联系起来；TDP-43 研究描述双 RNA 识别基序（RRM）的结合结构及 RNA 相关构象分布。[2,3,6,7] 这些研究为比较不同互作过程提供了结构参照和动态指标。</p>
+<h3 id="3-共性问题与方法学切入点"><a href="#3-共性问题与方法学切入点" class="headerlink" title="3. 共性问题与方法学切入点"></a>3. 共性问题与方法学切入点</h3><p>**论证任务：**提出同一分子内多域三维运动及其时间关系的联合解析问题。</p>
+<p><strong>正文：</strong></p>
+<p>上述研究留下一个需要联合测量的问题：同一分子中，多个结构域如何连续移动和转动，其运动顺序、时间差与中间状态怎样对应？本研究采用时间分辨液相电镜成像与三维重建，将连续影像、构象和时间逐帧关联。通过同影像模板匹配对照及已知运动验证，量化结构误差、时间差误差和短暂中间态检出率，确定三维动态信息的适用范围。</p>
+<h3 id="4-递进研究：三个体系检验什么"><a href="#4-递进研究：三个体系检验什么" class="headerlink" title="4. 递进研究：三个体系检验什么"></a>4. 递进研究：三个体系检验什么</h3><p>**论证任务：**依次用 Cas9、CaN 和 TDP-43 检验多域时序、中间态路径及互作条件下的动态变化。</p>
+<p><strong>正文：</strong></p>
+<p>三个体系依次检验方法能力。Cas9 用于测量 REC2 与 HNH 的运动顺序和时间差；CaN 用于解析调控区重排与 AID 移位之间的中间状态；TDP-43 用于比较游离态和指定 RNA 结合态下双 RRM 的运动及构象动力学。[1–7,9] 图1建立共同的空间与时间精度评价，图5汇总各体系的适用条件和功能证据。各体系的具体结论随实验结果与匹配条件下的功能测量确定。</p>
+<p>**引言预计篇幅：**约 550–700 个中文字。方法参数、阈值与统计模型进入方法部分；各体系的具体结果进入结果部分。</p>
+<h3 id="引文及证据定位"><a href="#引文及证据定位" class="headerlink" title="引文及证据定位"></a>引文及证据定位</h3><ol>
+<li><p>Pacesa 等（2022），<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-022-05114-0">R-loop formation and conformational activation mechanisms of Cas9</a>。用途：核酸配对、构象检查点与激活结构。</p>
+</li>
+<li><p>Rumi-Masante 等（2012），<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jmb.2011.11.008">Structural Basis for Activation of Calcineurin by Calmodulin</a>。用途：CaM 结合与调控区折叠；AID 移位保留作者模型属性。</p>
+</li>
+<li><p>Lukavsky 等（2013），<a target="_blank" rel="noopener" href="https://doi.org/10.1038/nsmb.2698">Molecular basis of UG-rich RNA recognition by the human splicing factor TDP-43</a>。用途：串联 RRM 共同识别 RNA 的结构基础。</p>
+</li>
+<li><p>Osuka 等（2018），<a target="_blank" rel="noopener" href="https://doi.org/10.15252/embj.201796941">Real-time observation of flexible domain movements in CRISPR–Cas9</a>。用途：分别标记构建体中的域间FRET变化、状态转换和驻留。</p>
+</li>
+<li><p>Palermo 等（2018），<a target="_blank" rel="noopener" href="https://doi.org/10.1017/S0033583518000070">Key role of the REC lobe during CRISPR–Cas9 activation by ‘sensing’, ‘regulating’, and ‘locking’ the catalytic HNH domain</a>。用途：REC–HNH协同的模拟模型。</p>
+</li>
+<li><p>Sun 等（2019），<a target="_blank" rel="noopener" href="https://doi.org/10.1021/acs.biochem.9b00626">Calmodulin–Calcineurin Interaction beyond the Calmodulin-Binding Region Contributes to Calcineurin Activation</a>。用途：远端接触模型与突变&#x2F;酶活证据。</p>
+</li>
+<li><p>Ozguney 等（2024），<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.bpj.2024.09.031">RNA binding tunes the conformational plasticity and intradomain stability of TDP-43 tandem RNA recognition motifs</a>。用途：RNA相关构象分布及稳定性的模拟证据。</p>
+</li>
+<li><p>Dong 等，<a target="_blank" rel="noopener" href="https://doi.org/10.26434/chemrxiv.15004813/v1">Electron microscopy identifies protein conformational substates in liquid environment</a>。链接为公开预印本；本轮使用十月工作稿，定位 Fig.5–6、SI Text6–9。</p>
+</li>
+<li><p>Chen 等（2017），<a target="_blank" rel="noopener" href="https://doi.org/10.1038/nature24268">Enhanced proofreading governs CRISPR–Cas9 targeting accuracy</a>。用途：REC3靶标配对识别与HNH构象激活的联系。</p>
+</li>
+</ol>
+<h2 id="图表规划：现有图版与待补清单"><a href="#图表规划：现有图版与待补清单" class="headerlink" title="图表规划：现有图版与待补清单"></a>图表规划：现有图版与待补清单</h2><ul>
+<li>**图1 论证任务：**展示连续三维重建，并量化结构与时间误差。</li>
+<li>**图2 论证任务：**测量 Cas9 的 REC2–HNH 运动轨迹和时间差。</li>
+<li>**图3 论证任务：**解析 CaN 调控区重排与 AID 移位的联合状态。</li>
+<li>**图4 论证任务：**比较 TDP-43 双 RRM 在不同互作条件下的动态变化。</li>
+<li>**图5 论证任务：**汇总方法能力、适用范围与功能证据。</li>
+</ul>
+<p>现有图版为规划示意。图面制作接续各项验证进展。</p>
+<h2 id="核验记录"><a href="#核验记录" class="headerlink" title="核验记录"></a>核验记录</h2><ul>
+<li>原Day2和论文结构文章保留原样。</li>
+<li>Cas9状态与驻留已有文献依据；研究目标聚焦域间连续运动和时间关系。</li>
+<li>Dong的状态匹配与重建采用各自的数据组，结构—时间对应列入专项核验。</li>
+<li>CaN与TDP-43的机制依据保留各自来源；FUS案例用于方法比较。</li>
+<li>正文末段使用“拟”“评估”“检验”，与当前研究规划阶段一致。</li>
+</ul>
+<p>修订记录：本次重写了 P1 的段落结构和正文。</p>
+
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/%E7%A7%91%E7%A0%94/">科研</a>
+        </span>
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C/">论文写作</a>
+        </span>
+      
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/11/23/paper-detailed-outline-figure-draft-refined/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          「论文」详细提纲与图表初版（精炼版）
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script defer src="/js/page-views.js" data-site-url="https://niuyihao.github.io"></script>
+
+
+  <!-- copyright -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">主题许可 CC BY-NC-SA 4.0</a>
+    <span>© 2026 我的博客</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">主题作者 xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

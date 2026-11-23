@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+
+
+<title>深入阅读——规格化 | 我的博客</title>
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/nprogress/nprogress.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/rss2.xml" title="我的博客" type="application/rss+xml">
+</head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="我的博客" />
+          我的博客
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        深入阅读——规格化
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/archives/">文章</a>
+        
+          <a class="hidden sm:flex" href="/category/">分类</a>
+        
+          <a class="hidden sm:flex" href="/tag/">标签</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="RSS 订阅" href="/rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <button type="button" class="w-5 h-5" title="切换明暗主题" aria-label="切换明暗主题" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </button>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <button type="button" class="w-5 h-5" aria-label="打开菜单" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </button>
+        <button type="button" class="w-5 h-5 hidden" aria-label="关闭菜单" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/95 dark:bg-zinc-900/95 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/archives/" class="flex h-12 sm:h-auto items-center">文章</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/category/" class="flex h-12 sm:h-auto items-center">分类</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/tag/" class="flex h-12 sm:h-auto items-center">标签</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        深入阅读——规格化
+      </h1>
+      <div>
+        <section class="flex flex-wrap items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2026-11-21</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>5 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>1.7k words</span>
+          </span>
+          
+            <span class="inline-flex items-center gap-3 whitespace-nowrap">
+              <span class="text-gray-400" aria-hidden="true">·</span>
+              <span class="inline-flex items-center gap-1" aria-live="polite">
+                <iconify-icon width="18" icon="mdi:eye-outline" aria-hidden="true"></iconify-icon>
+                <span>阅读量：<span id="page-views-status">加载中…</span><span id="busuanzi_container_page_pv" style="display:none"><span id="busuanzi_value_page_pv"></span> 次</span></span>
+              </span>
+            </span>
+          
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <p>以“一条证据记录一张表”为基本单位，所有主题使用相同字段。全文采用两级标题：一级为“深入阅读——规格化”，二级固定为“问题索引、精读记录、来源登记、综合回答”。</p>
+<p>日常阅读顺序：<strong>找到问题 → 阅读证据表 → 查看综合回答</strong>。来源登记用于回查论文、版本和阅读进度。</p>
+<h2 id="一、问题索引"><a href="#一、问题索引" class="headerlink" title="一、问题索引"></a>一、问题索引</h2><p>每行对应一个具体问题。以下是初始问题清单，阅读时可增补；Q编号保持稳定，同一证据可关联多个问题。</p>
+<table>
+<thead>
+<tr>
+<th>问题编号</th>
+<th>主题</th>
+<th>问题</th>
+<th>证据编号</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Q001</td>
+<td>Cas9</td>
+<td>文献中的构建体、结构域、残基编号与参考状态如何对应？</td>
+<td>待录入</td>
+</tr>
+<tr>
+<td>Q002</td>
+<td>Cas9</td>
+<td>哪些域间运动与残基接触联系到识别、激活或切割？</td>
+<td>待录入</td>
+</tr>
+<tr>
+<td>Q003</td>
+<td>Cas9</td>
+<td>MD、FRET、静态结构与电镜结果可通过哪些指标比较？</td>
+<td>待录入</td>
+</tr>
+<tr>
+<td>Q004</td>
+<td>Calcineurin</td>
+<td>结合前后哪些结构域、局部构象和动态行为发生变化？</td>
+<td>待录入</td>
+</tr>
+<tr>
+<td>Q005</td>
+<td>Calcineurin</td>
+<td>结构变化与活性调控之间有哪些实验和模拟证据？</td>
+<td>待录入</td>
+</tr>
+<tr>
+<td>Q006</td>
+<td>TDP-43–RNA</td>
+<td>哪些结构域、残基与RNA或其他分子发生互作？</td>
+<td>待录入</td>
+</tr>
+<tr>
+<td>Q007</td>
+<td>TDP-43–RNA</td>
+<td>接触、柔性、表面暴露与正常功能或病理过程怎样联系？</td>
+<td>待录入</td>
+</tr>
+<tr>
+<td>Q008</td>
+<td>重建方法</td>
+<td>图像信息、参考结构及约束的贡献如何评价？</td>
+<td>待录入</td>
+</tr>
+<tr>
+<td>Q009</td>
+<td>重建方法</td>
+<td>参考数量与构象覆盖度如何分别定义和控制？</td>
+<td>待录入</td>
+</tr>
+<tr>
+<td>Q010</td>
+<td>重建方法</td>
+<td>图像拟合、整体结构、局部运动及构象选择分别怎样验证？</td>
+<td>待录入</td>
+</tr>
+<tr>
+<td>Q011</td>
+<td>比较研究</td>
+<td>Tau与α-syn研究为上述具体问题提供哪些可比较的证据？</td>
+<td>待录入</td>
+</tr>
+</tbody></table>
+<h2 id="二、精读记录"><a href="#二、精读记录" class="headerlink" title="二、精读记录"></a>二、精读记录</h2><p><strong>固定模板：每张表对应一个来源中的一项主张或发现。</strong> 同一发现的多段引文分别标记a、b，并在翻译和出处中一一对应；来自不同来源的证据分别建表。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>记录编号</td>
+<td>E001；跨批次汇总时保持唯一</td>
+</tr>
+<tr>
+<td>问题</td>
+<td>Q编号＋具体问题；多个问题以编号关联</td>
+</tr>
+<tr>
+<td>文本（原文）</td>
+<td>连续原句，保留术语、数值和限定条件；删节使用〔……〕标记</td>
+</tr>
+<tr>
+<td>文本（翻译）</td>
+<td>与原文逐段对应的中文译文；中文原文填“同原文”</td>
+</tr>
+<tr>
+<td>原文出处</td>
+<td>R编号＋题名超链接＋正文／SI＋印刷页码／PDF页序＋章节／图号及面板；网页记录小节与段落定位</td>
+</tr>
+<tr>
+<td>研究条件与方法</td>
+<td>对象、构建体、结构域／残基、配体或RNA、状态、环境、方法、关键参数和对照；按该证据相关项填写</td>
+</tr>
+<tr>
+<td>结果与图表证据</td>
+<td>测量对象、指标定义、选区、对齐与统计方法、数值和单位、样本／重复／轨迹范围；图表记录横纵轴、组别、误差、图注和图件入口</td>
+</tr>
+<tr>
+<td>作者解释</td>
+<td>作者如何解释结果、解释适用的条件；解释另有出处时附对应定位</td>
+</tr>
+<tr>
+<td>我的分析与课题联系</td>
+<td>我的判断、所依据的E编号、对应项目问题及可借鉴的指标；项目结果通过独立记录编号或入口关联</td>
+</tr>
+<tr>
+<td>引用线索</td>
+<td>作者引用的相关研究、引用目的及发现位置；已有来源使用R编号关联</td>
+</tr>
+</tbody></table>
+<p>所有记录沿用上述字段顺序。结构、机制、实验、模拟和方法评价均使用这一模板，具体差异填写在“研究条件与方法”“结果与图表证据”中。</p>
+<table>
+<thead>
+<tr>
+<th>填写事项</th>
+<th>统一规则</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>原文与解释</td>
+<td>“文本（原文）”保存来源原句；译文、作者解释和我的分析各占独立字段</td>
+</tr>
+<tr>
+<td>数据来源</td>
+<td>数值注明来自正文、图表、SI或另行计算；计算值附方法与产物入口</td>
+</tr>
+<tr>
+<td>指标定义</td>
+<td>距离写明原子／残基及编号体系；SASA写明计算对象与选区；接触写明判据与占据率统计；重建指标写明对齐、真值和评价对象</td>
+</tr>
+<tr>
+<td>证据关系</td>
+<td>记录直接观测、模拟结果或机制解释；因果判断附干预、突变或其他适用证据</td>
+</tr>
+<tr>
+<td>缺项</td>
+<td>“待录入”表示尚待摘录；“原文未报告”表示核对后该项缺失；“—”表示该项与此记录无关</td>
+</tr>
+<tr>
+<td>重复使用</td>
+<td>同一证据由E编号复用；跨论文的支持、分歧与条件差异集中进入“综合回答”</td>
+</tr>
+</tbody></table>
+<h2 id="三、来源登记"><a href="#三、来源登记" class="headerlink" title="三、来源登记"></a>三、来源登记</h2><p>每项来源登记一次。正文、SI、更正及预印本分别标明版本关系；同一论文的关联记录归到同一论文编号。私人项目资料采用“项目资料”类型登记，公开引用使用可公开访问的来源。</p>
+<table>
+<thead>
+<tr>
+<th>来源编号</th>
+<th>来源与版本</th>
+<th>获取入口</th>
+<th>阅读范围与状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>R001</td>
+<td>论文编号P001；题名、作者、年份、期刊；正式版／预印本／SI／更正／项目资料；关联来源编号</td>
+<td>题名超链接、DOI、Zotero条目；内部文件定位；适用的数据与代码入口</td>
+<td>引言、结果、方法、讨论、各图表、相关SI分别记录“完成／部分／待读”；部分阅读附已读范围</td>
+</tr>
+</tbody></table>
+<p>清单条目数、去重论文数、已读正文数和已读SI数分别统计。分批阅读按主题与篇幅分配，交接包含Q问题索引、E精读记录和R来源登记；汇总时核对编号、原文、定位及阅读范围。</p>
+<h2 id="四、综合回答"><a href="#四、综合回答" class="headerlink" title="四、综合回答"></a>四、综合回答</h2><p>每个Q问题对应一张同格式的回答表。综合回答由精读记录归纳，E编号承担证据回查。回答顺序沿问题索引排列，各主题沿用同一表格。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>问题</td>
+<td>Q编号＋具体问题</td>
+</tr>
+<tr>
+<td>回答</td>
+<td>对该问题的简明回答，每条判断关联E编号</td>
+</tr>
+<tr>
+<td>支持证据</td>
+<td>相关E编号及各自支持的具体判断</td>
+</tr>
+<tr>
+<td>差异与条件</td>
+<td>相互支持或存在分歧的发现；构建体、状态、实验条件与方法的差异</td>
+</tr>
+<tr>
+<td>与本课题的关系</td>
+<td>对应的结构特征、分析指标或解释依据；区分文献发现与项目结果</td>
+</tr>
+<tr>
+<td>开放问题与去向</td>
+<td>尚需回答的问题，以及“本阶段精读／后续引用追踪／项目结果汇总”的阶段归属</td>
+</tr>
+</tbody></table>
+<p>博客正文按主题呈现“问题索引＋综合回答”，通过编号链接到精读记录与来源。原文、译文和图表定位集中保存在精读表，供详细阅读与引用。</p>
+
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+        <a href="/2026/11/21/deep-reading-v2/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
+          深入阅读v2
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/11/21/deep-reading-plan/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          深入阅读
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script defer src="/js/page-views.js" data-site-url="https://niuyihao.github.io"></script>
+
+
+  <!-- copyright -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">主题许可 CC BY-NC-SA 4.0</a>
+    <span>© 2026 我的博客</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">主题作者 xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+
+
+<title>我的博客</title>
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/nprogress/nprogress.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/rss2.xml" title="我的博客" type="application/rss+xml">
+</head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="我的博客" />
+          我的博客
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/archives/">文章</a>
+        
+          <a class="hidden sm:flex" href="/category/">分类</a>
+        
+          <a class="hidden sm:flex" href="/tag/">标签</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="RSS 订阅" href="/rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <button type="button" class="w-5 h-5" title="切换明暗主题" aria-label="切换明暗主题" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </button>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <button type="button" class="w-5 h-5" aria-label="打开菜单" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </button>
+        <button type="button" class="w-5 h-5 hidden" aria-label="关闭菜单" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/95 dark:bg-zinc-900/95 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/archives/" class="flex h-12 sm:h-auto items-center">文章</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/category/" class="flex h-12 sm:h-auto items-center">分类</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/tag/" class="flex h-12 sm:h-auto items-center">标签</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        
+      </h1>
+      <div>
+        <section class="flex flex-wrap items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2026-11-24</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>3 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>790 words</span>
+          </span>
+          
+            <span class="inline-flex items-center gap-3 whitespace-nowrap">
+              <span class="text-gray-400" aria-hidden="true">·</span>
+              <span class="inline-flex items-center gap-1" aria-live="polite">
+                <iconify-icon width="18" icon="mdi:eye-outline" aria-hidden="true"></iconify-icon>
+                <span>阅读量：<span id="page-views-status">加载中…</span><span id="busuanzi_container_page_pv" style="display:none"><span id="busuanzi_value_page_pv"></span> 次</span></span>
+              </span>
+            </span>
+          
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <!doctype html><html lang="zh"><meta charset="utf-8"><title>图3 · CaN完整规划预览</title><style>body{margin:0;background:#edf0f4;color:#203047;font:15px Arial,"Noto Sans CJK SC",sans-serif}header,footer{max-width:1000px;margin:24px auto;padding:0 16px;line-height:1.8}header{display:flex;justify-content:space-between;align-items:center}button{padding:9px 13px;background:white;border:1px solid #bcc8d6;border-radius:6px;cursor:pointer}#sheet{width:1000px;max-width:96vw;margin:auto;background:white;box-shadow:0 3px 18px #20304712}section{padding:16px 20px 6px}h2{font-size:20px;margin:0 0 8px}svg{width:100%;height:auto;display:block}body.compact #sheet{width:180mm}footer{color:#53667e}.notice{color:#855700;background:#fff1d5;padding:10px 15px;border-radius:7px}a{color:#2689aa}</style><header><strong>图 3｜CaN 调控区重排与 AID 移位</strong><button onclick="document.body.classList.toggle('compact')">切换 180 mm 宽度</button></header><div id="sheet"><section><h2>a　观察对象</h2><svg viewBox="0 0 1080 510" xmlns="http://www.w3.org/2000/svg">
+<path d="M78 265Q67 177 148 164Q224 137 282 195Q338 242 306 321Q278 392 190 389Q89 387 78 265Z" fill="#e0e7ee" stroke="#b2c0ce" stroke-width="2"/>
+<path d="M249 220Q209 238 230 278Q251 301 285 274" fill="none" stroke="#8295a9" stroke-width="7"/>
+<text x="120" y="284" fill="#53667e" font-size="21" font-weight="bold">催化区域</text>
+<ellipse cx="109" cy="363" rx="49" ry="29" fill="#c5d1de"/><text x="109" y="369" text-anchor="middle" fill="#53667e" font-size="15">CaN B</text>
+<path d="M183 164C198 99 258 139 280 109S333 104 352 139S406 133 430 169S402 219 380 246S345 258 322 253" fill="none" stroke="#2689aa" stroke-width="11" stroke-linecap="round"/>
+<path d="M308 231Q340 220 355 246Q349 275 318 273Q290 258 308 231Z" fill="#d8863e"/>
+<g fill="#9275b5"><ellipse cx="382" cy="115" rx="32" ry="24" transform="rotate(-20 382 115)"/><ellipse cx="444" cy="117" rx="32" ry="24" transform="rotate(20 444 117)"/><path d="M396 112Q414 97 432 112L431 124Q414 116 399 125Z"/></g>
+<g fill="none" stroke="#96a5b6" stroke-width="1.3"><path d="M414 89V62H472"/><path d="M280 108V63H234"/><path d="M344 268L404 303H457"/><path d="M266 279L287 340H368"/></g>
+<g font-size="18"><text x="482" y="67" fill="#8060a5">CaM</text><text x="178" y="67" fill="#2689aa">调控区</text><text x="468" y="309" fill="#bd732e">AID</text><text x="375" y="346" fill="#627187" font-size="15">催化位点所在区域</text></g>
+<g fill="#203047" font-size="18" font-weight="bold"><text x="590" y="98">CaM：钙调蛋白</text><text x="590" y="188">调控区</text><text x="590" y="278">AID：自抑制结构域</text></g>
+<g fill="#627187" font-size="16"><text x="590" y="128">与 CaN 调控区结合，参与激活调控。</text><text x="590" y="218">关注结合后的位置、形态与接触变化。</text><text x="590" y="308">关注其相对催化区域的位置变化。</text></g>
+<rect x="576" y="359" width="462" height="91" rx="9" fill="#f1f5f9"/><text x="598" y="390" font-size="18" fill="#203047">我们要观察的关系</text><text x="598" y="422" font-size="16" fill="#53667e">调控区重排与 AID 移位怎样在时间上配合？</text>
+</svg></section><section><h2>b　连续构象</h2><svg viewBox="0 0 1180 430" xmlns="http://www.w3.org/2000/svg"><defs><g id="f3b-aid"><ellipse rx="15" ry="10" transform="rotate(-20)"/></g></defs><g font-size="14" fill="#53667e"><circle cx="390" cy="28" r="6" fill="#9275b5"/><text x="403" y="33">CaM</text><path d="M485 28H508" stroke="#2689aa" stroke-width="5"/><text x="518" y="33">调控区</text><circle cx="620" cy="28" r="6" fill="#d8863e"/><text x="633" y="33">AID</text><circle cx="725" cy="28" r="6" fill="#c5d1de"/><text x="738" y="33">催化区域</text><path d="M865 28H888" stroke="#a15b25" stroke-dasharray="4 3"/><text x="899" y="33">AID 起始位置</text></g><g id="f3b-frames"></g><path d="M65 330H1115L1108 325M1115 330L1108 335" fill="none" stroke="#8292a6" stroke-width="1.5"/><text x="1070" y="358" font-size="15" fill="#627187">时间 →</text><text x="590" y="399" text-anchor="middle" font-size="16" fill="#53667e">统一对齐与观察视角 · 同一分子的代表性构象</text></svg></section><section><h2>c　变化的时间关系</h2><svg viewBox="0 0 1060 580" xmlns="http://www.w3.org/2000/svg">
+<g fill="#53667e" font-size="15"><text x="115" y="33">同一分子 · 两种结构变化的时间对应</text><path d="M677 28H708" stroke="#8895a5" stroke-dasharray="5 4"/><text x="718" y="33">候选判定阈值</text><rect x="865" y="20" width="20" height="15" fill="#2689aa" opacity=".15"/><text x="894" y="33">起点区间</text></g>
+<rect x="391" y="82" width="36" height="396" fill="#2689aa" opacity=".1"/><rect x="554" y="82" width="42" height="396" fill="#d8863e" opacity=".12"/>
+<g stroke="#8895a5" fill="none"><path d="M115 105V255H965M115 328V478H965"/></g>
+<g fill="#53667e" font-size="14"><text x="84" y="260">0</text><text x="78" y="483">d₀</text><text x="120" y="95">片段中心位移（Å）</text><text x="120" y="318">AID–催化区域距离（Å）</text><text x="900" y="511">时间（s）</text></g>
+<text x="12" y="175" fill="#2689aa" font-weight="bold" font-size="17">调控片段</text><text x="20" y="398" fill="#d8863e" font-weight="bold" font-size="19">AID</text>
+<path d="M115 225H965M115 448H965" stroke="#8895a5" stroke-dasharray="5 4" fill="none"/>
+<path d="M120 255L150 247L180 252L210 244L240 249L270 243L300 250L330 240L360 239L390 232L420 217L450 197L480 171L510 152L540 137L570 130L600 125L630 129L660 120L690 124L720 117L750 126L780 121L810 130L840 127L870 136L900 132L930 140L960 137" stroke="#2689aa" stroke-width="3" fill="none"/>
+<path d="M120 478L150 470L180 475L210 468L240 472L270 468L300 472L330 466L360 469L390 471L420 465L450 470L480 465L510 467L540 459L570 451L600 434L630 412L660 388L690 365L720 352L750 345L780 341L810 348L840 340L870 346L900 343L930 350L960 347" stroke="#d8863e" stroke-width="3" fill="none"/>
+<path d="M409 82V478" stroke="#2689aa" stroke-dasharray="4 4"/><path d="M575 82V478" stroke="#d8863e" stroke-dasharray="4 4"/>
+<path d="M409 76V59H575V76" stroke="#53667e" fill="none" stroke-width="1.5"/><text x="492" y="48" text-anchor="middle" fill="#203047" font-size="17">Δt</text>
+<g font-size="15" text-anchor="middle"><text x="409" y="505" fill="#2689aa">t_调控</text><text x="575" y="505" fill="#bc742e">t_AID</text></g>
+<text x="530" y="553" text-anchor="middle" fill="#53667e" font-size="16">Δt = t_AID − t_调控</text></svg></section><section><h2>d　候选构象状态与路径</h2><svg viewBox="0 0 1100 660" xmlns="http://www.w3.org/2000/svg"><defs><marker id="f3d-blueArrow" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1L7 4L1 7" fill="none" stroke="#2689aa" stroke-width="1.4"/></marker><marker id="f3d-orangeArrow" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M1 1L7 4L1 7" fill="none" stroke="#bd7a39" stroke-width="1.4"/></marker></defs>
+<rect x="120" y="52" width="650" height="475" fill="#fafbfd"/>
+<path d="M120 52V527H770" stroke="#8292a6" stroke-width="1.5" fill="none"/>
+<path d="M445 52V527M120 287H770" stroke="#bfcbd8" stroke-dasharray="5 5"/>
+<g fill="#53667e" font-size="15" text-anchor="middle"><text x="280" y="552">接近起始构象</text><text x="610" y="552">可分辨重排</text><text x="445" y="590" font-size="18">调控区构象变化 →</text><text transform="translate(40 290) rotate(-90)" font-size="18">AID–催化区域距离 →</text></g>
+<g fill="#627187" font-size="14"><text x="69" y="172">远</text><text x="69" y="417">近</text></g>
+<g id="f3d-states"></g>
+<path d="M342 413H530" stroke="#2689aa" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#f3d-blueArrow)" fill="none"/><path d="M617 348V235" stroke="#2689aa" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#f3d-blueArrow)" fill="none"/>
+<path d="M277 348V235" stroke="#bd7a39" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#f3d-orangeArrow)" fill="none"/><path d="M342 168H530" stroke="#bd7a39" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#f3d-orangeArrow)" fill="none"/>
+<g font-size="17" fill="#203047"><text x="810" y="103" font-weight="bold">两条候选路径</text><text x="810" y="153" fill="#2689aa">S1 → S2 → S3</text><text x="810" y="185" font-size="15" fill="#627187">调控区先重排</text><text x="810" y="244" fill="#bd7a39">S1 → S4 → S3</text><text x="810" y="276" font-size="15" fill="#627187">AID 先移位</text></g>
+<g fill="#627187" font-size="14"><text x="810" y="353">虚线箭头：待检验路径</text><text x="810" y="383">灰色分界：待校准阈值</text><text x="810" y="431">直接转换与回返</text><text x="810" y="455">随实际轨迹补入</text></g>
+<g font-size="14" fill="#53667e"><circle cx="188" cy="630" r="6" fill="#2689aa"/><text x="201" y="635">调控区</text><circle cx="328" cy="630" r="6" fill="#d8863e"/><text x="341" y="635">AID</text><circle cx="433" cy="630" r="6" fill="#c5d1de"/><text x="446" y="635">催化区域</text></g>
+</svg></section></div><footer><p class="notice">研究规划示意：结构、曲线、阈值与转换路径均为占位；候选状态的实际占据与转换由数据确定。</p><p><strong>a</strong> 明确观察区域；<strong>b</strong> 展示同一分子的连续构象；<strong>c</strong> 比较调控片段与 AID 变化的时间；<strong>d</strong> 用调控区构象变化和 AID 距离定义四个候选状态。</p><p><strong>S1</strong>：起始构象、AID近；<strong>S2</strong>：调控区重排、AID近；<strong>S3</strong>：调控区重排、AID远；<strong>S4</strong>：接近起始构象、AID远。S1→S2→S3 与 S1→S4→S3 表示待检验的两种先后过程；直接转换与回返随轨迹补入。</p><p>对齐基准、片段边界、距离端点与状态阈值依据结构模型、可分辨性及误差校准核定。CaM结合条件随样品记录明确，结构变化与自抑制解除的联系结合匹配条件下的酶活与干预证据。</p><p><a href="figure3d-preview.html">配套预览：逐分子状态序列与转换统计</a></p></footer><script>{}{
+const states=[{x:42,y:12,bend:0},{x:43,y:10,bend:12},{x:57,y:0,bend:19},{x:72,y:-13,bend:25},{x:64,y:-7,bend:18}];
+document.querySelector('#f3b-frames').innerHTML=states.map((s,i)=>`<g transform="translate(${112+i*232} 224)"><text x="0" y="-143" text-anchor="middle" font-size="18" fill="#53667e">t${i}</text><path d="M-74 -35Q-69 -80 -20 -73Q25 -76 45 -39Q64 8 38 45Q10 79 -42 61Q-87 43 -74 -35Z" fill="#e0e7ee" stroke="#b2c0ce"/><path d="M34 -20Q12 -8 24 16Q35 29 48 14" fill="none" stroke="#8295a9" stroke-width="5"/><ellipse cx="-58" cy="54" rx="24" ry="16" fill="#c5d1de"/><path d="M-19 -73C-10 -109 20 -85 31 -105S${58-s.bend} -98 68 -83S${76-s.bend} -35 ${s.x} ${s.y}" fill="none" stroke="#2689aa" stroke-width="6" stroke-linecap="round"/><g fill="#9275b5"><ellipse cx="19" cy="-109" rx="15" ry="11"/><ellipse cx="49" cy="-111" rx="15" ry="11"/><path d="M25 -113Q35 -118 44 -112L44 -106Q34 -109 26 -105Z"/></g><use href="#f3b-aid" transform="translate(${s.x} ${s.y})" fill="#d8863e"/><use href="#f3b-aid" transform="translate(42 12)" fill="none" stroke="#a15b25" stroke-width="1.5" stroke-dasharray="4 3"/></g>`).join('');
+}{}{
+const states=[['S1','起始构象',277,413,false,false],['S2','调控区重排',617,413,true,false],['S3','联合变化',617,168,true,true],['S4','AID 先行变化',277,168,false,true]];
+document.querySelector('#f3d-states').innerHTML=states.map(([id,label,x,y,rearr,far])=>`<g transform="translate(${x} ${y})"><text x="0" y="-82" text-anchor="middle" font-size="19" font-weight="bold" fill="#203047">${id}</text><path d="M-43 -29Q-23 -53 3 -32Q31 -14 18 15Q-1 41 -34 23Q-56 5 -43 -29Z" fill="#dbe3ec" stroke="#b6c3d1"/><path d="M4 -16Q-9 -3 9 10" fill="none" stroke="#8295a9" stroke-width="4"/><path d="${rearr?'M-25 -37Q-10 -70 6 -40T42 -34':'M-25 -37Q-30 -68 0 -61Q25 -63 35 -35'}" fill="none" stroke="#2689aa" stroke-width="6" stroke-linecap="round"/><path d="M${far?42:35} -34Q${far?61:35} -15 ${far?65:21} ${far?-9:1}" fill="none" stroke="#2689aa" stroke-width="4"/><ellipse cx="${far?65:21}" cy="${far?-9:1}" rx="12" ry="9" fill="#d8863e"/><text x="0" y="61" text-anchor="middle" font-size="15" fill="#53667e">${label}</text></g>`).join('');
+}</script></html>
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+    </div>
+    <div>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script defer src="/js/page-views.js" data-site-url="https://niuyihao.github.io"></script>
+
+
+  <!-- copyright -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">主题许可 CC BY-NC-SA 4.0</a>
+    <span>© 2026 我的博客</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">主题作者 xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

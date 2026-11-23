@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+
+
+<title>我的博客</title>
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/nprogress/nprogress.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/rss2.xml" title="我的博客" type="application/rss+xml">
+</head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="我的博客" />
+          我的博客
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/archives/">文章</a>
+        
+          <a class="hidden sm:flex" href="/category/">分类</a>
+        
+          <a class="hidden sm:flex" href="/tag/">标签</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="RSS 订阅" href="/rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <button type="button" class="w-5 h-5" title="切换明暗主题" aria-label="切换明暗主题" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </button>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <button type="button" class="w-5 h-5" aria-label="打开菜单" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </button>
+        <button type="button" class="w-5 h-5 hidden" aria-label="关闭菜单" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/95 dark:bg-zinc-900/95 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/archives/" class="flex h-12 sm:h-auto items-center">文章</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/category/" class="flex h-12 sm:h-auto items-center">分类</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/tag/" class="flex h-12 sm:h-auto items-center">标签</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        
+      </h1>
+      <div>
+        <section class="flex flex-wrap items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2026-11-24</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>6 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>1.3k words</span>
+          </span>
+          
+            <span class="inline-flex items-center gap-3 whitespace-nowrap">
+              <span class="text-gray-400" aria-hidden="true">·</span>
+              <span class="inline-flex items-center gap-1" aria-live="polite">
+                <iconify-icon width="18" icon="mdi:eye-outline" aria-hidden="true"></iconify-icon>
+                <span>阅读量：<span id="page-views-status">加载中…</span><span id="busuanzi_container_page_pv" style="display:none"><span id="busuanzi_value_page_pv"></span> 次</span></span>
+              </span>
+            </span>
+          
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <!doctype html><html lang="zh"><meta charset="utf-8"><title>图4 · TDP-43完整规划预览</title><style>body{margin:0;background:#edf0f4;color:#203047;font:15px Arial,"Noto Sans CJK SC",sans-serif}header,footer{max-width:1100px;margin:24px auto;padding:0 16px;line-height:1.8}header{display:flex;justify-content:space-between;align-items:center}button{padding:9px 13px;background:white;border:1px solid #bcc8d6;border-radius:6px;cursor:pointer}#sheet{width:1100px;max-width:96vw;margin:auto;background:white;box-shadow:0 3px 18px #20304712}section{padding:16px 20px 6px}h2{font-size:20px;margin:0 0 8px}svg{width:100%;height:auto;display:block}body.compact #sheet{width:180mm}footer{color:#53667e}.notice{color:#855700;background:#fff1d5;padding:10px 15px;border-radius:7px}a{color:#2689aa}</style><header><strong>图 4｜RNA 结合与 TDP-43 双 RRM 动态配合</strong><button onclick="document.body.classList.toggle('compact')">切换 180 mm 宽度</button></header><div id="sheet"><section><h2>a　观察对象与共同指标</h2><svg viewBox="0 0 1100 510" xmlns="http://www.w3.org/2000/svg"><defs><marker id="f4a-arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto-start-reverse"><path d="M0 0L6 3L0 6" fill="none" stroke="#53667e" stroke-width="1.4"/></marker><g id="f4a-pair"><path d="M-110 -26Q-124 -75 -77 -79Q-34 -82 -22 -36Q-8 8 -48 32Q-103 45 -110 -26Z" fill="#2689aa"/><path d="M-24 -19Q-4 -46 9 -20T42 -23" fill="none" stroke="#a8b8c8" stroke-width="7"/><path d="M42 -52Q72 -85 109 -53Q143 -23 116 17Q87 42 51 10Q24 -16 42 -52Z" fill="#d8863e"/><text x="-70" y="-20" text-anchor="middle" fill="white" font-size="19" font-weight="bold">RRM1</text><text x="83" y="-20" text-anchor="middle" fill="white" font-size="19" font-weight="bold">RRM2</text><circle cx="-69" cy="-6" r="3" fill="#203047"/><circle cx="82" cy="-6" r="3" fill="#203047"/><path d="M-69 50V78M82 50V78M-63 69H76" stroke="#53667e" fill="none" marker-end="url(#f4a-arr)"/><text x="6" y="95" text-anchor="middle" font-size="17" fill="#53667e">域间距离 d</text><path d="M-69 -111H-26M82 -111L112 -136" stroke="#53667e" stroke-width="2"/><path d="M86 -111Q100 -111 99 -124" stroke="#53667e" fill="none"/><text x="5" y="-126" text-anchor="middle" fill="#53667e" font-size="16">相对朝向 θ</text><path d="M8 -23V27" stroke="#9aaaba"/><text x="8" y="47" text-anchor="middle" fill="#627187" font-size="14">连接区</text></g></defs>
+<g font-size="20" font-weight="bold" fill="#203047" text-anchor="middle"><text x="275" y="48">游离态</text><text x="805" y="48">指定 RNA 结合态</text></g>
+<path d="M540 75V394" stroke="#dbe1e8"/>
+<use href="#f4a-pair" transform="translate(275 240)"/><use href="#f4a-pair" transform="translate(805 240)"/>
+<path d="M646 209Q681 166 720 174T800 187Q840 172 875 184T966 204" fill="none" stroke="#9275b5" stroke-width="6" stroke-linecap="round"/>
+<text x="966" y="166" fill="#8060a5" font-size="17">RNA</text><path d="M963 176L951 195" stroke="#9275b5"/>
+<g fill="#627187" font-size="15" text-anchor="middle"><text x="275" y="382">同一套结构指标</text><text x="805" y="382">同一套结构指标</text></g>
+<rect x="135" y="421" width="830" height="55" rx="8" fill="#f1f5f9"/><text x="550" y="455" text-anchor="middle" fill="#53667e" font-size="17">同一构建体与匹配溶液条件 · 比较 d(t) 与 θ(t)</text></svg></section><section><h2>b　两种条件下的连续构象</h2><svg viewBox="0 0 1180 530" xmlns="http://www.w3.org/2000/svg"><defs><g id="f4b-rrm1"><path d="M-39 -24Q-50 -54 -23 -58Q7 -60 13 -30Q23 1 -3 15Q-34 22 -39 -24Z" fill="#2689aa"/></g><g id="f4b-rrm2"><path d="M-19 -30Q3 -48 26 -27Q45 -5 24 16Q3 32 -20 7Q-36 -14 -19 -30Z" fill="#d8863e"/></g></defs>
+<g font-size="14" fill="#53667e"><circle cx="700" cy="27" r="6" fill="#2689aa"/><text x="714" y="32">RRM1</text><circle cx="810" cy="27" r="6" fill="#d8863e"/><text x="824" y="32">RRM2</text><path d="M925 27H950" stroke="#9275b5" stroke-width="4"/><text x="960" y="32">RNA</text></g>
+<g id="f4b-times" fill="#53667e" font-size="16" text-anchor="middle"></g>
+<g fill="#203047" font-size="17" font-weight="bold"><text x="20" y="181">游离态</text><text x="20" y="367">RNA 结合态</text></g><g fill="#627187" font-size="14"><text x="20" y="207">分子 F1</text><text x="20" y="393">分子 R1</text></g>
+<path d="M164 267H1135" stroke="#dbe1e8"/><g id="f4b-frames"></g><path d="M175 458H1135L1128 453M1135 458L1128 463" fill="none" stroke="#8292a6" stroke-width="1.5"/><text x="1035" y="485" fill="#627187" font-size="15">相对时间 →</text><text x="600" y="518" text-anchor="middle" fill="#53667e" font-size="15">按 RRM1 对齐 · 统一空间比例 · 每列对应相同的观测时长</text></svg></section><section><h2>c　域间运动与逐分子波动</h2><svg viewBox="0 0 1180 540" xmlns="http://www.w3.org/2000/svg"><g font-size="15" fill="#53667e"><path d="M760 27H790" stroke="#2689aa" stroke-width="3"/><text x="800" y="32">游离态</text><path d="M910 27H940" stroke="#9275b5" stroke-width="3" stroke-dasharray="6 4"/><text x="950" y="32">RNA 结合态</text></g><g fill="#203047" font-size="19" font-weight="bold"><text x="35" y="82">域间距离轨迹</text><text x="423" y="82">相对转角轨迹</text><text x="815" y="82">逐分子波动幅度</text></g>
+<g fill="#627187" font-size="14"><text x="65" y="119">距离（Å）</text><text x="455" y="119">相对转角（°）</text><text x="845" y="119">距离标准差（Å）</text><text x="845" y="320">转角标准差（°）</text></g>
+<g stroke="#8998aa" fill="none"><path d="M65 136V417H365M455 136V417H755M845 136V263H1125M845 337V464H1125"/></g><g id="f4c-traces"></g><g id="f4c-scatter"></g><g id="f4c-ticks" font-size="13" fill="#627187"></g>
+<g fill="#627187" font-size="14" text-anchor="middle"><text x="215" y="455">相对时间（s）</text><text x="605" y="455">相对时间（s）</text><text x="925" y="287">游离态</text><text x="1050" y="287">RNA 结合态</text><text x="925" y="488">游离态</text><text x="1050" y="488">RNA 结合态</text><text x="215" y="493">代表性独立分子 F1 / R1</text><text x="605" y="493">代表性独立分子 F1 / R1</text><text x="985" y="522">每点一个分子 · 短线为组内中位数</text></g></svg></section><section><h2>d　共同状态与转换</h2><svg viewBox="0 0 1180 650" xmlns="http://www.w3.org/2000/svg"><defs><marker id="f4d-arr" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L6 3L0 6Z" fill="#718399"/></marker></defs><g font-size="19" font-weight="bold" fill="#203047"><text x="25" y="45">共同状态地图</text><text x="405" y="45">逐分子状态占据</text><text x="800" y="45">驻留与转换</text></g><g font-size="13" fill="#627187"><text x="25" y="77">示例：三种候选构象</text><text x="405" y="77">每点一个分子</text><text x="800" y="77">上下两组使用同一状态定义</text></g>
+<path d="M70 125V420H350" stroke="#8292a6" fill="none"/><text x="210" y="454" text-anchor="middle" font-size="14" fill="#627187">域间距离 →</text><text transform="translate(30 280) rotate(-90)" text-anchor="middle" font-size="14" fill="#627187">相对朝向 →</text><g id="f4d-map"></g>
+<path d="M445 126V420H750" stroke="#8292a6" fill="none"/><g font-size="13" fill="#627187"><text x="408" y="425">0%</text><text x="400" y="278">50%</text><text x="395" y="132">100%</text></g><g id="f4d-occupancy"></g>
+<path d="M846 126V315H1145" stroke="#8292a6" fill="none"/><g font-size="13" fill="#627187"><text x="800" y="111">完整驻留片段（s）</text><text x="828" y="320">0</text><text x="828" y="225">1</text><text x="828" y="131">2</text></g><g id="f4d-dwell"></g><g id="f4d-net"></g>
+<g fill="#53667e" font-size="14"><circle cx="445" cy="493" r="5" fill="#2689aa"/><text x="460" y="498">游离态</text><circle cx="580" cy="493" r="5" fill="#9275b5"/><text x="595" y="498">RNA 结合态</text><text x="800" y="610">箭头数字：示意转换次数</text></g>
+<text x="25" y="536" font-size="14" fill="#627187">状态位置与构象均为占位</text><text x="25" y="562" font-size="14" fill="#627187">正式状态依据分布及误差核定</text></svg></section></div><footer><p class="notice">研究规划示意：结构、RNA 路径、曲线、状态及统计均为占位。各子图的数据示例独立，正式图以统一数据来源建立对应。</p><p><strong>a</strong> 定义域间距离与相对朝向；<strong>b</strong> 对照两条独立分子的连续构象；<strong>c</strong> 展示代表性轨迹并按独立分子汇总波动；<strong>d</strong> 比较共同状态的占据、驻留与转换。</p><p>两组采用同一构建体、指定 RNA 条件及匹配的溶液、观测时长和采样设置。距离端点与相对朝向定义依据结构核定；状态划分结合分布、测量误差与旋转自由度。示例中的组间差异由正式实验及验证结果更新。</p><p>驻留片段与转换事件保留所属分子；推断结合分子内相关性、轨迹边界截尾与漏检校正。完整旋转、统计细节及测量定义置于图注或配套分析。</p><p>单图预览：<a href="figure4a-preview.html">a</a> · <a href="figure4b-preview.html">b</a> · <a href="figure4c-preview.html">c</a> · <a href="figure4d-preview.html">d</a></p></footer><script>{}{
+const xs=[220,420,620,820,1020];document.querySelector('#f4b-times').innerHTML=xs.map((x,i)=>`<text x="${x+30}" y="82">τ${i}</text>`).join('');
+const rows=[[[68,-8,0],[84,-23,-24],[56,5,18],[78,-13,-12],[62,0,8]],[[68,-8,0],[74,-16,-16],[61,1,11],[79,-17,-20],[66,-3,5]]];
+document.querySelector('#f4b-frames').innerHTML=rows.map((row,r)=>row.map(([dx,dy,angle],i)=>`<g transform="translate(${xs[i]} ${r?377:191})"><path d="M-54 32H113" stroke="#e5eaf0"/><path d="M10 -20Q32 -43 ${dx-20} ${dy-15}" stroke="#a8b8c8" stroke-width="5" fill="none"/><use href="#f4b-rrm1"/><use href="#f4b-rrm2" transform="translate(${dx} ${dy}) rotate(${angle})"/>${r?`<path d="M-48 -42Q-20 -78 11 -57T${dx-10} ${dy-48}Q${dx+18} ${dy-54} ${dx+42} ${dy-24}" fill="none" stroke="#9275b5" stroke-width="4" stroke-linecap="round"/>`:''}</g>`).join('')).join('');
+}{
+const colors=['#2689aa','#9275b5'];
+const rows=[0,1].map(g=>Array.from({length:6},(_,m)=>Array.from({length:31},(_,i)=>{const t=i*.1;const p=m*.7;return {t,d:40+(g?1:0)+(3.3+.28*m-.35*g)*Math.sin(t*5+p)+(1+.1*m)*Math.cos(t*10+p),a:24+(g?2:0)+(6+.5*m-.6*g)*Math.sin(t*4+p)+2*Math.cos(t*9+p)};})));
+const sd=a=>{const mu=a.reduce((s,v)=>s+v,0)/a.length;return Math.sqrt(a.reduce((s,v)=>s+(v-mu)**2,0)/(a.length-1));};
+const med=a=>{const z=[...a].sort((a,b)=>a-b);return (z[2]+z[3])/2;};
+const path=(a,key,x,y,lo,hi,w,h)=>a.map((v,i)=>(i?'L':'M')+(x+v.t/3*w).toFixed(2)+' '+(y+h-(v[key]-lo)/(hi-lo)*h).toFixed(2)).join(' ');
+document.querySelector('#f4c-traces').innerHTML=rows.map((r,g)=>['d','a'].map((key,j)=>`<path d="${path(r[0],key,j?455:65,136,j?10:30,j?40:50,300,281)}" stroke="${colors[g]}" stroke-width="2.5" fill="none" ${g?'stroke-dasharray="6 4"':''}/>`).join('')).join('');
+const offsets=[-17,-10,-3,5,12,19];document.querySelector('#f4c-scatter').innerHTML=['d','a'].map((key,j)=>rows.map((r,g)=>{const vals=r.map(a=>sd(a.map(v=>v[key])));const base=j?464:263,max=j?10:5,x=g?1050:925;return vals.map((v,i)=>`<circle cx="${x+offsets[i]}" cy="${base-v/max*127}" r="4.5" fill="${colors[g]}" opacity=".8"/>`).join('')+`<path d="M${x-26} ${base-med(vals)/max*127}H${x+26}" stroke="${colors[g]}" stroke-width="3"/>`;}).join('')).join('');
+let ticks='';for(const [x,lo,hi] of [[65,30,50],[455,10,40]]){for(const v of [lo,(lo+hi)/2,hi]){ticks+=`<text x="${x-9}" y="${417-(v-lo)/(hi-lo)*281+5}" text-anchor="end">${v}</text>`;}for(const t of [0,1,2,3])ticks+=`<text x="${x+t*100}" y="438" text-anchor="middle">${t}</text>`;}
+for(const [base,max] of [[263,5],[464,10]])for(const v of [0,max/2,max])ticks+=`<text x="835" y="${base-v/max*127+5}" text-anchor="end">${v}</text>`;
+document.querySelector('#f4c-ticks').innerHTML=ticks;
+}{
+const palette=['#718ba2','#bc935d','#88a69a'];const groups=[[[[0,1],[1,.5],[2,1],[1,.5],[0,1]],[[1,.5],[0,1],[1,1],[2,1],[1,.5]],[[0,.5],[2,.5],[1,1],[0,1],[1,1]]],[[[0,.5],[1,1.5],[2,1],[1,1]],[[1,1],[2,.5],[1,1.5],[0,1]],[[2,.5],[1,1],[0,.5],[1,2]]]];const gc=['#2689aa','#9275b5'];
+document.querySelector('#f4d-map').innerHTML=[[135,350,28,0],[290,280,48,20],[230,165,40,65]].map(([x,y,gap,rot],i)=>`<g transform="translate(${x} ${y})"><ellipse rx="51" ry="40" fill="${palette[i]}" opacity=".15"/><ellipse cx="-20" cy="0" rx="12" ry="18" fill="#2689aa"/><path d="M-8 0Q6 -10 ${gap-20} 0" stroke="#a8b8c8" fill="none" stroke-width="3"/><ellipse cx="${gap-20}" cy="0" rx="12" ry="18" transform="rotate(${rot} ${gap-20} 0)" fill="#d8863e"/><text y="58" text-anchor="middle" font-size="16" fill="#53667e">S${i+1}</text></g>`).join('');
+let occ='',dw='',net='';for(let st=0;st<3;st++){const x=495+st*105;occ+=`<text x="${x}" y="447" text-anchor="middle" font-size="14" fill="#53667e">S${st+1}</text>`;dw+=`<text x="${891+st*105}" y="341" text-anchor="middle" font-size="14" fill="#53667e">S${st+1}</text>`;groups.forEach((g,gi)=>g.forEach((seq,m)=>{const t=seq.filter(v=>v[0]===st).reduce((a,v)=>a+v[1],0);occ+=`<circle cx="${x+(gi?12:-12)+(m-1)*4}" cy="${420-t/4*294}" r="4" fill="${gc[gi]}"/>`;seq.forEach(([s,d],j)=>{if(s===st&&j>0&&j<seq.length-1)dw+=`<circle cx="${891+st*105+(gi?12:-12)+(m-1)*4+j}" cy="${315-d/2*189}" r="3.5" fill="${gc[gi]}" opacity=".8"/>`;});}));}
+groups.forEach((g,gi)=>{const y=405+gi*130;const counts=Array.from({length:3},()=>[0,0,0]);g.forEach(seq=>seq.slice(1).forEach((v,j)=>counts[seq[j][0]][v[0]]++));net+=`<text x="800" y="${y-29}" font-size="13" fill="${gc[gi]}">${gi?'RNA 结合态':'游离态'}</text>`;for(let a=0;a<3;a++)for(let b=0;b<3;b++){if(!counts[a][b])continue;const xa=865+a*125,xb=865+b*125;const sign=a<b?-1:1;net+=`<path d="M${xa+(a<b?20:-20)} ${y}Q${(xa+xb)/2} ${y+sign*(Math.abs(a-b)===2?65:34)} ${xb+(a<b?-20:20)} ${y}" stroke="#718399" fill="none" stroke-width="1.5" marker-end="url(#f4d-arr)"/><text x="${(xa+xb)/2}" y="${y+sign*(Math.abs(a-b)===2?37:20)}" text-anchor="middle" font-size="12" fill="#53667e">${counts[a][b]}</text>`;}for(let a=0;a<3;a++)net+=`<circle cx="${865+a*125}" cy="${y}" r="18" fill="${palette[a]}"/><text x="${865+a*125}" y="${y+5}" text-anchor="middle" font-size="13" fill="white">S${a+1}</text>`;});
+document.querySelector('#f4d-occupancy').innerHTML=occ;document.querySelector('#f4d-dwell').innerHTML=dw;document.querySelector('#f4d-net').innerHTML=net;
+}</script></html>
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+    </div>
+    <div>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script defer src="/js/page-views.js" data-site-url="https://niuyihao.github.io"></script>
+
+
+  <!-- copyright -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">主题许可 CC BY-NC-SA 4.0</a>
+    <span>© 2026 我的博客</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">主题作者 xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

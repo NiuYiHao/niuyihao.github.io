@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+
+
+<title>「论文」详细提纲与图表初版（草案）v2 | 我的博客</title>
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/nprogress/nprogress.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/rss2.xml" title="我的博客" type="application/rss+xml">
+</head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="我的博客" />
+          我的博客
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        「论文」详细提纲与图表初版（草案）v2
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/archives/">文章</a>
+        
+          <a class="hidden sm:flex" href="/category/">分类</a>
+        
+          <a class="hidden sm:flex" href="/tag/">标签</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="RSS 订阅" href="/rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <button type="button" class="w-5 h-5" title="切换明暗主题" aria-label="切换明暗主题" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </button>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <button type="button" class="w-5 h-5" aria-label="打开菜单" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </button>
+        <button type="button" class="w-5 h-5 hidden" aria-label="关闭菜单" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/95 dark:bg-zinc-900/95 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/archives/" class="flex h-12 sm:h-auto items-center">文章</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/category/" class="flex h-12 sm:h-auto items-center">分类</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/tag/" class="flex h-12 sm:h-auto items-center">标签</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        「论文」详细提纲与图表初版（草案）v2
+      </h1>
+      <div>
+        <section class="flex flex-wrap items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2026-11-23</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>3 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>1k words</span>
+          </span>
+          
+            <span class="inline-flex items-center gap-3 whitespace-nowrap">
+              <span class="text-gray-400" aria-hidden="true">·</span>
+              <span class="inline-flex items-center gap-1" aria-live="polite">
+                <iconify-icon width="18" icon="mdi:eye-outline" aria-hidden="true"></iconify-icon>
+                <span>阅读量：<span id="page-views-status">加载中…</span><span id="busuanzi_container_page_pv" style="display:none"><span id="busuanzi_value_page_pv"></span> 次</span></span>
+              </span>
+            </span>
+          
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><p>**文字交付物：**详细提纲：各节证据、引文、解释及篇幅</p>
+<p>**图表交付物：**现有图表初版、待补图清单</p>
+<h2 id="P1-建立论点—证据对应关系"><a href="#P1-建立论点—证据对应关系" class="headerlink" title="P1 建立论点—证据对应关系"></a><strong>P1 建立论点—证据对应关系</strong></h2><h3 id="P1-1-为每个文献资料-Result配好引文"><a href="#P1-1-为每个文献资料-Result配好引文" class="headerlink" title="P1-1 为每个文献资料&#x2F;Result配好引文"></a>P1-1 为每个文献资料&#x2F;Result配好引文</h3><p>我们有「论文」Day2 科学问题与图版规划（记做：科学问题资料A）和「论文」论文结构（记做：科学问题资料B）。请对AB并集的文献资料&#x2F;result配好引文</p>
+<h3 id="P1-2-配好数据"><a href="#P1-2-配好数据" class="headerlink" title="P1-2 配好数据"></a>P1-2 配好数据</h3><p>我的理解是，文献资料的关键指标和值，Result的关键指标和值</p>
+<h3 id="P1-3-配好论点"><a href="#P1-3-配好论点" class="headerlink" title="P1-3 配好论点"></a>P1-3 配好论点</h3><p>它们各自隶属的论点</p>
+<h3 id="P1-4-写进Plan文档"><a href="#P1-4-写进Plan文档" class="headerlink" title="P1-4 写进Plan文档"></a>P1-4 写进Plan文档</h3><p>IDK。就是我的论文的大纲模式吧。就是说我从大纲开始搓论文搓一版出来？</p>
+<h3 id="P1-5-交付一份博客。"><a href="#P1-5-交付一份博客。" class="headerlink" title="P1-5 交付一份博客。"></a>P1-5 交付一份博客。</h3><p>好嘟</p>
+<h2 id="P2-构建论文论证结构"><a href="#P2-构建论文论证结构" class="headerlink" title="P2 构建论文论证结构"></a><strong>P2 构建论文论证结构</strong></h2><h3 id="P2-1-写清证据如何支持分论点"><a href="#P2-1-写清证据如何支持分论点" class="headerlink" title="P2-1 写清证据如何支持分论点"></a>P2-1 写清证据如何支持分论点</h3><p>各个节考虑，有哪些节？请回答：</p>
+<p>正文可分为五节：</p>
+<ol>
+<li><strong>方法与验证</strong>：怎样从连续影像得到可靠的三维运动。</li>
+<li><strong>Cas9</strong>：REC2 与 HNH 怎样配合运动。</li>
+<li><strong>Calcineurin</strong>：调控区变化怎样与 AID 移位配合。</li>
+<li><strong>TDP-43</strong>：RNA 结合怎样改变两个 RRM 的运动。</li>
+<li><strong>综合讨论</strong>：三个体系共同说明什么，证据支持到哪里。</li>
+</ol>
+<p>分论点是？请回答：</p>
+<p>拟检验的分论点：</p>
+<ol>
+<li><strong>方法</strong>：连续三维重建可解析结构域运动，并量化运动的时间关系。</li>
+<li><strong>Cas9</strong>：REC2 与 HNH 的时序协同参与切割构象形成。</li>
+<li><strong>Calcineurin</strong>：调控区重排与 AID 移位共同参与自抑制解除。</li>
+<li><strong>TDP-43</strong>：RNA 结合改变两个 RRM 的相对运动与构象驻留时间。</li>
+<li><strong>综合</strong>：结构域运动的顺序、路径和驻留时间与蛋白质功能调控相关。</li>
+</ol>
+<h3 id="P2-2-分论点如何支持全文"><a href="#P2-2-分论点如何支持全文" class="headerlink" title="P2-2 分论点如何支持全文"></a>P2-2 分论点如何支持全文</h3><p>好了，全文的论点是？</p>
+<p>利用时间分辨三维结构解析结构域的时序协同，研究其与蛋白质功能调控的联系。</p>
+<h3 id="P2-3-交付一份博客。"><a href="#P2-3-交付一份博客。" class="headerlink" title="P2-3 交付一份博客。"></a>P2-3 交付一份博客。</h3><h2 id="P3-核查并补全结果与图表"><a href="#P3-核查并补全结果与图表" class="headerlink" title="P3 核查并补全结果与图表"></a>P3 核查并补全结果与图表</h2><h3 id="P3-1-核对现有实验结果和图表"><a href="#P3-1-核对现有实验结果和图表" class="headerlink" title="P3-1 核对现有实验结果和图表"></a>P3-1 核对现有实验结果和图表</h3><p>实验结果有哪些？很棘手呢。一个个分论点来。首先方法部分和Cas9</p>
+<p>方法&amp;Cas9：</p>
+<table>
+<thead>
+<tr>
+<th>部分</th>
+<th>现有图表</th>
+<th>支持的结论</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>方法</td>
+<td>RMSD、域间距离、参考结构比较</td>
+<td>结构恢复精度与运动幅度</td>
+</tr>
+<tr>
+<td>Cas9</td>
+<td>续训 CC 图</td>
+<td>图像拟合改善</td>
+</tr>
+<tr>
+<td>Cas9</td>
+<td>REC2–PI 相关图</td>
+<td>两域变化相关</td>
+</tr>
+</tbody></table>
+<p><strong>待补：REC2–HNH 的运动顺序与时间差。</strong></p>
+<p>CaN&amp;TDP-43</p>
+<table>
+<thead>
+<tr>
+<th>部分</th>
+<th>现有资料</th>
+<th>支持到哪一步</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CaN</td>
+<td>1,029 粒子栈、初步重建</td>
+<td>提供结构分析起点</td>
+</tr>
+<tr>
+<td>TDP-43</td>
+<td>模拟朝向误差图</td>
+<td>已知结构条件下的朝向恢复</td>
+</tr>
+</tbody></table>
+<p>**待补：**CaN 的调控区–AID 运动；TDP-43 的双 RRM 运动及 RNA 结合前后比较。</p>
+<h3 id="P3-2-补齐关键缺口"><a href="#P3-2-补齐关键缺口" class="headerlink" title="P3-2 补齐关键缺口"></a>P3-2 补齐关键缺口</h3><table>
+<thead>
+<tr>
+<th>部分</th>
+<th>要补什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>方法</td>
+<td>用已知运动验证结构与时间差精度</td>
+</tr>
+<tr>
+<td>Cas9</td>
+<td>REC2–HNH 的运动顺序与时间差</td>
+</tr>
+<tr>
+<td>CaN</td>
+<td>调控区重排与 AID 移位的时间关系</td>
+</tr>
+<tr>
+<td>TDP-43</td>
+<td>RNA 结合前后的双 RRM 运动比较</td>
+</tr>
+</tbody></table>
+<p><strong>先整理现有轨迹，逐项判断可提取哪些指标。</strong></p>
+<h3 id="P3-3-明确完成标准"><a href="#P3-3-明确完成标准" class="headerlink" title="P3-3 明确完成标准"></a>P3-3 明确完成标准</h3><table>
+<thead>
+<tr>
+<th>部分</th>
+<th>完成标准</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>方法</td>
+<td>给出结构误差与时间差误差</td>
+</tr>
+<tr>
+<td>Cas9</td>
+<td>给出两域运动顺序及跨分子重复性</td>
+</tr>
+<tr>
+<td>CaN</td>
+<td>给出调控区变化与 AID 移位的对应</td>
+</tr>
+<tr>
+<td>TDP-43</td>
+<td>给出 RNA 结合前后的运动差异</td>
+</tr>
+</tbody></table>
+<p>每项配齐：<strong>图、数值、来源、结论。</strong></p>
+<h3 id="P3-4-交付一份博客"><a href="#P3-4-交付一份博客" class="headerlink" title="P3-4 交付一份博客"></a>P3-4 交付一份博客</h3><h2 id="P4-确定论文大纲与写作计划"><a href="#P4-确定论文大纲与写作计划" class="headerlink" title="P4 确定论文大纲与写作计划"></a>P4 确定论文大纲与写作计划</h2><h3 id="P4-1-确认论点"><a href="#P4-1-确认论点" class="headerlink" title="P4-1 确认论点"></a>P4-1 确认论点</h3><p>每节用一句话说明核心观点。</p>
+<h3 id="P4-2-确认证据"><a href="#P4-2-确认证据" class="headerlink" title="P4-2 确认证据"></a>P4-2 确认证据</h3><p>为各论点对应文献、数据和结果。</p>
+<h3 id="P4-3-确认解释"><a href="#P4-3-确认解释" class="headerlink" title="P4-3 确认解释"></a>P4-3 确认解释</h3><p>写清证据怎样支持论点及其适用范围。</p>
+<h3 id="P4-4-确认配图"><a href="#P4-4-确认配图" class="headerlink" title="P4-4 确认配图"></a>P4-4 确认配图</h3><p>每张图对应一个分论点。</p>
+<h3 id="P4-5-确定章节"><a href="#P4-5-确定章节" class="headerlink" title="P4-5 确定章节"></a>P4-5 确定章节</h3><p>引言 → 结果 → 讨论 → 方法。</p>
+<p>结果按：方法验证 → Cas9 → CaN → TDP-43。</p>
+<h3 id="P4-6-分配写作任务"><a href="#P4-6-分配写作任务" class="headerlink" title="P4-6 分配写作任务"></a>P4-6 分配写作任务</h3><p>共 6,000 字，4 天各 1,500 字。先写结果。</p>
+<h3 id="P4-7-交付一份博客"><a href="#P4-7-交付一份博客" class="headerlink" title="P4-7 交付一份博客"></a>P4-7 交付一份博客</h3>
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/%E7%A7%91%E7%A0%94/">科研</a>
+        </span>
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C/">论文写作</a>
+        </span>
+      
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+        <a href="/2026/11/23/paper-structure-v2/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
+          「论文」论文结构 v2
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/11/23/scientific-questions-and-figure-planning-v2/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          「论文」Day2 科学问题与图版规划v2
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script defer src="/js/page-views.js" data-site-url="https://niuyihao.github.io"></script>
+
+
+  <!-- copyright -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">主题许可 CC BY-NC-SA 4.0</a>
+    <span>© 2026 我的博客</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">主题作者 xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

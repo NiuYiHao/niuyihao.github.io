@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+
+
+<title>芜湖企业信息概览 | 我的博客</title>
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/nprogress/nprogress.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/rss2.xml" title="我的博客" type="application/rss+xml">
+</head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="我的博客" />
+          我的博客
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        芜湖企业信息概览
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/archives/">文章</a>
+        
+          <a class="hidden sm:flex" href="/category/">分类</a>
+        
+          <a class="hidden sm:flex" href="/tag/">标签</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="RSS 订阅" href="/rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <button type="button" class="w-5 h-5" title="切换明暗主题" aria-label="切换明暗主题" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </button>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <button type="button" class="w-5 h-5" aria-label="打开菜单" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </button>
+        <button type="button" class="w-5 h-5 hidden" aria-label="关闭菜单" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/95 dark:bg-zinc-900/95 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/archives/" class="flex h-12 sm:h-auto items-center">文章</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/category/" class="flex h-12 sm:h-auto items-center">分类</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/tag/" class="flex h-12 sm:h-auto items-center">标签</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        芜湖企业信息概览
+      </h1>
+      <div>
+        <section class="flex flex-wrap items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2026-11-14</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>17 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>4.6k words</span>
+          </span>
+          
+            <span class="inline-flex items-center gap-3 whitespace-nowrap">
+              <span class="text-gray-400" aria-hidden="true">·</span>
+              <span class="inline-flex items-center gap-1" aria-live="polite">
+                <iconify-icon width="18" icon="mdi:eye-outline" aria-hidden="true"></iconify-icon>
+                <span>阅读量：<span id="page-views-status">加载中…</span><span id="busuanzi_container_page_pv" style="display:none"><span id="busuanzi_value_page_pv"></span> 次</span></span>
+              </span>
+            </span>
+          
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>芜湖市人民政府网站刊载的<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41264986.html">《解码芜湖“1868”：省域副中心的产业辩证法》</a>介绍了芜湖“1868”现代化产业体系：</p>
+<ul>
+<li><strong>“1”——首位产业</strong>：智能网联新能源汽车。</li>
+<li><strong>“8”——八大新兴产业</strong>：新一代信息技术、航空航天＋（低空经济）、新材料、机器人和智能制造、新能源及绿色低碳、生物医药和高端医疗器械、人工智能和数据算力、绿色食品。</li>
+<li><strong>“6”——六大未来产业</strong>：具身智能、生物制造、未来能源、新一代半导体、前沿材料、脑机接口。</li>
+<li><strong>“8”——八大现代服务业</strong>：科技服务、现代物流、现代金融、现代商贸和电子商务、人力资源服务、文化旅游、康复养老、互联网和软件信息。</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h2><p>资料来源包括政府网站、企业官网、年度报告、审计及评级报告、招股文件和高校就业网站。</p>
+<style>
+section:has(> article .wuhu-overview) { width: calc(100% - 48px); max-width: 1000px; padding-left: 0; padding-right: 0; }
+article.post-content:has(.wuhu-overview) { max-width: none; overflow-wrap: anywhere; }
+body:has(.wuhu-overview) .post-toc { max-height: calc(100vh - 160px); overflow-y: auto; }
+.wuhu-overview { --overview-line: #d1d5db; --overview-muted: #5c6675; }
+.dark .wuhu-overview { --overview-line: #475569; --overview-muted: #a8b4c5; }
+.wuhu-overview a { color: #2563eb; text-underline-offset: 3px; }
+.dark .wuhu-overview a { color: #93c5fd; }
+.wuhu-overview .overview-table { display: table; table-layout: fixed; width: 100%; max-width: 100%; margin: 1.25rem 0 2.5rem; font-size: 1rem; line-height: 1.75; border-collapse: collapse; overflow: visible; }
+.wuhu-overview .overview-table th, .wuhu-overview .overview-table td { padding: 16px 14px; text-align: left; vertical-align: middle; white-space: normal; overflow-wrap: anywhere; border-bottom: 1px solid var(--overview-line); }
+.wuhu-overview .overview-table th { font-weight: 600; }
+.wuhu-overview .overview-table th:nth-child(1) { width: 26%; }
+.wuhu-overview .overview-table th:nth-child(2) { width: 32%; }
+.wuhu-overview .overview-table th:nth-child(3) { width: 23%; }
+.wuhu-overview .overview-table th:nth-child(4) { width: 19%; }
+.wuhu-overview .overview-note { display: block; margin-top: 6px; font-size: .875rem; line-height: 1.65; color: var(--overview-muted); font-weight: 400; }
+.wuhu-overview .overview-growth { display: block; }
+.wuhu-overview .overview-policy { margin: .75rem 0 1rem; }
+.wuhu-overview .overview-policy p { margin: .5rem 0; }
+.wuhu-overview tr[id] { scroll-margin-top: 90px; }
+@media (min-width: 1024px) and (max-width: 1439px) {
+  section:has(> article .wuhu-overview) { width: calc(100% - 264px); margin-left: 32px; margin-right: 232px; }
+}
+@media (max-width: 700px) {
+  section:has(> article .wuhu-overview) { width: calc(100% - 32px); }
+  .wuhu-overview .overview-table, .wuhu-overview .overview-table tbody { display: block; width: 100%; }
+  .wuhu-overview .overview-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .wuhu-overview .overview-table tr { display: block; margin-bottom: 16px; padding: 16px; border: 1px solid var(--overview-line); border-radius: 6px; }
+  .wuhu-overview .overview-table td { display: grid; grid-template-columns: 1fr; width: auto; padding: 10px 0; border: 0; }
+  .wuhu-overview .overview-table td:first-child { display: block; padding-top: 0; padding-bottom: 12px; border-bottom: 1px solid var(--overview-line); font-weight: 600; }
+  .wuhu-overview .overview-table td:not(:first-child)::before { content: attr(data-label); color: var(--overview-muted); font-size: .875rem; margin-bottom: 4px; }
+  .wuhu-overview .overview-table td:empty { display: none; }
+  .wuhu-overview .overview-table td:last-child { padding-bottom: 0; }
+}
+article.post-content:has(.wuhu-overview) th, article.post-content:has(.wuhu-overview) td { vertical-align: middle; text-align: left; }
+.wuhu-overview .overview-star { margin-left: .35em; font-size: .9em; color: var(--overview-muted); white-space: nowrap; }
+</style>
+
+<div class="wuhu-overview">
+
+<h2 id="Results"><a href="#Results" class="headerlink" title="Results"></a>Results</h2><p>名称后的 <strong>★</strong> 表示在<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41264986.html">《解码芜湖“1868”》</a>中直接提及，<strong>☆</strong> 表示间接提及。营业收入单位：亿元人民币。</p>
+<h2 id="首位产业"><a href="#首位产业" class="headerlink" title="首位产业"></a>首位产业</h2><h3 id="智能网联新能源汽车"><a href="#智能网联新能源汽车" class="headerlink" title="智能网联新能源汽车"></a>智能网联新能源汽车</h3><div class="overview-policy">
+
+<p>政策：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41264986.html">作为“1868”中的“1”，集中最优资源、最强政策、最大力度推进</a></p>
+
+</div>
+
+<table class="overview-table" aria-label="智能网联新能源汽车企业信息"><thead><tr>
+<th scope="col">名称</th>
+<th scope="col">业务</th>
+<th scope="col">营收（同比）</th>
+<th scope="col">出口量（同比）</th>
+</tr></thead><tbody>
+<tr id="wuhu-company-0">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41264986.html">奇瑞集团</a><span class="overview-star" role="img" aria-label="政府报告直接提及" title="政府报告直接提及">★</span></td>
+<td data-label="业务">汽车研发、制造与销售</td>
+<td data-label="营收（同比）"><a target="_blank" rel="noopener" href="https://www.cheryholding.com/article/1061.html" title="奇瑞集团2024年经营业绩">4,800（集团）</a><span class="overview-growth">（超过50%）</span><span class="overview-note">2024年全年</span></td>
+<td data-label="出口量（同比）"><a target="_blank" rel="noopener" href="https://www.cheryholding.com/article/1085.html" title="奇瑞集团2025年销量及出口业绩">1,344,020辆</a><span class="overview-growth">（+17.4%）</span><span class="overview-note">2025年全年</span></td>
+</tr>
+</tbody></table>
+
+<h2 id="八大新兴产业"><a href="#八大新兴产业" class="headerlink" title="八大新兴产业"></a>八大新兴产业</h2><h3 id="新一代信息技术"><a href="#新一代信息技术" class="headerlink" title="新一代信息技术"></a>新一代信息技术</h3><div class="overview-policy">
+
+<p>政策：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/openness/public/6596211/40515001.html">重点发展新型显示、智能穿戴，建设半导体和传感器产业集聚区</a></p>
+
+</div>
+
+<table class="overview-table" aria-label="新一代信息技术企业信息"><thead><tr>
+<th scope="col">名称</th>
+<th scope="col">业务</th>
+<th scope="col">营收（同比）</th>
+<th scope="col">出口量（同比）</th>
+</tr></thead><tbody>
+<tr id="wuhu-company-1">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://static.cninfo.com.cn/finalpage/2026-04-27/1225195266.PDF">芜湖长信科技股份有限公司</a></td>
+<td data-label="业务">触控显示器件及模组的研发、生产与销售，应用于车载和消费电子领域</td>
+<td data-label="营收（同比）"><a target="_blank" rel="noopener" href="https://static.cninfo.com.cn/finalpage/2026-04-27/1225195266.PDF" title="芜湖长信科技股份有限公司2025年年度报告">115.73（合并）</a><span class="overview-growth">（+4.66%）</span><span class="overview-note">2025年全年</span></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+</tbody></table>
+
+<h3 id="航空航天＋（低空经济）"><a href="#航空航天＋（低空经济）" class="headerlink" title="航空航天＋（低空经济）"></a>航空航天＋（低空经济）</h3><div class="overview-policy">
+
+<p>政策：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/openness/public/6596211/40511251.html">专项规章支持，提供财政、金融、科技、人才和土地保障</a></p>
+
+</div>
+
+<table class="overview-table" aria-label="航空航天＋（低空经济）企业信息"><thead><tr>
+<th scope="col">名称</th>
+<th scope="col">业务</th>
+<th scope="col">营收（同比）</th>
+<th scope="col">出口量（同比）</th>
+</tr></thead><tbody>
+<tr id="wuhu-company-2">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://gxj.wuhu.gov.cn/qyfw/8957661.html">中电科芜湖钻石飞机</a></td>
+<td data-label="业务">通用飞机、无人机、特种飞机研发制造</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-3">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://wsb.wuhu.gov.cn/xwzx/gzdt/8954854.html">芜湖联合飞机</a></td>
+<td data-label="业务">无人飞行器研发制造</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-4">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://kjj.wuhu.gov.cn/gg/xqkj/8942881.html">航瑞动力</a></td>
+<td data-label="业务">航空重油发动机</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-5">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://kjj.wuhu.gov.cn/gg/xqkj/8942881.html">芜湖钻石航发</a></td>
+<td data-label="业务">航空活塞发动机</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-6">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://tzcjzx.wuhu.gov.cn/zsdt/gzdt/8881045.html">华明航电</a></td>
+<td data-label="业务">综合航电系统</td>
+<td data-label="营收（同比）"><a target="_blank" rel="noopener" href="https://www.ejy365.com/info/ejy439598" title="安徽华明航空电子系统有限公司1.3027%股权转让公告">0.1597</a><span class="overview-note">2025年全年</span></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-7">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://tzcjzx.wuhu.gov.cn/zsdt/gzdt/8722515.html">劲旋风航空</a></td>
+<td data-label="业务">航空螺旋桨</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+</tbody></table>
+
+<h3 id="新材料"><a href="#新材料" class="headerlink" title="新材料"></a>新材料</h3><div class="overview-policy">
+
+<p>政策：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41264986.html">列入八大新兴产业，重点推进产业升级和创新要素集聚</a></p>
+
+</div>
+
+<table class="overview-table" aria-label="新材料企业信息"><thead><tr>
+<th scope="col">名称</th>
+<th scope="col">业务</th>
+<th scope="col">营收（同比）</th>
+<th scope="col">出口量（同比）</th>
+</tr></thead><tbody>
+<tr id="wuhu-company-8">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.cnfa.net.cn/institute/show-2785.aspx">楚江新材</a></td>
+<td data-label="业务">高精铜带、铜合金、铜导体材料</td>
+<td data-label="营收（同比）"><a target="_blank" rel="noopener" href="https://money.finance.sina.com.cn/corp/view/vCB_AllBulletinDetail.php?id=12188205&amp;stockid=002171" title="楚江新材2025年年度报告">605.77</a><span class="overview-growth">（+12.70%）</span><span class="overview-note">2025年全年</span></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-9">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.cnfa.net.cn/institute/show-3109.aspx">鑫科材料</a></td>
+<td data-label="业务">高性能铜合金板带材</td>
+<td data-label="营收（同比）"><a target="_blank" rel="noopener" href="https://money.finance.sina.com.cn/corp/view/vCB_AllBulletinDetail.php?id=12036829&amp;stockid=600255" title="鑫科材料2025年年度报告">47.51</a><span class="overview-growth">（+20.01%）</span><span class="overview-note">2025年全年</span></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-10">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://swj.wuhu.gov.cn/xwdt/xwdt/8672392.html">众源新材</a></td>
+<td data-label="业务">铜板带及精深加工</td>
+<td data-label="营收（同比）"><a target="_blank" rel="noopener" href="https://dataclouds.cninfo.com.cn/shgonggao/hsomarket/2026/20260424/270aed13726d4db98355150b5c913165.PDF" title="众源新材2025年年度报告">110.49（合并）</a><span class="overview-growth">（+18.53%）</span><span class="overview-note">2025年全年</span></td>
+<td data-label="出口量（同比）"><a target="_blank" rel="noopener" href="https://dataclouds.cninfo.com.cn/shgonggao/hsomarket/2026/20260424/270aed13726d4db98355150b5c913165.PDF" title="众源新材2025年年度报告">8,837.16吨（新材料业务）</a><span class="overview-growth">（+27.22%）</span><span class="overview-note">2025年全年</span></td>
+</tr>
+<tr id="wuhu-company-11">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://scee.ahpu.edu.cn/_t1376/2026/0604/c7582a272600/page.htm">美佳新材</a></td>
+<td data-label="业务">环氧树脂、聚酯树脂、粉末涂料</td>
+<td data-label="营收（同比）"><a target="_blank" rel="noopener" href="https://xinsanban.eastmoney.com/Article/NoticeContent?id=AN202605141822312906" title="美佳新材股东会公告">11.31</a><span class="overview-growth">（−4.92%）</span><span class="overview-note">2025年全年</span></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-12">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://whfgw.wuhu.gov.cn/fgyw/tzgg/8565515.html">海创新能源材料</a></td>
+<td data-label="业务">锂电池正极材料</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+</tbody></table>
+
+<h3 id="机器人和智能制造"><a href="#机器人和智能制造" class="headerlink" title="机器人和智能制造"></a>机器人和智能制造</h3><div class="overview-policy">
+
+<p>政策（埃夫特、藦卡机器人）：<a target="_blank" rel="noopener" href="https://gxj.wuhu.gov.cn/openness/public/6596341/41277184.html">专项政策支持技术攻关、检验检测、中试平台和应用推广</a></p>
+
+<p>政策（藦卡机器人）：<a target="_blank" rel="noopener" href="https://gxj.wuhu.gov.cn/openness/public/6596341/41277184.html">专项政策支持核心技术攻关、场景应用和产业基金</a></p>
+
+<p>政策（芜湖造船厂）：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/openness/public/6596211/40515001.html">重点发展绿色智能船舶，推进产业链协同和中试基地建设</a></p>
+
+</div>
+
+<table class="overview-table" aria-label="机器人和智能制造企业信息"><thead><tr>
+<th scope="col">名称</th>
+<th scope="col">业务</th>
+<th scope="col">营收（同比）</th>
+<th scope="col">出口量（同比）</th>
+</tr></thead><tbody>
+<tr id="wuhu-company-13">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://tzcjzx.wuhu.gov.cn/zsdt/gzdt/8924063.html">埃夫特</a><span class="overview-star" role="img" aria-label="政府报告直接提及" title="政府报告直接提及">★</span></td>
+<td data-label="业务">工业机器人及自动化应用</td>
+<td data-label="营收（同比）"><a target="_blank" rel="noopener" href="https://static.cninfo.com.cn/finalpage/2026-04-15/1225101939.PDF" title="埃夫特2025年年度报告">9.32（合并）</a><span class="overview-growth">（−32.12%）</span><span class="overview-note">2025年全年</span></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-14">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.moka-robot.com/home/about/index.html">藦卡机器人</a><span class="overview-note">关联领域：六大未来产业／具身智能</span></td>
+<td data-label="业务">工业机器人、协作机器人及工业具身智能机器人</td>
+<td data-label="营收（同比）"><a target="_blank" rel="noopener" href="https://money.finance.sina.com.cn/corp/view/vCB_AllBulletinDetail.php?id=12472739&amp;stockid=301303" title="真兰仪表关于对外收购股权的公告">1.1486</a><span class="overview-note">2025年全年</span></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-15">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://tzcjzx.wuhu.gov.cn/zsdt/gzdt/8907297.html">芜湖造船厂</a><span class="overview-star" role="img" aria-label="政府报告直接提及" title="政府报告直接提及">★</span></td>
+<td data-label="业务">绿色智能船舶、高端海工装备</td>
+<td data-label="营收（同比）"><a target="_blank" rel="noopener" href="https://gxj.wuhu.gov.cn/openness/public/6596341/40129999.html" title="芜湖市工业和信息化局关于市第十七届人大五次会议第21号代表建议答复的函">57.78（主营业务收入）</a><span class="overview-growth">（+46%（主营业务收入））</span><span class="overview-note">2024年全年</span></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+</tbody></table>
+
+<h3 id="新能源及绿色低碳"><a href="#新能源及绿色低碳" class="headerlink" title="新能源及绿色低碳"></a>新能源及绿色低碳</h3><div class="overview-policy">
+
+<p>政策：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41264986.html">列入八大新兴产业，重点推进产业升级和创新要素集聚</a></p>
+
+</div>
+
+<table class="overview-table" aria-label="新能源及绿色低碳企业信息"><thead><tr>
+<th scope="col">名称</th>
+<th scope="col">业务</th>
+<th scope="col">营收（同比）</th>
+<th scope="col">出口量（同比）</th>
+</tr></thead><tbody>
+<tr id="wuhu-company-16">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.xinyisolar.com/uploadfiles/2021/04/20210426140852689.pdf">信义光伏产业（安徽）控股</a></td>
+<td data-label="业务">光伏玻璃</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-17">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://sthjj.wuhu.gov.cn/zmhd/zxft/8934558.html">海螺环保</a></td>
+<td data-label="业务">固废处理及资源化利用</td>
+<td data-label="营收（同比）"><a target="_blank" rel="noopener" href="https://finance.eastmoney.com/a/202603253683489349.html" title="海螺环保2025年度业绩">16.40</a><span class="overview-growth">（−2.77%）</span><span class="overview-note">2025年全年</span></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-18">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://sthjj.wuhu.gov.cn/zmhd/zxft/8934558.html">嘉奇能源</a></td>
+<td data-label="业务">新能源电池材料回收再利用</td>
+<td data-label="营收（同比）"><a target="_blank" rel="noopener" href="https://big5.sse.com.cn/site/cht/www.sse.com.cn/disclosure/listedinfo/announcement/c/new/2026-03-03/688178_20260303_A2UT.pdf" title="安徽嘉奇能源科技有限公司股东全部权益价值资产评估报告">0.9615</a><span class="overview-growth">（−2.45%（据报告计算））</span><span class="overview-note">2025年全年</span></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+</tbody></table>
+
+<h3 id="生物医药和高端医疗器械"><a href="#生物医药和高端医疗器械" class="headerlink" title="生物医药和高端医疗器械"></a>生物医药和高端医疗器械</h3><div class="overview-policy">
+
+<p>政策：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41264986.html">列入八大新兴产业，重点培育生物医药和高端医疗器械产业</a></p>
+
+<p>政策（安徽福莱生物制药有限公司）：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/openness/public/6596211/39584148.html">支持研发中试平台、关键技术攻关和场景应用</a></p>
+
+</div>
+
+<table class="overview-table" aria-label="生物医药和高端医疗器械企业信息"><thead><tr>
+<th scope="col">名称</th>
+<th scope="col">业务</th>
+<th scope="col">营收（同比）</th>
+<th scope="col">出口量（同比）</th>
+</tr></thead><tbody>
+<tr id="wuhu-company-19">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.changjiangpharma.com.cn/page-35524.html">长江药业</a></td>
+<td data-label="业务">药物制剂</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-20">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://cczx.wuhu.gov.cn/whscjcxyy/cjnlqd/8673493.html">芜湖英特菲尔</a></td>
+<td data-label="业务"><a target="_blank" rel="noopener" href="https://whytfe.com/About.aspx?ClassID=33" title="芜湖英特菲尔生物制品产业研究院有限公司简介">合成生物蛋白原料研发与生产，应用于医疗器械和美妆护肤领域；配方应用及功效评价服务</a></td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-21">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://cczx.wuhu.gov.cn/whscjcxyy/cjnlqd/8673493.html">安徽福莱生物制药有限公司</a><span class="overview-note">关联领域：六大未来产业／生物制造</span></td>
+<td data-label="业务"><a target="_blank" rel="noopener" href="https://cczx.wuhu.gov.cn/whscjcxyy/cjnlqd/8673493.html" title="场景应用能力清单（第二十一批）">基因编辑、底盘细胞构建、AI重组融合蛋白设计、创新医疗器械</a><span class="overview-note">（第27项）</span></td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+</tbody></table>
+
+<h3 id="人工智能和数据算力"><a href="#人工智能和数据算力" class="headerlink" title="人工智能和数据算力"></a>人工智能和数据算力</h3><div class="overview-policy">
+
+<p>政策：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/openness/public/6596211/41211538.html">专项政策支持算力园区、模型服务、智能体开发和产业生态培育</a></p>
+
+</div>
+
+<table class="overview-table" aria-label="人工智能和数据算力企业信息"><thead><tr>
+<th scope="col">名称</th>
+<th scope="col">业务</th>
+<th scope="col">营收（同比）</th>
+<th scope="col">出口量（同比）</th>
+</tr></thead><tbody>
+<tr id="wuhu-company-22">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://cee.ahpu.edu.cn/2025/0219/c8325a238933/page.htm">芜湖世纪珑腾</a></td>
+<td data-label="业务">数据中心建设运营、高性能算力服务</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-23">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://sjzyj.wuhu.gov.cn/openness/public/6596821/38204961.html">中科曙光在芜项目</a></td>
+<td data-label="业务">一体化智算中心</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-24">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://sjzyj.wuhu.gov.cn/openness/public/6596821/39394899.html">华为云在芜项目</a></td>
+<td data-label="业务">华东数据中心及云服务</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+</tbody></table>
+
+<h3 id="绿色食品"><a href="#绿色食品" class="headerlink" title="绿色食品"></a>绿色食品</h3><div class="overview-policy">
+
+<p>政策：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41264986.html">列入八大新兴产业，重点推进产业升级和产业链集聚</a></p>
+
+<p>政策（三只松鼠）：<a target="_blank" rel="noopener" href="https://swj.wuhu.gov.cn/xwdt/tzgg/8814084.html">财政政策支持电子商务、直播电商及商贸流通主体培育</a></p>
+
+</div>
+
+<table class="overview-table" aria-label="绿色食品企业信息"><thead><tr>
+<th scope="col">名称</th>
+<th scope="col">业务</th>
+<th scope="col">营收（同比）</th>
+<th scope="col">出口量（同比）</th>
+</tr></thead><tbody>
+<tr id="wuhu-company-25">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://nync.wuhu.gov.cn/nyzx/xydt/8615171.html">三只松鼠</a><span class="overview-note">关联领域：八大现代服务业／现代商贸和电子商务</span></td>
+<td data-label="业务">坚果及休闲食品、电子商务及全渠道零售</td>
+<td data-label="营收（同比）"><a target="_blank" rel="noopener" href="https://money.finance.sina.com.cn/corp/view/vCB_AllBulletinDetail.php?id=12249021&amp;stockid=300783" title="三只松鼠2025年年度报告">101.89</a><span class="overview-growth">（−4.08%）</span><span class="overview-note">2025年全年</span></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-26">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://finance.sina.cn/2025-03-04/detail-inenmxps0038405.d.html">溜溜果园（溜溜梅）</a></td>
+<td data-label="业务">梅类休闲食品</td>
+<td data-label="营收（同比）"><a target="_blank" rel="noopener" href="https://www.hkexnews.hk/listedco/listconews/sehk/2026/0605/2026060500024_c.pdf" title="溜溜果园（溜溜梅）招股章程">17.11</a><span class="overview-growth">（+5.86%）</span><span class="overview-note">2025年全年</span></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+</tbody></table>
+
+<h2 id="六大未来产业"><a href="#六大未来产业" class="headerlink" title="六大未来产业"></a>六大未来产业</h2><h3 id="具身智能"><a href="#具身智能" class="headerlink" title="具身智能"></a>具身智能</h3><div class="overview-policy">
+
+<p>政策：<a target="_blank" rel="noopener" href="https://gxj.wuhu.gov.cn/openness/public/6596341/41277184.html">专项政策支持核心技术攻关、场景应用和产业基金</a></p>
+
+</div>
+
+<table class="overview-table" aria-label="具身智能企业信息"><thead><tr>
+<th scope="col">名称</th>
+<th scope="col">业务</th>
+<th scope="col">营收（同比）</th>
+<th scope="col">出口量（同比）</th>
+</tr></thead><tbody>
+<tr id="wuhu-company-27">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://tzcjzx.wuhu.gov.cn/zsdt/gzdt/8927799.html">奇瑞墨甲机器人</a></td>
+<td data-label="业务">人形机器人、机器狗及服务机器人</td>
+<td data-label="营收（同比）"><a target="_blank" rel="noopener" href="https://vip.stock.finance.sina.com.cn/corp/view/vCB_AllBulletinDetail.php?id=11894842&amp;stockid=603596" title="伯特利关于向关联方投资的公司增资暨关联交易的公告">0.030285</a><span class="overview-note">2025年1—9月</span></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+</tbody></table>
+
+<h3 id="未来能源"><a href="#未来能源" class="headerlink" title="未来能源"></a>未来能源</h3><div class="overview-policy">
+
+<p>政策（中鼎恒盛、锐格新能源）：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/openness/zfgb/39926848.html">重点培育氢能和新型储能，支持省级先导区建设与技术攻关</a></p>
+
+<p>政策（经开区省级氢能未来产业先导区）：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/openness/zfgb/39926848.html">加快氢能省级未来产业先导区建设，支持制储运用关键技术攻关</a></p>
+
+</div>
+
+<table class="overview-table" aria-label="未来能源企业信息"><thead><tr>
+<th scope="col">名称</th>
+<th scope="col">业务</th>
+<th scope="col">营收（同比）</th>
+<th scope="col">出口量（同比）</th>
+</tr></thead><tbody>
+<tr id="wuhu-company-28">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://tzcjzx.wuhu.gov.cn/qyfw/qyfw/8906287.html">中鼎恒盛</a></td>
+<td data-label="业务">氢气隔膜压缩机</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-29">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://tzcjzx.wuhu.gov.cn/qyfw/qyfw/8906287.html">锐格新能源</a></td>
+<td data-label="业务">氢能测试装备、氢能车辆及船舶应用开发</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-30">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://tzcjzx.wuhu.gov.cn/qyfw/qyfw/8906287.html">经开区省级氢能未来产业先导区</a><span class="overview-star" role="img" aria-label="政府报告直接提及" title="政府报告直接提及">★</span></td>
+<td data-label="业务">氢能制、储、输、用装备及应用布局</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+</tbody></table>
+
+<h3 id="新一代半导体"><a href="#新一代半导体" class="headerlink" title="新一代半导体"></a>新一代半导体</h3><div class="overview-policy">
+
+<p>政策（西安电子科技大学芜湖研究院）：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/openness/zfgb/39926848.html">重点发展第三代半导体，支持单晶、外延、先进工艺及封装测试</a></p>
+
+<p>政策（安徽亚格盛电子新材料）：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/openness/public/6596211/40515001.html">重点布局半导体产业，推进产业集聚区建设</a></p>
+
+</div>
+
+<table class="overview-table" aria-label="新一代半导体企业信息"><thead><tr>
+<th scope="col">名称</th>
+<th scope="col">业务</th>
+<th scope="col">营收（同比）</th>
+<th scope="col">出口量（同比）</th>
+</tr></thead><tbody>
+<tr id="wuhu-company-31">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/openness/public/6596211/39735745.html">西安电子科技大学芜湖研究院</a></td>
+<td data-label="业务">化合物半导体、功率器件研究与成果转化</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-32">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://weda.wuhu.gov.cn/zwgk/tzgg/18550279.html">安徽亚格盛电子新材料</a></td>
+<td data-label="业务">集成电路成膜用High-k前驱体及高纯溶剂</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+</tbody></table>
+
+<h3 id="前沿材料"><a href="#前沿材料" class="headerlink" title="前沿材料"></a>前沿材料</h3><div class="overview-policy">
+
+<p>政策：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41264986.html">列入未来产业培育方向，加大前沿科研平台投入，推动技术产业化</a></p>
+
+</div>
+
+<table class="overview-table" aria-label="前沿材料企业信息"><thead><tr>
+<th scope="col">名称</th>
+<th scope="col">业务</th>
+<th scope="col">营收（同比）</th>
+<th scope="col">出口量（同比）</th>
+</tr></thead><tbody>
+<tr id="wuhu-company-33">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.gaoxiaojob.com/announcement/detail/381392.html">海螺产业技术研究院</a></td>
+<td data-label="业务">气凝胶、生物基材料、特种工程塑料等研发</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+</tbody></table>
+
+<h3 id="脑机接口"><a href="#脑机接口" class="headerlink" title="脑机接口"></a>脑机接口</h3><div class="overview-policy">
+
+<p>政策：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/openness/zfgb/39926848.html">依托医疗中心和脑科学研究院，集聚创新资源，建设科研及临床平台</a></p>
+
+</div>
+
+<table class="overview-table" aria-label="脑机接口企业信息"><thead><tr>
+<th scope="col">名称</th>
+<th scope="col">业务</th>
+<th scope="col">营收（同比）</th>
+<th scope="col">出口量（同比）</th>
+</tr></thead><tbody>
+<tr id="wuhu-company-34">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41290855.html">皖南医科大学脑科学研究院</a><span class="overview-star" role="img" aria-label="政府报告直接提及" title="政府报告直接提及">★</span></td>
+<td data-label="业务">脑科学研究、技术转化及临床验证协同</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-35">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41290855.html">皖南医科大学第一附属医院（北京天坛医院安徽医院）</a><span class="overview-star" role="img" aria-label="政府报告间接提及" title="政府报告间接提及">☆</span></td>
+<td data-label="业务">脑机接口临床研究、植入手术及康复</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+</tbody></table>
+
+<h3 id="生物制造"><a href="#生物制造" class="headerlink" title="生物制造"></a>生物制造</h3><p><a href="#wuhu-company-21">安徽福莱生物制药有限公司</a>见“生物医药和高端医疗器械”中的企业信息。</p>
+<h2 id="八大现代服务业"><a href="#八大现代服务业" class="headerlink" title="八大现代服务业"></a>八大现代服务业</h2><h3 id="科技服务"><a href="#科技服务" class="headerlink" title="科技服务"></a>科技服务</h3><div class="overview-policy">
+
+<p>政策（鸠兹科创湾、神山智谷、凤鸣研创中心、梦溪科创走廊）：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/openness/public/6596211/40515001.html">重点建设科创载体，支持人才引育、创新平台、中试服务和科技金融</a></p>
+
+<p>政策（芜湖市产品质量检验检测研究院有限公司）：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/openness/public/6596211/40515001.html">加快计量和检验检测中心建设，完善产品试制与成果转化服务</a></p>
+
+</div>
+
+<table class="overview-table" aria-label="科技服务企业信息"><thead><tr>
+<th scope="col">名称</th>
+<th scope="col">业务</th>
+<th scope="col">营收（同比）</th>
+<th scope="col">出口量（同比）</th>
+</tr></thead><tbody>
+<tr id="wuhu-company-36">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41264986.html">鸠兹科创湾</a><span class="overview-star" role="img" aria-label="政府报告直接提及" title="政府报告直接提及">★</span></td>
+<td data-label="业务">创新载体集聚、成果转化及企业孵化</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-37">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41264986.html">神山智谷</a><span class="overview-star" role="img" aria-label="政府报告直接提及" title="政府报告直接提及">★</span></td>
+<td data-label="业务">科技创新载体</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-38">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41264986.html">凤鸣研创中心</a><span class="overview-star" role="img" aria-label="政府报告直接提及" title="政府报告直接提及">★</span></td>
+<td data-label="业务">研发创新载体</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-39">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41264986.html">梦溪科创走廊</a><span class="overview-star" role="img" aria-label="政府报告直接提及" title="政府报告直接提及">★</span></td>
+<td data-label="业务">科技创新载体</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-40">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://jdjyw.jlu.edu.cn/portal/recruit/details?id=82df48ed9a0b4d72bf81ee4bbd738544">芜湖市产品质量检验检测研究院有限公司</a></td>
+<td data-label="业务">产品检验检测、科研及标准制修订</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+</tbody></table>
+
+<h3 id="现代物流"><a href="#现代物流" class="headerlink" title="现代物流"></a>现代物流</h3><div class="overview-policy">
+
+<p>政策（塔桥多式联运基地）：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41264986.html">重点投入物流基础设施，推进多式联运和国际班列建设</a></p>
+
+<p>政策（裕溪口滚装码头）：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41264986.html">重点投入港口物流基础设施，推进滚装运输和多式联运</a></p>
+
+<p>政策（芜湖港）：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41264986.html">重点投入港口物流基础设施，推进综合运输体系建设</a></p>
+
+<p>政策（芜宣机场）：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41264986.html">重点发展航空物流，拓展国际全货运航线</a></p>
+
+</div>
+
+<table class="overview-table" aria-label="现代物流企业信息"><thead><tr>
+<th scope="col">名称</th>
+<th scope="col">业务</th>
+<th scope="col">营收（同比）</th>
+<th scope="col">出口量（同比）</th>
+</tr></thead><tbody>
+<tr id="wuhu-company-41">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41264986.html">塔桥多式联运基地</a><span class="overview-star" role="img" aria-label="政府报告直接提及" title="政府报告直接提及">★</span></td>
+<td data-label="业务">多式联运、国际班列运输</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-42">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41264986.html">裕溪口滚装码头</a><span class="overview-star" role="img" aria-label="政府报告直接提及" title="政府报告直接提及">★</span></td>
+<td data-label="业务">滚装运输及港口物流</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-43">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41264986.html">芜湖港</a><span class="overview-star" role="img" aria-label="政府报告直接提及" title="政府报告直接提及">★</span></td>
+<td data-label="业务">港口装卸、集装箱运输</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-44">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41264986.html">芜宣机场</a><span class="overview-star" role="img" aria-label="政府报告直接提及" title="政府报告直接提及">★</span></td>
+<td data-label="业务">航空客货运输服务</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+</tbody></table>
+
+<h3 id="现代金融"><a href="#现代金融" class="headerlink" title="现代金融"></a>现代金融</h3><div class="overview-policy">
+
+<p>政策：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/openness/public/6596211/40515001.html">支持科技金融和产业金融，推进再贷款、投贷联动及产业基金协同</a></p>
+
+</div>
+
+<table class="overview-table" aria-label="现代金融企业信息"><thead><tr>
+<th scope="col">名称</th>
+<th scope="col">业务</th>
+<th scope="col">营收（同比）</th>
+<th scope="col">出口量（同比）</th>
+</tr></thead><tbody>
+<tr id="wuhu-company-45">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.dfratings.com/uploads/files/2026/0609/54fm9cxbGU81eS15LPtUN6ZJDjEISj2DB1votPV0.pdf">芜湖扬子农村商业银行</a></td>
+<td data-label="业务">存贷款、支付结算等金融服务</td>
+<td data-label="营收（同比）"><a target="_blank" rel="noopener" href="https://www.dfratings.com/uploads/files/2026/0609/54fm9cxbGU81eS15LPtUN6ZJDjEISj2DB1votPV0.pdf" title="芜湖扬子农村商业银行跟踪评级报告">7.03</a><span class="overview-growth">（−31.26%）</span><span class="overview-note">2025年全年</span></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-46">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://epaper.stcn.com/con/202605/20/content_2928560.html">奇瑞徽银汽车金融</a></td>
+<td data-label="业务">购车贷款、汽车经销商融资等</td>
+<td data-label="营收（同比）"><a target="_blank" rel="noopener" href="https://epaper.stcn.com/con/202605/20/content_2928560.html" title="奇瑞徽银汽车金融2025年度业绩报道">44.60</a><span class="overview-growth">（+12.00%）</span><span class="overview-note">2025年全年</span></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+</tbody></table>
+
+<h3 id="现代商贸和电子商务"><a href="#现代商贸和电子商务" class="headerlink" title="现代商贸和电子商务"></a>现代商贸和电子商务</h3><div class="overview-policy">
+
+<p>政策：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/openness/public/6596211/40515001.html">明确支持打造八佰伴新品首发中心，引育首店品牌和开展促消费活动</a></p>
+
+</div>
+
+<table class="overview-table" aria-label="现代商贸和电子商务企业信息"><thead><tr>
+<th scope="col">名称</th>
+<th scope="col">业务</th>
+<th scope="col">营收（同比）</th>
+<th scope="col">出口量（同比）</th>
+</tr></thead><tbody>
+<tr id="wuhu-company-47">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/openness/public/6596211/41311276.html">芜湖八佰伴</a></td>
+<td data-label="业务">商业零售、品牌招商及消费服务</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+</tbody></table>
+
+<h3 id="人力资源服务"><a href="#人力资源服务" class="headerlink" title="人力资源服务"></a>人力资源服务</h3><div class="overview-policy">
+
+<p>政策：<a target="_blank" rel="noopener" href="https://mch.wuhu.gov.cn/xwzx/tzgk/8746868.html">支持人力资源产业集聚，对认定的产业园和人才市场给予建园奖补</a></p>
+
+</div>
+
+<table class="overview-table" aria-label="人力资源服务企业信息"><thead><tr>
+<th scope="col">名称</th>
+<th scope="col">业务</th>
+<th scope="col">营收（同比）</th>
+<th scope="col">出口量（同比）</th>
+</tr></thead><tbody>
+<tr id="wuhu-company-48">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://gzw.wuhu.gov.cn/jggk/gqjj/8361321.html">芜湖市人才发展集团</a></td>
+<td data-label="业务">人才招引、猎聘、培训及人才服务</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-49">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://shuiwuju.wuhu.gov.cn/tzgg/tzgg/8854551.html">芜湖市劳动保障人力资源有限公司</a></td>
+<td data-label="业务">招聘组织、考试及人力资源服务</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+</tbody></table>
+
+<h3 id="文化旅游"><a href="#文化旅游" class="headerlink" title="文化旅游"></a>文化旅游</h3><div class="overview-policy">
+
+<p>政策：<a target="_blank" rel="noopener" href="https://mch.wuhu.gov.cn/xwzx/tzgk/8746868.html">专项支持文化旅游企业创强创牌</a></p>
+
+</div>
+
+<table class="overview-table" aria-label="文化旅游企业信息"><thead><tr>
+<th scope="col">名称</th>
+<th scope="col">业务</th>
+<th scope="col">营收（同比）</th>
+<th scope="col">出口量（同比）</th>
+</tr></thead><tbody>
+<tr id="wuhu-company-50">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/mlwh/lywh/index.html">芜湖方特旅游度假区</a></td>
+<td data-label="业务">主题公园、酒店餐饮及休闲娱乐</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+</tbody></table>
+
+<h3 id="康复养老"><a href="#康复养老" class="headerlink" title="康复养老"></a>康复养老</h3><div class="overview-policy">
+
+<p>政策：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/openness/public/6596211/39228177.html">优先安排养老设施用地指标，提供财政、税费、融资和人才培训支持</a></p>
+
+</div>
+
+<table class="overview-table" aria-label="康复养老企业信息"><thead><tr>
+<th scope="col">名称</th>
+<th scope="col">业务</th>
+<th scope="col">营收（同比）</th>
+<th scope="col">出口量（同比）</th>
+</tr></thead><tbody>
+<tr id="wuhu-company-51">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.wnmc.edu.cn/info/1021/185921.htm">芜湖蕾娜范海螺颐养院</a></td>
+<td data-label="业务">医养结合、老年照护及康复护理</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-52">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://mzj.wuhu.gov.cn/xwzx/mzyw/8545669.html">芜湖镜湖颐乐堂医养结合老年公寓</a></td>
+<td data-label="业务">医养结合及养老服务</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+</tbody></table>
+
+<h3 id="互联网和软件信息"><a href="#互联网和软件信息" class="headerlink" title="互联网和软件信息"></a>互联网和软件信息</h3><div class="overview-policy">
+
+<p>政策：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/openness/public/6596211/40515001.html">重点引育应用软件和数据服务企业，建设人工智能平台，拓展应用场景</a></p>
+
+</div>
+
+<table class="overview-table" aria-label="互联网和软件信息企业信息"><thead><tr>
+<th scope="col">名称</th>
+<th scope="col">业务</th>
+<th scope="col">营收（同比）</th>
+<th scope="col">出口量（同比）</th>
+</tr></thead><tbody>
+<tr id="wuhu-company-53">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.ahpu.edu.cn/2024/0327/c4a211885/page.htm">达尔智能</a></td>
+<td data-label="业务">数字政府、智慧交通、智能网联及工业互联网</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+<tr id="wuhu-company-54">
+<td data-label="名称"><a target="_blank" rel="noopener" href="https://www.ahpu.edu.cn/2026/0708/c4a274958/page.htm">安徽蓝信信息科技</a></td>
+<td data-label="业务">智慧监管平台、数据驾驶舱及数据融合应用</td>
+<td data-label="营收（同比）"></td>
+<td data-label="出口量（同比）"></td>
+</tr>
+</tbody></table>
+
+</div>
+
+<h2 id="Discussion"><a href="#Discussion" class="headerlink" title="Discussion"></a>Discussion</h2><h3 id="数据亮点"><a href="#数据亮点" class="headerlink" title="数据亮点"></a>数据亮点</h3><ul>
+<li><strong>众源新材：2025年营收增长18.53%，新材料业务出口量增长27.22%。</strong> 出口量增速高于整体营收增速，海外业务相关的材料与工艺岗位具有关注价值。信息源：<a target="_blank" rel="noopener" href="https://dataclouds.cninfo.com.cn/shgonggao/hsomarket/2026/20260424/270aed13726d4db98355150b5c913165.PDF">《众源新材2025年年度报告》</a>。</li>
+<li><strong>长信科技：2025年营收增长4.66%。</strong> 触控显示业务为薄膜、界面及材料分析提供应用场景。信息源：<a target="_blank" rel="noopener" href="https://static.cninfo.com.cn/finalpage/2026-04-27/1225195266.PDF">《长信科技2025年年度报告》</a>。</li>
+<li><strong>奇瑞集团：2025年出口134.4万辆，同比增长17.4%。</strong> 汽车业务规模及出口增长，使汽车材料、电池与回收成为化学背景的潜在岗位方向。信息源：<a target="_blank" rel="noopener" href="https://www.cheryholding.com/article/1085.html">《奇瑞集团2025年销量及出口业绩》</a>。</li>
+</ul>
+<h3 id="求职候选"><a href="#求职候选" class="headerlink" title="求职候选"></a>求职候选</h3><h4 id="海螺产业技术研究院"><a href="#海螺产业技术研究院" class="headerlink" title="海螺产业技术研究院"></a>海螺产业技术研究院</h4><p><strong>岗位方向：</strong> 催化剂、电解水制氢、高分子、气凝胶及复合材料等。</p>
+<p><strong>岗位要求：</strong> 相关学科博士，一般具备三年以上相关领域工作经验（2026年2月公告）。</p>
+<p><strong>推荐理由：</strong> 化学与材料研发方向集中，涵盖催化、制氢及高分子。</p>
+<p>信息源：<a target="_blank" rel="noopener" href="https://www.ahjzu.edu.cn/chxy/2026/0304/c6427a264150/pagem.htm">《海螺集团所属企业招聘公告》</a>（2026-02-13）。</p>
+<h4 id="美佳新材"><a href="#美佳新材" class="headerlink" title="美佳新材"></a>美佳新材</h4><p><strong>岗位方向：</strong> 技术研发岗、生产技术岗，各5人。</p>
+<p><strong>岗位要求：</strong> 本科及以上，专业包括材料化学、高分子、化工及应用化学（2026年6月公告）。</p>
+<p><strong>薪酬：</strong> 本科5,000—10,000元&#x2F;月，硕士6,000—12,000元&#x2F;月；博士薪酬暂无信息。</p>
+<p><strong>推荐理由：</strong> 环氧树脂、聚酯树脂和粉末涂料业务与化学合成、配方及材料性能研究直接相关。</p>
+<p>信息源：<a target="_blank" rel="noopener" href="https://scee.ahpu.edu.cn/_t1376/2026/0604/c7582a272600/page.htm">《安徽美佳新材料股份有限公司2026校园招聘简章》</a>（2026-06-04）。</p>
+<h4 id="众源新材"><a href="#众源新材" class="headerlink" title="众源新材"></a>众源新材</h4><p><strong>岗位方向：</strong> 金属材料工程师5人、工艺技术员2人，工作城市为芜湖（2026年10月25日双选会）。</p>
+<p><strong>岗位要求：</strong> 专业涉及材料、有色金属材料。</p>
+<p><strong>推荐理由：</strong> 铜板带及精深加工业务与材料表征、微观组织和性能分析经验相衔接。</p>
+<p>信息源：<a target="_blank" rel="noopener" href="https://jyb.tlu.edu.cn/2026/1022/c2645a134353/page.htm">《铜陵学院双选会·参会单位展位信息》</a>（2026-10-22）。</p>
+<h3 id="入职体验：海螺产业技术研究院"><a href="#入职体验：海螺产业技术研究院" class="headerlink" title="入职体验：海螺产业技术研究院"></a>入职体验：海螺产业技术研究院</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>信息</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>工时</td>
+<td>上下班时间、周末加班、出差：暂无信息。</td>
+</tr>
+<tr>
+<td>团队</td>
+<td>设七个专业技术研究中心及中试基地；规模、负责人、分工、人员流动：暂无信息。</td>
+</tr>
+<tr>
+<td>待遇与考核</td>
+<td>招聘税前年薪30万—100万元，按资历、能力和业绩面议，适用于该次高层次人才招聘。固定薪酬、绩效奖金、兑现情况、考核指标：暂无信息。</td>
+</tr>
+<tr>
+<td>福利</td>
+<td>六险二金、住宿支持、健康体检、带薪年假。</td>
+</tr>
+<tr>
+<td>在职人员反馈</td>
+<td>暂无信息。</td>
+</tr>
+</tbody></table>
+<p>信息源：<a target="_blank" rel="noopener" href="https://www.ahjzu.edu.cn/chxy/2026/0304/c6427a264150/pagem.htm">《海螺集团所属企业招聘公告》</a>（2026-02-13）。</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ol>
+<li>芜湖市人民政府网站：<a target="_blank" rel="noopener" href="https://www.wuhu.gov.cn/xwzx/zwyw/41264986.html">《解码芜湖“1868”：省域副中心的产业辩证法》</a>，2026年8月5日。</li>
+<li>芜湖市产业创新中心：<a target="_blank" rel="noopener" href="https://cczx.wuhu.gov.cn/whscjcxyy/cjnlqd/8673493.html">《场景应用能力清单（第二十一批）》</a>，2024年12月25日，第27项。</li>
+<li>芜湖市工业和信息化局：<a target="_blank" rel="noopener" href="https://gxj.wuhu.gov.cn/openness/public/6596341/41277184.html">《关于印发芜湖市支持智能机器人创新发展的若干政策的通知》</a>，2026年8月6日。</li>
+<li><a target="_blank" rel="noopener" href="https://static.cninfo.com.cn/finalpage/2026-04-15/1225101939.PDF">《埃夫特智能机器人股份有限公司2025年年度报告》</a>，主要会计数据见第14页。</li>
+<li><a target="_blank" rel="noopener" href="https://dataclouds.cninfo.com.cn/shgonggao/hsomarket/2026/20260424/270aed13726d4db98355150b5c913165.PDF">《安徽众源新材料股份有限公司2025年年度报告》</a>。</li>
+<li><a target="_blank" rel="noopener" href="https://www.cheryholding.com/article/1061.html">奇瑞集团2024年经营业绩</a>。</li>
+<li><a target="_blank" rel="noopener" href="https://www.cheryholding.com/article/1085.html">奇瑞集团2025年销量及出口业绩</a>。</li>
+<li><a target="_blank" rel="noopener" href="https://static.cninfo.com.cn/finalpage/2026-04-27/1225195266.PDF">芜湖长信科技股份有限公司2025年年度报告</a>。</li>
+<li><a target="_blank" rel="noopener" href="https://www.ejy365.com/info/ejy439598">安徽华明航空电子系统有限公司1.3027%股权转让公告</a>。</li>
+<li><a target="_blank" rel="noopener" href="https://money.finance.sina.com.cn/corp/view/vCB_AllBulletinDetail.php?id=12472739&stockid=301303">真兰仪表关于对外收购股权的公告</a>。</li>
+<li><a target="_blank" rel="noopener" href="https://gxj.wuhu.gov.cn/openness/public/6596341/40129999.html">芜湖市工业和信息化局关于市第十七届人大五次会议第21号代表建议答复的函</a>。</li>
+<li><a target="_blank" rel="noopener" href="https://big5.sse.com.cn/site/cht/www.sse.com.cn/disclosure/listedinfo/announcement/c/new/2026-03-03/688178_20260303_A2UT.pdf">安徽嘉奇能源科技有限公司股东全部权益价值资产评估报告</a>。 嘉奇能源2024、2025年营业收入分别为9,856.81万元、9,615.12万元，同比增长率按两期数据计算。</li>
+<li><a target="_blank" rel="noopener" href="https://whytfe.com/About.aspx?ClassID=33">芜湖英特菲尔生物制品产业研究院有限公司简介</a>。</li>
+<li><a target="_blank" rel="noopener" href="https://vip.stock.finance.sina.com.cn/corp/view/vCB_AllBulletinDetail.php?id=11894842&stockid=603596">伯特利关于向关联方投资的公司增资暨关联交易的公告</a>。</li>
+<li><a target="_blank" rel="noopener" href="https://www.ahjzu.edu.cn/chxy/2026/0304/c6427a264150/pagem.htm">《海螺集团所属企业招聘公告》</a>，2026年2月13日。</li>
+<li><a target="_blank" rel="noopener" href="https://scee.ahpu.edu.cn/_t1376/2026/0604/c7582a272600/page.htm">《安徽美佳新材料股份有限公司2026校园招聘简章》</a>，2026年6月4日。</li>
+<li><a target="_blank" rel="noopener" href="https://jyb.tlu.edu.cn/2026/1022/c2645a134353/page.htm">《铜陵学院双选会·参会单位展位信息》</a>，2026年10月22日。</li>
+</ol>
+
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/%E6%8B%A9%E4%B8%9A/">择业</a>
+        </span>
+      
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+        <a href="/2026/11/15/invitation-communication-process/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
+          邀约沟通的过程
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/11/14/responding-to-persistent-pressure/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          亲密关系中持续施压的应对
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script defer src="/js/page-views.js" data-site-url="https://niuyihao.github.io"></script>
+
+
+  <!-- copyright -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">主题许可 CC BY-NC-SA 4.0</a>
+    <span>© 2026 我的博客</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">主题作者 xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

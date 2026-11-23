@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+
+
+<title>文献网络：反复引用的研究、机制分歧与关键资料 | 我的博客</title>
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/nprogress/nprogress.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/rss2.xml" title="我的博客" type="application/rss+xml">
+</head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="我的博客" />
+          我的博客
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        文献网络：反复引用的研究、机制分歧与关键资料
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/archives/">文章</a>
+        
+          <a class="hidden sm:flex" href="/category/">分类</a>
+        
+          <a class="hidden sm:flex" href="/tag/">标签</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="RSS 订阅" href="/rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <button type="button" class="w-5 h-5" title="切换明暗主题" aria-label="切换明暗主题" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </button>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <button type="button" class="w-5 h-5" aria-label="打开菜单" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </button>
+        <button type="button" class="w-5 h-5 hidden" aria-label="关闭菜单" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/95 dark:bg-zinc-900/95 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/archives/" class="flex h-12 sm:h-auto items-center">文章</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/category/" class="flex h-12 sm:h-auto items-center">分类</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/tag/" class="flex h-12 sm:h-auto items-center">标签</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        文献网络：反复引用的研究、机制分歧与关键资料
+      </h1>
+      <div>
+        <section class="flex flex-wrap items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2026-11-21</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>11 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>3.1k words</span>
+          </span>
+          
+            <span class="inline-flex items-center gap-3 whitespace-nowrap">
+              <span class="text-gray-400" aria-hidden="true">·</span>
+              <span class="inline-flex items-center gap-1" aria-live="polite">
+                <iconify-icon width="18" icon="mdi:eye-outline" aria-hidden="true"></iconify-icon>
+                <span>阅读量：<span id="page-views-status">加载中…</span><span id="busuanzi_container_page_pv" style="display:none"><span id="busuanzi_value_page_pv"></span> 次</span></span>
+              </span>
+            </span>
+          
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <p>从一份阅读清单出发，可以沿着引用关系找到反复出现的研究，再回到原文比较它们支持了什么、分歧发生在哪里。本次整理覆盖 Cas9、Calcineurin、TDP-43、Tau、α-synuclein，以及液相电镜和冷冻电镜异质重建相关文献。</p>
+<h2 id="一、文献网络的范围与计数方法"><a href="#一、文献网络的范围与计数方法" class="headerlink" title="一、文献网络的范围与计数方法"></a>一、文献网络的范围与计数方法</h2><p>截至 <strong>2026年11月21日</strong>，原始清单含154个条目，其中137个属于期刊论文、预印本或会议论文。通过 DOI 与 Crossref 元数据核对，获得117篇论文；其中113篇提供参考文献列表，共6,973条参考文献记录。</p>
+<p>将参考文献中的 DOI 标准化，并对“引用论文 → 被引论文”配对去重，得到 <strong>6,462条引用关系、4,266个被引 DOI</strong>。其中，引用双方均属于上述117篇论文的关系有 <strong>332条，连接109篇论文</strong>。</p>
+<p>本文的“引用篇数”指这113篇来源论文中，有多少篇引用了某项研究。同一篇论文对同一研究计一次，作者自引计入统计。统计范围为 Crossref 已收录的 DOI 引用关系；原文中的引用语境与机制解释另行核对。</p>
+<table>
+<thead>
+<tr>
+<th>主题</th>
+<th align="right">已核对 DOI 的论文</th>
+<th align="right">提供参考文献列表的论文</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cas9</td>
+<td align="right">12</td>
+<td align="right">11</td>
+</tr>
+<tr>
+<td>Calcineurin</td>
+<td align="right">14</td>
+<td align="right">14</td>
+</tr>
+<tr>
+<td>TDP-43</td>
+<td align="right">19</td>
+<td align="right">19</td>
+</tr>
+<tr>
+<td>Tau</td>
+<td align="right">27</td>
+<td align="right">26</td>
+</tr>
+<tr>
+<td>α-synuclein</td>
+<td align="right">15</td>
+<td align="right">15</td>
+</tr>
+<tr>
+<td>液相电镜相关文献</td>
+<td align="right">13</td>
+<td align="right">12</td>
+</tr>
+<tr>
+<td>异质重建</td>
+<td align="right">21</td>
+<td align="right">20</td>
+</tr>
+</tbody></table>
+<p>同一篇论文可属于多个主题。样本的主题构成会影响频次分布：异质重建文献较集中，通用重建方法因此占据较多高频位置。</p>
+<h2 id="二、哪些研究被反复引用？"><a href="#二、哪些研究被反复引用？" class="headerlink" title="二、哪些研究被反复引用？"></a>二、哪些研究被反复引用？</h2><p><img src="/images/literature-network/citation-counts.png" alt="阅读清单内的论文引用频次"></p>
+<p>图中数字为113篇来源论文中的引用篇数。完整引用关系与图表数据见文末附件。</p>
+<table>
+<thead>
+<tr>
+<th>研究</th>
+<th align="right">引用篇数</th>
+<th>在这份清单中的作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jsb.2012.09.006">RELION: implementation of a Bayesian approach to cryo-EM structure determination</a></td>
+<td align="right">24</td>
+<td>贝叶斯重建方法基础</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/nmeth.4169">cryoSPARC: algorithms for rapid unsupervised cryo-EM structure determination</a></td>
+<td align="right">21</td>
+<td>重建算法与常用处理流程</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-020-01049-4">CryoDRGN: reconstruction of heterogeneous cryo-EM structures using neural networks</a></td>
+<td align="right">19</td>
+<td>神经网络表征连续结构异质性</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.str.2016.07.007">ALS Mutations Disrupt Phase Separation Mediated by α-Helical Structure in the TDP-43 Low-Complexity C-Terminal Domain</a></td>
+<td align="right">15</td>
+<td>TDP-43低复杂度结构域、相分离与突变效应的连接</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-021-01220-5">Deep learning-based mixed-dimensional Gaussian mixture model for characterizing variability in cryo-EM</a></td>
+<td align="right">15</td>
+<td>高斯混合模型表征结构变化</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1126/science.1134108">Ubiquitinated TDP-43 in frontotemporal lobar degeneration and amyotrophic lateral sclerosis</a></td>
+<td align="right">15</td>
+<td>TDP-43病理研究的基础资料</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.cell.2015.09.015">Phase Separation by Low Complexity Domains Promotes Stress Granule Assembly and Drives Pathological Fibrillization</a></td>
+<td align="right">13</td>
+<td>低复杂度结构域、凝聚体及病理纤维化的联系</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1109/ICCV48922.2021.00403">CryoDRGN2: Ab initio neural reconstruction of 3D protein structures from real cryo-EM images</a></td>
+<td align="right">13</td>
+<td>从头神经网络重建</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jmb.2011.11.010">A Bayesian View on Cryo-EM Structure Determination</a></td>
+<td align="right">12</td>
+<td>重建问题的概率建模</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-023-01853-8">3DFlex: determining structure and motion of flexible proteins from cryo-EM</a></td>
+<td align="right">12</td>
+<td>柔性蛋白结构与运动建模</td>
+</tr>
+</tbody></table>
+<p>这些高频研究形成两组明显的共同基础：<strong>冷冻电镜重建方法</strong>与<strong>低复杂度蛋白的相分离及病理联系</strong>。频次反映它们在当前资料集中的连接程度；具体研究问题还需要对应的直接实验资料。</p>
+<h2 id="三、哪些作者反复出现？"><a href="#三、哪些作者反复出现？" class="headerlink" title="三、哪些作者反复出现？"></a>三、哪些作者反复出现？</h2><p>下表列出各主题的代表性作者。“署名篇数”统计其在117篇论文中的署名记录；“引用来源数”统计113篇来源论文中，引用过这些署名论文的来源篇数。共同作者共享的论文按论文计数。</p>
+<table>
+<thead>
+<tr>
+<th>作者</th>
+<th>主要关联主题</th>
+<th align="right">署名篇数</th>
+<th align="right">引用来源数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ali Punjani</td>
+<td>冷冻电镜重建、柔性建模</td>
+<td align="right">2</td>
+<td align="right">23</td>
+</tr>
+<tr>
+<td>Ellen D. Zhong</td>
+<td>神经网络异质重建</td>
+<td align="right">4</td>
+<td align="right">21</td>
+</tr>
+<tr>
+<td>Markus Zweckstetter</td>
+<td>Tau、α-synuclein构象与组装</td>
+<td align="right">6</td>
+<td align="right">18</td>
+</tr>
+<tr>
+<td>Eckhard Mandelkow</td>
+<td>Tau结构与病理</td>
+<td align="right">7</td>
+<td align="right">17</td>
+</tr>
+<tr>
+<td>Jeetain Mittal</td>
+<td>蛋白相互作用与相分离</td>
+<td align="right">4</td>
+<td align="right">16</td>
+</tr>
+<tr>
+<td>Yuna M. Ayala</td>
+<td>TDP-43与RNA</td>
+<td align="right">4</td>
+<td align="right">10</td>
+</tr>
+<tr>
+<td>Trevor P. Creamer</td>
+<td>Calcineurin与钙调蛋白调控</td>
+<td align="right">6</td>
+<td align="right">9</td>
+</tr>
+<tr>
+<td>Martin Jinek</td>
+<td>Cas9结构与激活</td>
+<td align="right">5</td>
+<td align="right">9</td>
+</tr>
+</tbody></table>
+<p>作者统计采用姓名归一化，并保留署名论文 DOI 供回查。这里呈现的是阅读清单内的研究联系，评价范围限定于本次收录的论文。</p>
+<h2 id="四、引用关系如何连接成研究线索？"><a href="#四、引用关系如何连接成研究线索？" class="headerlink" title="四、引用关系如何连接成研究线索？"></a>四、引用关系如何连接成研究线索？</h2><p>以下每条箭头均来自已收录的参考文献 DOI。右栏概括沿该引用关系可以比较的问题。</p>
+<table>
+<thead>
+<tr>
+<th>后续研究 → 被引用研究</th>
+<th>可比较的问题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-022-05114-0">R-loop formation and conformational activation mechanisms of Cas9</a> → <a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.celrep.2017.12.048">The Conformational Dynamics of Cas9 Governing DNA Cleavage Are Revealed by Single-Molecule FRET</a>、<a target="_blank" rel="noopener" href="https://doi.org/10.1038/nature24268">Enhanced proofreading governs CRISPR–Cas9 targeting accuracy</a></td>
+<td>结构状态如何对应单分子实验中的激活与校验过程？</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.15252/embr.202153632">Specific RNA interactions promote TDP-43 multivalent phase separation and maintain liquid properties</a> → <a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.str.2016.07.007">ALS Mutations Disrupt Phase Separation Mediated by α-Helical Structure in the TDP-43 Low-Complexity C-Terminal Domain</a>、<a target="_blank" rel="noopener" href="https://doi.org/10.1038/nsmb.2698">Molecular basis of UG-rich RNA recognition by the human splicing factor TDP-43</a></td>
+<td>RNA识别与蛋白自身相互作用怎样共同影响组装？</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-024-02486-1">CryoSTAR: leveraging structural priors and constraints for cryo-EM heterogeneous reconstruction</a> → <a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-020-01049-4">CryoDRGN</a>、<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-023-01853-8">3DFlex</a>、<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-024-02377-5">DynaMight</a></td>
+<td>密度表示、形变表示与结构先验分别提供哪些约束？</td>
+</tr>
+</tbody></table>
+<p>引用关系给出文献之间的连接；对结论的支持程度来自各篇研究的实验设计、结果与讨论。</p>
+<h2 id="五、哪些结论在不同研究中反复出现？"><a href="#五、哪些结论在不同研究中反复出现？" class="headerlink" title="五、哪些结论在不同研究中反复出现？"></a>五、哪些结论在不同研究中反复出现？</h2><h3 id="1-Cas9：结构域重排参与激活"><a href="#1-Cas9：结构域重排参与激活" class="headerlink" title="1. Cas9：结构域重排参与激活"></a>1. Cas9：结构域重排参与激活</h3><p><a target="_blank" rel="noopener" href="https://doi.org/10.15252/embj.201796941">Osuka等的实时观测</a>、<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41594-019-0258-2">Zhu等的冷冻电镜结构</a>和<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-022-05114-0">Pacesa等的R-loop研究</a>，从不同观测方式支持Cas9结构域运动与激活的联系。共同关注点包括REC域重排、HNH定位及靶DNA配对状态。</p>
+<p>这三篇研究共同支持“构象变化参与功能调控”；各自观测的状态、时间尺度和实验条件决定其能够说明的具体步骤。</p>
+<h3 id="2-Calcineurin：CaM结合伴随调控区重排"><a href="#2-Calcineurin：CaM结合伴随调控区重排" class="headerlink" title="2. Calcineurin：CaM结合伴随调控区重排"></a>2. Calcineurin：CaM结合伴随调控区重排</h3><p><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jmb.2011.11.008">Structural Basis for Activation of Calcineurin by Calmodulin</a>通过圆二色谱和氢氘交换等实验，研究CaM结合引起的调控区结构变化。<a target="_blank" rel="noopener" href="https://doi.org/10.1038/cr.2016.14">Cooperative autoinhibition and multi-level activation mechanisms of calcineurin</a>进一步考察多个自抑制区域与酶活性。</p>
+<p>两项研究把CaM结合、调控区构象变化和酶活性联系起来；AID自抑制结构域如何解除抑制，是两种模型的主要分歧点。</p>
+<h3 id="3-TDP-43：RNA参与多价组装，序列与状态影响结果"><a href="#3-TDP-43：RNA参与多价组装，序列与状态影响结果" class="headerlink" title="3. TDP-43：RNA参与多价组装，序列与状态影响结果"></a>3. TDP-43：RNA参与多价组装，序列与状态影响结果</h3><p><a target="_blank" rel="noopener" href="https://doi.org/10.15252/embr.202153632">Grese等的研究</a>显示，特定RNA结合及其多价性影响TDP-43相分离和液态性质。<a target="_blank" rel="noopener" href="https://doi.org/10.1371/journal.pbio.3002527">RNA-mediated ribonucleoprotein assembly controls TDP-43 nuclear retention</a>进一步将RNA介导的核糖核蛋白组装与核内保留联系起来。</p>
+<p>共同结论是RNA参与TDP-43组装及其细胞行为。具体结果与RNA序列、长度、结合位点和浓度配比相关。</p>
+<h3 id="4-Tau：相分离为聚集提供一种可能路径"><a href="#4-Tau：相分离为聚集提供一种可能路径" class="headerlink" title="4. Tau：相分离为聚集提供一种可能路径"></a>4. Tau：相分离为聚集提供一种可能路径</h3><p><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41467-017-00480-0">Liquid–liquid phase separation of the microtubule-binding repeats of the Alzheimer-related protein Tau</a>和<a target="_blank" rel="noopener" href="https://doi.org/10.15252/embj.201798049">Tau protein liquid–liquid phase separation can initiate tau aggregation</a>分别在各自的构建体与实验条件下观察到Tau相分离。后一项研究还记录了液滴成熟与聚集过程。</p>
+<p>这里可以建立“凝聚—成熟—聚集”的条件性联系；构建体、磷酸化状态、浓度和拥挤条件属于解释结果的重要变量。</p>
+<h3 id="5-α-synuclein：无序构象集合中存在长程接触"><a href="#5-α-synuclein：无序构象集合中存在长程接触" class="headerlink" title="5. α-synuclein：无序构象集合中存在长程接触"></a>5. α-synuclein：无序构象集合中存在长程接触</h3><p><a target="_blank" rel="noopener" href="https://doi.org/10.1021/ja044834j">Mapping Long-Range Interactions in α-Synuclein using Spin-Label NMR and Ensemble Molecular Dynamics Simulations</a>和<a target="_blank" rel="noopener" href="https://doi.org/10.1021/ja055538p">Defining Long-Range Order and Local Disorder in Native α-Synuclein Using Residual Dipolar Couplings</a>分别利用自旋标记相关NMR与残余偶极耦合等信息研究构象集合。</p>
+<p>两篇研究共同指向无序状态中的长程相互作用。构象集合及接触分布是这一问题的核心描述对象。</p>
+<h2 id="六、分歧在哪里？哪些问题仍需要区分？"><a href="#六、分歧在哪里？哪些问题仍需要区分？" class="headerlink" title="六、分歧在哪里？哪些问题仍需要区分？"></a>六、分歧在哪里？哪些问题仍需要区分？</h2><h3 id="1-Cas9：单分子实验的动力学描述存在直接分歧"><a href="#1-Cas9：单分子实验的动力学描述存在直接分歧" class="headerlink" title="1. Cas9：单分子实验的动力学描述存在直接分歧"></a>1. Cas9：单分子实验的动力学描述存在直接分歧</h3><p>Yang等在<a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.celrep.2017.12.048">The Conformational Dynamics of Cas9 Governing DNA Cleavage Are Revealed by Single-Molecule FRET</a>中，明确讨论了与Dagdas等、Chen等单分子结果的差异。作者尝试改变温度、反应时间、缓冲条件、表达细胞和纯化流程，报告部分既有smFRET结果的复现仍存在困难，并提出样品制备与肝素等缓冲因素可能影响构象行为。</p>
+<p>因此，这组文献中的“哪些构象状态及转换支持切割”需要结合实验条件阅读。样品制备因素在该文中属于解释假说；Pacesa等后续结构研究补充了R-loop与激活状态的结构证据。</p>
+<h3 id="2-Calcineurin：AID移位与取向调整两种模型"><a href="#2-Calcineurin：AID移位与取向调整两种模型" class="headerlink" title="2. Calcineurin：AID移位与取向调整两种模型"></a>2. Calcineurin：AID移位与取向调整两种模型</h3><p><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jmb.2011.11.008">Rumi-Masante等</a>提出，CaM结合引起调控区折叠，促使AID移出催化位点。<a target="_blank" rel="noopener" href="https://doi.org/10.1038/cr.2016.14">Li等</a>则提出CaM主要调节AID相对于催化核心的取向，并结合其他自抑制区域解释多级激活。</p>
+<p>两种模型对AID位置变化的解释存在分歧。比较时需要同时保留构建体、异构体、底物和活性测定条件；上述两篇论文留下了值得继续核对的机制问题。</p>
+<h3 id="3-TDP-43：RNA的效应具有条件依赖性"><a href="#3-TDP-43：RNA的效应具有条件依赖性" class="headerlink" title="3. TDP-43：RNA的效应具有条件依赖性"></a>3. TDP-43：RNA的效应具有条件依赖性</h3><p><a target="_blank" rel="noopener" href="https://doi.org/10.15252/embr.202153632">Grese等</a>研究的特定GU重复RNA能够促进多价相分离并维持液态性质，效应随RNA浓度变化。<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-023-06701-5">m1A in CAG repeat RNA binds to TDP-43 and induces neurodegeneration</a>则将m1A修饰的CAG重复RNA与TDP-43凝胶样聚集、胞质错位及神经退行性改变联系起来。</p>
+<p>这两组结果的关键差别包括RNA序列、修饰和实验体系。适合保留的综合判断是：<strong>RNA身份及其与蛋白的配比决定组装路径的一部分。</strong>“RNA促进液态组装”与“特定RNA促进异常聚集”可以在各自条件下成立。</p>
+<h3 id="4-异质重建：结构先验的收益与偏差需要分别检验"><a href="#4-异质重建：结构先验的收益与偏差需要分别检验" class="headerlink" title="4. 异质重建：结构先验的收益与偏差需要分别检验"></a>4. 异质重建：结构先验的收益与偏差需要分别检验</h3><p><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-024-02486-1">CryoSTAR</a>利用结构先验和约束进行异质重建，并提供参考模型变化的检验。<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-024-02377-5">DynaMight</a>中的控制实验显示，错误原子模型约束可能使重建密度趋近错误模型，同时局部分辨率指标仍可能改善。</p>
+<p>两篇研究使用不同模型与正则化方案。合起来得到的具体问题是：结构误差降低、对参考模型的依赖程度和分辨率变化，需要各自对应的证据。<strong>较高分辨率与较准确构象分别属于需要评价的结果。</strong></p>
+<h2 id="七、哪些资料应作为关键依据？"><a href="#七、哪些资料应作为关键依据？" class="headerlink" title="七、哪些资料应作为关键依据？"></a>七、哪些资料应作为关键依据？</h2><p>高频引用资料提供共同背景；直接回答当前机制或验证问题的论文提供具体证据。按这两个用途，可以确定以下核心资料。</p>
+<table>
+<thead>
+<tr>
+<th>用途</th>
+<th>关键资料</th>
+<th>选取依据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>重建方法基础</td>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jsb.2012.09.006">RELION</a>、<a target="_blank" rel="noopener" href="https://doi.org/10.1038/nmeth.4169">cryoSPARC</a>、<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-020-01049-4">CryoDRGN</a></td>
+<td>样本内分别被24、21、19篇论文引用，连接多个结构与方法研究</td>
+</tr>
+<tr>
+<td>Cas9激活过程</td>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-022-05114-0">R-loop formation and conformational activation mechanisms of Cas9</a></td>
+<td>提供R-loop形成及构象激活的结构状态，可与单分子动力学比较</td>
+</tr>
+<tr>
+<td>Calcineurin机制分歧</td>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1016/j.jmb.2011.11.008">Structural Basis for Activation of Calcineurin by Calmodulin</a>、<a target="_blank" rel="noopener" href="https://doi.org/10.1038/cr.2016.14">Cooperative autoinhibition and multi-level activation mechanisms of calcineurin</a></td>
+<td>保留AID移位与取向调整两种解释及其原始实验依据</td>
+</tr>
+<tr>
+<td>TDP-43的RNA条件效应</td>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.15252/embr.202153632">Specific RNA interactions promote TDP-43 multivalent phase separation and maintain liquid properties</a>、<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-023-06701-5">m1A in CAG repeat RNA binds to TDP-43 and induces neurodegeneration</a></td>
+<td>分别提供特定RNA维持液态性质与修饰RNA诱导异常组装的证据</td>
+</tr>
+<tr>
+<td>构象重建的验证边界</td>
+<td><a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-024-02377-5">DynaMight</a>、<a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41592-024-02486-1">CryoSTAR</a></td>
+<td>包含结构先验、参考依赖及控制实验，可用于比较重建改善的来源</td>
+</tr>
+</tbody></table>
+<p>例如，Pacesa的Cas9研究与m1A–CAG研究在本次113篇来源论文中的引用计数均为0，仍直接回答激活过程与RNA条件效应问题。<strong>关键资料的选择同时取决于研究连接程度和问题相关性。</strong></p>
+<h2 id="八、数据与来源"><a href="#八、数据与来源" class="headerlink" title="八、数据与来源"></a>八、数据与来源</h2><ul>
+<li><a href="/files/literature-network/verified-works.csv">117篇论文目录</a>：标题、作者、DOI、元数据年份及主题。</li>
+<li><a href="/files/literature-network/citation-edges.csv">6,462条引用关系</a>：每行记录引用论文与被引论文的DOI。</li>
+<li><a href="/files/literature-network/selected-authors.csv">代表性作者统计</a>：署名论文、引用来源及各自DOI。</li>
+<li><a href="/files/literature-network/figure-data.csv">引用频次图数据</a> · <a href="/images/literature-network/citation-counts.svg">矢量图</a> · <a href="/images/literature-network/citation-counts.pdf">PDF</a>。</li>
+</ul>
+<p>论文标题与DOI来自文献库及<a target="_blank" rel="noopener" href="https://www.crossref.org/documentation/retrieve-metadata/rest-api/">Crossref REST API</a>。引用频次由已收录参考文献计算；机制归纳与分歧分析依据正文中链接的原始研究。论文目录中的年份采用Crossref的published字段，在线发表与卷期出版可能跨年。</p>
+
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/%E7%A7%91%E7%A0%94/">科研</a>
+        </span>
+      
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+        <a href="/2026/11/21/deadline-20261121-three-system-review/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
+          Cas9、Calcineurin与TDP-43–RNA：机制、构效关系与核心结论
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/11/21/deep-reading-v2/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          深入阅读v2
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script defer src="/js/page-views.js" data-site-url="https://niuyihao.github.io"></script>
+
+
+  <!-- copyright -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">主题许可 CC BY-NC-SA 4.0</a>
+    <span>© 2026 我的博客</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">主题作者 xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>
