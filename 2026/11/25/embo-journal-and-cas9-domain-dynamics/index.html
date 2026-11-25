@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+
+
+<title>The EMBO Journal 与相关期刊定位：一篇 Cas9 动态研究的阅读参考 | 我的博客</title>
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/nprogress/nprogress.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/rss2.xml" title="我的博客" type="application/rss+xml">
+</head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="我的博客" />
+          我的博客
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        The EMBO Journal 与相关期刊定位：一篇 Cas9 动态研究的阅读参考
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/archives/">文章</a>
+        
+          <a class="hidden sm:flex" href="/category/">分类</a>
+        
+          <a class="hidden sm:flex" href="/tag/">标签</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="RSS 订阅" href="/rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <button type="button" class="w-5 h-5" title="切换明暗主题" aria-label="切换明暗主题" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </button>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <button type="button" class="w-5 h-5" aria-label="打开菜单" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </button>
+        <button type="button" class="w-5 h-5 hidden" aria-label="关闭菜单" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/95 dark:bg-zinc-900/95 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/archives/" class="flex h-12 sm:h-auto items-center">文章</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/category/" class="flex h-12 sm:h-auto items-center">分类</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/tag/" class="flex h-12 sm:h-auto items-center">标签</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        The EMBO Journal 与相关期刊定位：一篇 Cas9 动态研究的阅读参考
+      </h1>
+      <div>
+        <section class="flex flex-wrap items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2026-11-25</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>4 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>1.1k words</span>
+          </span>
+          
+            <span class="inline-flex items-center gap-3 whitespace-nowrap">
+              <span class="text-gray-400" aria-hidden="true">·</span>
+              <span class="inline-flex items-center gap-1" aria-live="polite">
+                <iconify-icon width="18" icon="mdi:eye-outline" aria-hidden="true"></iconify-icon>
+                <span>阅读量：<span id="page-views-status">加载中…</span><span id="busuanzi_container_page_pv" style="display:none"><span id="busuanzi_value_page_pv"></span> 次</span></span>
+              </span>
+            </span>
+          
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <p><strong>The EMBO Journal 是分子生物学、细胞生物学领域的老牌顶级专业期刊。</strong> 该刊创刊于 1982 年，在分子机制研究领域具有很强的专业影响力。<a target="_blank" rel="noopener" href="https://www.embo.org/embo-press/">期刊介绍</a></p>
+<p>在本文围绕生物物理与结构生物学研究的主观分档中，我将 The EMBO Journal 与 Nature Communications（小 NC）放在相近梯队，将 Analytical Chemistry（分析化学）放在下一档。三者各有学科侧重，具体选刊还需结合论文的科学问题与贡献类型。</p>
+<p>对于蛋白质结构域运动、构象动力学及液相电镜三维重建研究，需要同时考虑期刊的综合声誉、方法学认可度和生物学机制研究水平。</p>
+<h2 id="1-主流相关期刊排行榜"><a href="#1-主流相关期刊排行榜" class="headerlink" title="1. 主流相关期刊排行榜"></a>1. 主流相关期刊排行榜</h2><p>以国际学术声誉、研究创新性要求、生物物理与结构生物学领域认可度综合分档。以下为个人阅读与选刊参考，同档期刊并列展示；各刊在自身专业领域的地位与侧重各有差异。</p>
+<table>
+<thead>
+<tr>
+<th>梯队</th>
+<th>期刊</th>
+<th>主要定位</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S+</td>
+<td>Nature</td>
+<td>综合科学</td>
+</tr>
+<tr>
+<td>S+</td>
+<td>Science</td>
+<td>综合科学</td>
+</tr>
+<tr>
+<td>S+</td>
+<td>Cell</td>
+<td>生命科学</td>
+</tr>
+<tr>
+<td>S</td>
+<td>Nature Methods</td>
+<td>方法学</td>
+</tr>
+<tr>
+<td>S</td>
+<td>Nature Structural &amp; Molecular Biology</td>
+<td>结构与分子机制</td>
+</tr>
+<tr>
+<td>S</td>
+<td>Nature Biotechnology</td>
+<td>生物技术</td>
+</tr>
+<tr>
+<td>S</td>
+<td>Molecular Cell</td>
+<td>分子机制</td>
+</tr>
+<tr>
+<td>A+</td>
+<td>Nature Communications（小 NC）</td>
+<td>综合科学</td>
+</tr>
+<tr>
+<td>A+</td>
+<td>Science Advances</td>
+<td>综合科学</td>
+</tr>
+<tr>
+<td>A+</td>
+<td><strong>The EMBO Journal</strong></td>
+<td><strong>分子与细胞机制</strong></td>
+</tr>
+<tr>
+<td>A+</td>
+<td>PNAS</td>
+<td>综合科学</td>
+</tr>
+<tr>
+<td>A+</td>
+<td>JACS</td>
+<td>化学</td>
+</tr>
+<tr>
+<td>A+</td>
+<td>Angewandte Chemie</td>
+<td>化学</td>
+</tr>
+<tr>
+<td>A</td>
+<td>Nucleic Acids Research</td>
+<td>核酸与分子生物学</td>
+</tr>
+<tr>
+<td>A</td>
+<td>Advanced Science</td>
+<td>综合科学</td>
+</tr>
+<tr>
+<td>A</td>
+<td>ACS Nano</td>
+<td>纳米科学</td>
+</tr>
+<tr>
+<td>A</td>
+<td>Analytical Chemistry（AC）</td>
+<td>分析化学</td>
+</tr>
+<tr>
+<td>A</td>
+<td>Chemical Science</td>
+<td>化学</td>
+</tr>
+<tr>
+<td>B+</td>
+<td>Structure</td>
+<td>结构生物学</td>
+</tr>
+<tr>
+<td>B+</td>
+<td>Journal of Molecular Biology</td>
+<td>分子生物学</td>
+</tr>
+<tr>
+<td>B+</td>
+<td>Biophysical Journal</td>
+<td>生物物理</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Journal of Structural Biology</td>
+<td>结构生物学</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Ultramicroscopy</td>
+<td>电子显微学</td>
+</tr>
+</tbody></table>
+<h2 id="2-这篇论文的质量"><a href="#2-这篇论文的质量" class="headerlink" title="2. 这篇论文的质量"></a>2. 这篇论文的质量</h2><p><a target="_blank" rel="noopener" href="https://doi.org/10.15252/embj.201796941">Real-time observation of flexible domain movements in CRISPR–Cas9</a></p>
+<p>以下是围绕科学问题、证据链与当前课题相关性的阅读评价。</p>
+<table>
+<thead>
+<tr>
+<th>评价维度</th>
+<th>评价</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>期刊水平</td>
+<td>A+（沿用上文分档）</td>
+</tr>
+<tr>
+<td>科学问题</td>
+<td>很强</td>
+</tr>
+<tr>
+<td>生物学创新</td>
+<td>强</td>
+</tr>
+<tr>
+<td>方法学创新</td>
+<td>中等，主要应用已有 smFRET 技术</td>
+</tr>
+<tr>
+<td>实验证据链</td>
+<td>强</td>
+</tr>
+<tr>
+<td>机制解释深度</td>
+<td>较强</td>
+</tr>
+<tr>
+<td>数据开放性</td>
+<td>较好，提供图 2–5 的源数据及补充材料</td>
+</tr>
+<tr>
+<td>与当前课题的相关性</td>
+<td>极高</td>
+</tr>
+</tbody></table>
+<p>该论文由东京大学研究团队完成，发表于 2018 年 4 月 12 日。截至 2026 年 11 月 25 日核查，出版社页面显示被引 51 次，并提供图 2–5 的源数据及同行评审文件。<a target="_blank" rel="noopener" href="https://link.springer.com/article/10.15252/embj.201796941">论文及附件</a></p>
+<h3 id="核心贡献与局限"><a href="#核心贡献与局限" class="headerlink" title="核心贡献与局限"></a>核心贡献与局限</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>已有认识</td>
+<td>晶体结构提示 Cas9 存在域间构象变化</td>
+</tr>
+<tr>
+<td>Research Gap</td>
+<td>溶液中域间柔性运动的实时特征及其功能意义有待进一步阐明</td>
+</tr>
+<tr>
+<td>技术手段</td>
+<td>三组独立的 smFRET 标记体系</td>
+</tr>
+<tr>
+<td>核心发现</td>
+<td>HNH 在动态波动过程中进入切割相关构象</td>
+</tr>
+<tr>
+<td>新发现</td>
+<td>半对接、切割前构象 D*（DNA semi-docked pre-cleavage position）</td>
+</tr>
+<tr>
+<td>空间局限</td>
+<td>读出为探针对的 FRET 效率时序；完整三维运动轨迹的恢复需要额外结构信息</td>
+</tr>
+<tr>
+<td>时序局限</td>
+<td>三组标记体系分别测量；同一分子的多域同步运动仍需联合观测</td>
+</tr>
+<tr>
+<td>机制局限</td>
+<td>研究结合构象变化与切割实验建立功能联系；柔性运动的具体因果作用仍需进一步验证</td>
+</tr>
+</tbody></table>
+<p>上述发现见论文图 1、4–6 及讨论部分；空间、时序和因果验证条目是基于其测量设计的阅读分析。<a target="_blank" rel="noopener" href="https://doi.org/10.15252/embj.201796941">原文</a></p>
+<h2 id="3-对论文写作的参考价值"><a href="#3-对论文写作的参考价值" class="headerlink" title="3. 对论文写作的参考价值"></a>3. 对论文写作的参考价值</h2><p>针对 DynaChron，我建议重点参考以下期刊的论文组织方式。</p>
+<table>
+<thead>
+<tr>
+<th>优先级</th>
+<th>期刊</th>
+<th>学习重点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Nature Communications</td>
+<td>方法创新与生物学发现的结合</td>
+</tr>
+<tr>
+<td>2</td>
+<td>The EMBO Journal</td>
+<td>科学问题与分子机制证据链</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Nature Methods</td>
+<td>方法验证、精度与能力边界</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Nature Structural &amp; Molecular Biology</td>
+<td>结构变化与功能之间的联系</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Analytical Chemistry</td>
+<td>测量原理、性能指标与分析能力验证</td>
+</tr>
+</tbody></table>
+<p><strong>Osuka 这篇论文值得作为核心精读文献。</strong> 它最值得学习的地方是：如何将一种已有测量技术获得的时序信息，转化为具有生物学意义的科学发现。</p>
+<p>这也正是液相电镜三维动态重建需要完成的工作：从测量能力出发，回答已有技术有待充分回答的科学问题。</p>
+
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C/">论文写作</a>
+        </span>
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB/">文献阅读</a>
+        </span>
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/Cas9/">Cas9</a>
+        </span>
+      
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/11/24/baseline-pipeline/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          Baseline pipeline
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script defer src="/js/page-views.js" data-site-url="https://niuyihao.github.io"></script>
+
+
+  <!-- copyright -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">主题许可 CC BY-NC-SA 4.0</a>
+    <span>© 2026 我的博客</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">主题作者 xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>
