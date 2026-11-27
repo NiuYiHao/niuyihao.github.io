@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+
+
+<title>关于亲密关系、个人情绪与生活重心的思考 | 我的博客</title>
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/nprogress/nprogress.css">
+
+
+
+<script src="/lib/jquery.min.js"></script>
+
+
+<script src="/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+
+<meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/rss2.xml" title="我的博客" type="application/rss+xml">
+</head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="我的博客" />
+          我的博客
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        关于亲密关系、个人情绪与生活重心的思考
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/archives/">文章</a>
+        
+          <a class="hidden sm:flex" href="/category/">分类</a>
+        
+          <a class="hidden sm:flex" href="/tag/">标签</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="RSS 订阅" href="/rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <button type="button" class="w-5 h-5" title="切换明暗主题" aria-label="切换明暗主题" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </button>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <button type="button" class="w-5 h-5" aria-label="打开菜单" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </button>
+        <button type="button" class="w-5 h-5 hidden" aria-label="关闭菜单" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/95 dark:bg-zinc-900/95 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/archives/" class="flex h-12 sm:h-auto items-center">文章</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/category/" class="flex h-12 sm:h-auto items-center">分类</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/tag/" class="flex h-12 sm:h-auto items-center">标签</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        关于亲密关系、个人情绪与生活重心的思考
+      </h1>
+      <div>
+        <section class="flex flex-wrap items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2026-11-27</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>2 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>844 words</span>
+          </span>
+          
+            <span class="inline-flex items-center gap-3 whitespace-nowrap">
+              <span class="text-gray-400" aria-hidden="true">·</span>
+              <span class="inline-flex items-center gap-1" aria-live="polite">
+                <iconify-icon width="18" icon="mdi:eye-outline" aria-hidden="true"></iconify-icon>
+                <span>阅读量：<span id="page-views-status">加载中…</span><span id="busuanzi_container_page_pv" style="display:none"><span id="busuanzi_value_page_pv"></span> 次</span></span>
+              </span>
+            </span>
+          
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <h2 id="1-亲密关系需求"><a href="#1-亲密关系需求" class="headerlink" title="1. 亲密关系需求"></a>1. 亲密关系需求</h2><p>我渴望与女朋友发展更深入的身体亲密关系，包括亲吻、拥抱、爱抚等双方自愿的亲密接触。</p>
+<p>但表达欲望让我感到害羞，受到矜持、谨慎等社会期待的影响。</p>
+<p><strong>核心问题：</strong> 如何坦率表达自己的欲望，同时识别和尊重对方的真实意愿？</p>
+<h2 id="2-对亲密关系的认识"><a href="#2-对亲密关系的认识" class="headerlink" title="2. 对亲密关系的认识"></a>2. 对亲密关系的认识</h2><ol>
+<li>爱意需要通过表达和行动传递。</li>
+<li>身体亲密能够带来舒适感，也可能增进彼此的理解与感情。</li>
+<li>亲密关系需要双方共同探索和推动。</li>
+<li>身体接触应以双方自愿、舒适和尊重边界为前提。</li>
+</ol>
+<h2 id="3-当前情绪状态"><a href="#3-当前情绪状态" class="headerlink" title="3. 当前情绪状态"></a>3. 当前情绪状态</h2><p>我近期存在以下体验：</p>
+<ul>
+<li><strong>害羞：</strong> 不善于直接表达亲密欲望。</li>
+<li><strong>焦虑：</strong> 担心体重影响亲密接触的舒适度。</li>
+<li><strong>麻木：</strong> 日常生活缺少兴奋感和期待感。</li>
+<li><strong>茫然：</strong> 尚未找到工作、关系与个人生活的协调方式。</li>
+<li><strong>烦躁：</strong> 对亲密关系的思考影响了论文工作的启动。</li>
+</ul>
+<h2 id="4-工作与生活的关系"><a href="#4-工作与生活的关系" class="headerlink" title="4. 工作与生活的关系"></a>4. 工作与生活的关系</h2><p>论文是当前阶段的重要任务，但生活不应被简化为工作。</p>
+<p>亲密关系也需要持续投入，包括日常交流、共同活动、独处探索和长期规划。</p>
+<p>我希望将亲密关系纳入日常生活，而不是无限期推迟到论文完成之后。</p>
+<h2 id="5-生活意义"><a href="#5-生活意义" class="headerlink" title="5. 生活意义"></a>5. 生活意义</h2><p>我追求的不只是论文、学历和职业成果，还包括：</p>
+<ul>
+<li>幸福与快乐；</li>
+<li>探索与学习；</li>
+<li>新鲜感与生活体验；</li>
+<li>深入的亲密关系；</li>
+<li>对生活的兴趣与主动性。</li>
+</ul>
+<p><strong>我希望工作服务于生活，而不是让生活成为工作的附属品。</strong></p>
+<h2 id="6-主要矛盾与次要矛盾"><a href="#6-主要矛盾与次要矛盾" class="headerlink" title="6. 主要矛盾与次要矛盾"></a>6. 主要矛盾与次要矛盾</h2><p>我尝试运用《矛盾论》理解当前困境。</p>
+<p>主要矛盾决定特定阶段的发展方向，需要集中力量优先解决。但这是否意味着次要矛盾可以被忽略？</p>
+<p>需要进一步思考：</p>
+<ol>
+<li>如何识别当前真正的主要矛盾？</li>
+<li>哪些次要问题可以暂时搁置？</li>
+<li>哪些次要问题需要持续投入和维护？</li>
+<li>如何避免以解决主要矛盾为由，长期牺牲其他重要需求？</li>
+<li>当个人状态影响主要任务的执行时，是否应当优先调整状态？</li>
+</ol>
+<h2 id="7-待研究问题"><a href="#7-待研究问题" class="headerlink" title="7. 待研究问题"></a>7. 待研究问题</h2><table>
+<thead>
+<tr>
+<th>研究方向</th>
+<th>核心问题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>亲密关系</td>
+<td>如何确认伴侣的真实意愿？</td>
+</tr>
+<tr>
+<td>需求表达</td>
+<td>如何坦率表达欲望与需求？</td>
+</tr>
+<tr>
+<td>身体探索</td>
+<td>如何增进双方的亲密体验？</td>
+</tr>
+<tr>
+<td>生活管理</td>
+<td>如何协调工作与个人生活？</td>
+</tr>
+<tr>
+<td>情绪状态</td>
+<td>如何识别麻木、焦虑与疲惫？</td>
+</tr>
+<tr>
+<td>唯物辩证法</td>
+<td>如何处理主要矛盾与次要矛盾？</td>
+</tr>
+<tr>
+<td>生活意义</td>
+<td>如何建立多元的生活价值体系？</td>
+</tr>
+</tbody></table>
+<h2 id="核心思考"><a href="#核心思考" class="headerlink" title="核心思考"></a>核心思考</h2><p>我希望完成论文、发展亲密关系，也希望拥有幸福、充实且有探索感的生活。</p>
+<p>当前需要解决的不是工作与生活之间的简单取舍，而是：</p>
+<p><strong>如何在明确阶段性主要任务的同时，维持个人身心状态、亲密关系和生活体验，实现工作目标与长期生活价值的协调发展。</strong></p>
+
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/%E7%94%9F%E6%B4%BB/">生活</a>
+        </span>
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/tags/%E4%BA%B2%E5%AF%86%E5%85%B3%E7%B3%BB/">亲密关系</a>
+        </span>
+      
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+    </div>
+    <div>
+      
+        <a href="/2026/11/26/writing-time-timeline-review/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          写作时间都去哪了 11月25日时间线复盘
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script defer src="/js/page-views.js" data-site-url="https://niuyihao.github.io"></script>
+
+
+  <!-- copyright -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">主题许可 CC BY-NC-SA 4.0</a>
+    <span>© 2026 我的博客</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">主题作者 xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>
